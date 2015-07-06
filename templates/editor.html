@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/alloy_ui.css') }}"    />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/instance_ui.css') }}" />
+  <title>Alloy Editor</title>
+
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/ace_editor/ace.js') }}"     ></script>
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/jquery.js') }}"             ></script>
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/d3/d3.min.js') }}"          ></script>
+
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/GraphModel.js') }}"         ></script>
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/InstanceVisualizer.js') }}" ></script>
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/ui_controller.js') }}"      ></script>
+</head>
+
+<body>
+
+<nav id="menu">
+  <a id="execute">Execute</a>
+  <a id="clear"  >Clear</a>
+</nav>  
+
+<pre id="editor" ></pre>
+<aside id="outcome"></aside>
+
+</body>
+</html>

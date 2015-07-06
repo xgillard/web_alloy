@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+
+  <style href="style/instance_ui.css" >
+  .link {
+    stroke: #00F;
+  }
+
+  .node{
+    cursor: move;
+  }
+  .node > text {
+    cursor: move;
+
+    fill: white;
+    text-anchor: middle;
+    alignment-baseline: middle;
+  }
+  </style>
+
+  <script src="javascript/d3/d3.js" ></script>
+  <script src="javascript/instance_viz.js"></script>
+
+</head>
+<body>
+  <script type="text/javascript">
+    var graph  = {}
+    graph.atoms= [
+              {"label":"Name$0"},
+              {"label":"Name$1"},
+              {"label":"Person$0"},
+              {"label":"Person$1"}
+            ];
+
+    graph.relations=[
+              {"name":"rel","source":graph.atoms[0],"target":graph.atoms[1]},
+              {"name":"rel","source":graph.atoms[2],"target":graph.atoms[3]}
+            ];
+
+    var viz = new InstanceVisualizer(graph, "body");
+  </script>
+</body>
+</html>

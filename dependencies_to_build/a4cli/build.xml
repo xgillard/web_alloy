@@ -1,0 +1,26 @@
+<project name="Alloy4 cli" basedir="." default="jar" >
+
+    <property name="src.dir"     value="src" />
+    <property name="lib.dir"     value="lib" />
+    <property name="target.dir"  value="target" />
+    <property name="classes.dir" value="${target.dir}/classes" />
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${target.dir}"/>
+        <jar destfile="${target.dir}/a4cli.jar" basedir="${classes.dir}">
+            <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
+            <manifest>
+                <attribute name="Main-Class" value="edu.mit.csail.sdg.alloy4web.A4CLI"/>
+            </manifest>
+        </jar>
+    </target>
+</project>

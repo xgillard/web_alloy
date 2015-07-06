@@ -1,0 +1,48 @@
+body {
+    overflow: hidden;
+}
+
+#menu {
+    text-align: center;
+}
+#menu > a {
+    margin-top: -5px;
+    width:  70px;
+ /*   height: 50px; */
+    text-align: center;
+    display: inline-block;
+
+    line-height: 40px;
+    vertical-align: middle;
+
+    border: 1px solid black;
+    font-size: 10pt;
+}
+
+#editor {
+    /* Don't change this absolute value: it is required by ACE editor */
+    position: absolute;
+    top    : 50px;
+    left   : 0;
+    width  : 50%;
+    height : calc(100% - 50px);
+    margin : 0;
+}
+
+#outcome{
+    position: absolute;
+    top    : 50px;
+    left   : 50%;
+    width  : calc(50% - 2em);
+    height : calc(100% - 50px - 2em);
+    margin : 0;
+    background-color: lightgray;
+    padding: 1em;
+    border: 1px solid black;
+    overflow: scroll;
+}
+
+.error {
+    font-weight: bold;
+    color: red;
+}

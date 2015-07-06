@@ -1,0 +1,14 @@
+.link {
+  stroke: #00F;
+}
+
+.node{
+  cursor: move;
+}
+.node > text {
+  cursor: move;
+
+  fill: white;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
