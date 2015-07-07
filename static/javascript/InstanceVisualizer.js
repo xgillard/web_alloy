@@ -59,6 +59,14 @@ function InstanceVisualizer(graph, selector){
                       .attr("stroke", function(d){return self.palette(parseInt(d.type_id) % 20)})
                       .attr("fill", function(d){return self.palette(parseInt(d.type_id) % 20)})
                       .call(self.drag_handler)
+                      .on("mouseover", function(d){
+                        var color = "red";
+                        d3.select(this).attr("stroke", color).attr("fill", color);
+                      })
+                      .on("mouseout", function(d){
+                        var color = self.palette(parseInt(d.type_id) % 20);
+                        d3.select(this).attr("stroke", color).attr("fill", color);
+                      })
                       ;
 
     // we're using a path to render the edge an position the label appropriately
