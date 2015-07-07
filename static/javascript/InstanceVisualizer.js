@@ -54,14 +54,18 @@ function InstanceVisualizer(graph, selector){
   this.render_links = function(){
     self.links = self.svg.selectAll(".link");
     self.links = self.links.data(self.graph.relations).enter()
-                      .append("g").attr("class", "link");
+                      .append("g")
+                      .attr("class", "link")
+                      .attr("stroke", function(d){return self.palette(parseInt(d.type_id) % 20)})
+                      .attr("fill", function(d){return self.palette(parseInt(d.type_id) % 20)})
+                      .call(self.drag_handler)
+                      ;
 
     // we're using a path to render the edge an position the label appropriately
     self.links.append("path")
          .attr("id", self.path_id)
          .attr("d",  self.path_coord)
          .attr("fill", "none")
-         .call(self.drag_handler)
          ;
 
     // this defines the label and references the proper path
@@ -71,7 +75,6 @@ function InstanceVisualizer(graph, selector){
          .attr("xlink:href", function(d){return "#"+self.path_id(d)})
          .attr("startOffset", "50%")
          .text(function(d){return d.label})
-         .call(self.drag_handler)
          ;
   };
 
@@ -167,7 +170,7 @@ function InstanceVisualizer(graph, selector){
 
   /** This builds an id for some given paths representing a relation. */
   this.path_id = function(d){
-    return d.source.label+"_"+d.name+"_"+d.target.label
+    return d.source.label+"_"+d.label+"_"+d.target.label
   }
 
   /** This function returns a path coordinate string that tells what the path should look like */

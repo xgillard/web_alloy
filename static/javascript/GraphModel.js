@@ -23,8 +23,9 @@ function Atom(label){
 /**
  * This class models a tuple (one relation line) in a bi-reation
  */
-function Tuple(name, src, dest){
+function Tuple(label, type_id, src, dest){
   this.label        = name;
+  this.type_id      = type_id;
   this.source       = src;
   this.target       = dest; 
   this.mid_point    = " L ";
@@ -99,6 +100,8 @@ function Instance(rsp_data){
                      .map(function(field){
                         $f     = $(field);
                         name   = $f.attr("label");
+                        type_id= $f.attr("ID");
+
                         tuples = $f.find("tuple")
                                    .toArray()
                                    .map(function(tuple){
@@ -109,7 +112,7 @@ function Instance(rsp_data){
                                       var src_ref= atoms_h[src];
                                       var dst_ref= atoms_h[dst];
 
-                                      return new Tuple(name, src_ref, dst_ref); 
+                                      return new Tuple(name, type_id, src_ref, dst_ref); 
                                     });
                         return tuples;
                      });
