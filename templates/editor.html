@@ -19,10 +19,16 @@
 
 <body>
 
-<nav id="menu">
-  <a id="execute">Execute</a>
-  <a id="clear"  >Clear</a>
-</nav>  
+<header>
+  <img id="alloy-logo" src="{{ url_for('static', filename='image/logo.gif') }}" />
+  <img id="mit-logo"   src="{{ url_for('static', filename='image/mit-logo.png') }}" />
+
+  <nav id="menu">
+    <a id="execute">Execute</a>
+    <a id="clear"  >Clear</a>
+  </nav> 
+
+</header>
 
 <pre id="editor" ></pre>
 <aside id="outcome"></aside>

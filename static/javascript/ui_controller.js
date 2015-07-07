@@ -5,6 +5,8 @@
 // Setup the event handlers for the different options
 $(document).ready(function(){
   boot_editor();
+  $("#alloy-logo").click(function(){open_in_tab('http://alloy.mit.edu/alloy/index.html')})
+  $("#mit-logo").click(function(){open_in_tab('http://www.mit.edu')})
   $("#execute").click(execute);
   $("#clear").click(clear);
 });
@@ -44,4 +46,13 @@ function execute(){
         }
       }
     );
+}
+
+/**
+ * CREDITS: 
+ * http://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-using-javascript
+ */
+function open_in_tab(url){
+  var win = window.open(url, '_blank');
+  win.focus();
 }
