@@ -52,16 +52,18 @@ function InstanceVisualizer(graph, selector){
     self.links = self.svg.selectAll(".link");
     self.links = self.links.data(self.graph.relations).enter()
                       .append("g").attr("class", "link");
+
     // we're using a path to render the edge an position the label appropriately
     self.links.append("path")
          .attr("id", self.path_id)
          .attr("d",  self.path_coord);
+
     // this defines the label and references the proper path
     self.links.append("text")
          .append("textPath")
          .attr("xlink:href", function(d){return "#"+self.path_id(d)})
          .attr("startOffset", "50%")
-         .text(function(d){return d.name});
+         .text(function(d){return d.label});
   };
 
   /**

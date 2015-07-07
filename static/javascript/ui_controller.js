@@ -36,7 +36,7 @@ function execute(){
         var found = xml.find("success").length > 0;
         if(found){
           clear();
-          var instance = new GraphModel(rsp_data);
+          var instance = new Instance(rsp_data);
           var viz      = new InstanceVisualizer(instance, "#outcome");
         } else {
           $("#outcome").append("div").attr("class", "error").text(xml.text());
