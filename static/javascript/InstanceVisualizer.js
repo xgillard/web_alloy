@@ -15,7 +15,7 @@ function InstanceVisualizer(graph, selector){
     // TODO: un-hardcode that !
     // Dimension of the 'atom' blocks
     self.block_w= 100;
-    self.block_h= 40;
+    self.block_h= 60;
 
     // Initilization of the graph layout
     self.force = d3.layout.force()
@@ -87,10 +87,30 @@ function InstanceVisualizer(graph, selector){
           .attr("rx", 10).attr("ry", 10)
           ;
 
-    self.nodes.append("text")
-          .attr("width",  self.block_w)
-          .attr("height", self.block_h)
-          .text(function(d){return d.label});
+    self.nodes
+          .each(function(d, i){
+            var node = d3.select(this);
+
+            node.append("text")
+                .attr("width",  self.block_w)
+                .attr("height", self.block_h)
+                .text(d.label);
+
+            if(d.skolem_names.length > 0){
+              
+              var skolem= "";
+              for(var i = 0; i<d.skolem_names.length; i++){
+                skolem += d.skolem_names[i];
+                if(i+1<d.skolem_names.length) skolem += ", "
+              }
+              
+              node.append("text")
+                .attr("width",  self.block_w)
+                .attr("height", self.block_h)
+                .attr("dy", "1em")
+                .text("("+skolem+")");
+            }
+          });
   };
 
   /** 
