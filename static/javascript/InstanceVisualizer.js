@@ -17,6 +17,8 @@ function InstanceVisualizer(graph, selector){
     self.block_w= 100;
     self.block_h= 60;
 
+    self.palette= d3.scale.category20();
+
     // Initilization of the graph layout
     self.force = d3.layout.force()
                 .size([self.width, self.height])
@@ -92,6 +94,10 @@ function InstanceVisualizer(graph, selector){
           .attr("width",  self.block_w)
           .attr("height", self.block_h)
           .attr("rx", 10).attr("ry", 10)
+          .attr("fill", function(d){
+                          var col = parseInt(d.type.type_id % 20);
+                          return self.palette(col);
+                        })
           ;
 
     self.nodes
