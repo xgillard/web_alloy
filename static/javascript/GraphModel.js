@@ -24,9 +24,10 @@ function Atom(label){
  * This class models a tuple (one relation line) in a bi-reation
  */
 function Tuple(name, src, dest){
-  this.label     = name;
-  this.source    = src;
-  this.target    = dest; 
+  this.label        = name;
+  this.source       = src;
+  this.target       = dest; 
+  this.mid_point    = " L ";
 }
 
 /**
@@ -91,7 +92,6 @@ function Instance(rsp_data){
         a.type = sig;
       });
     });
-
 
     // build relations
     self.relations=xml.find("field")

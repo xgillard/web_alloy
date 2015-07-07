@@ -25,7 +25,8 @@ function InstanceVisualizer(graph, selector){
                 .on("tick", self.tick)
                 ;
     // How to react when the user drags a node
-    self.drag  = self.force.drag().on("dragstart", self.dragstart);
+    self.dragstart_handler = self.force.drag().on("dragstart", self.dragstart);
+    self.drag_handler      = self.force.drag().on("drag", self.drag);
 
     // Starts rendering
     self.svg  = d3.select(selector).append("svg")
@@ -56,14 +57,20 @@ function InstanceVisualizer(graph, selector){
     // we're using a path to render the edge an position the label appropriately
     self.links.append("path")
          .attr("id", self.path_id)
-         .attr("d",  self.path_coord);
+         .attr("d",  self.path_coord)
+         .attr("fill", "none")
+         .call(self.drag_handler)
+         ;
 
     // this defines the label and references the proper path
     self.links.append("text")
          .append("textPath")
+         .attr("dy", "-10px")
          .attr("xlink:href", function(d){return "#"+self.path_id(d)})
          .attr("startOffset", "50%")
-         .text(function(d){return d.label});
+         .text(function(d){return d.label})
+         .call(self.drag_handler)
+         ;
   };
 
   /**
@@ -78,7 +85,7 @@ function InstanceVisualizer(graph, selector){
             .attr("class", "node")
             .attr("width",  self.block_w)
             .attr("height", self.block_h)
-            .call(self.drag)
+            .call(self.dragstart_handler)
             ;
 
     self.nodes.append("rect")
@@ -97,7 +104,7 @@ function InstanceVisualizer(graph, selector){
                 .text(d.label);
 
             if(d.skolem_names.length > 0){
-              
+
               var skolem= "";
               for(var i = 0; i<d.skolem_names.length; i++){
                 skolem += d.skolem_names[i];
@@ -138,7 +145,18 @@ function InstanceVisualizer(graph, selector){
    * mova anymore.
    */
   this.dragstart = function(d){
-    d.fixed = true;
+    if(d instanceof Atom){
+      d.fixed = true;
+    }
+  }
+  /**
+   * this function is called while one drags a link on the surface 
+   */
+  this.drag = function(d){
+    if(d instanceof Tuple){
+      var coord = d3.mouse(this); 
+      d.mid_point = " Q "+coord[0]+" "+coord[1]+" ";
+    }
   }
 
   /** This builds an id for some given paths representing a relation. */
@@ -151,7 +169,7 @@ function InstanceVisualizer(graph, selector){
     var w_offset = self.block_w/2;
     var h_offset = self.block_h/2;
 
-    return "M "+(d.source.x+w_offset)+" "+(d.source.y+h_offset)+" L "+(d.target.x+w_offset)+" "+(d.target.y+h_offset);
+    return "M "+(d.source.x+w_offset)+" "+(d.source.y+h_offset)+d.mid_point+(d.target.x+w_offset)+" "+(d.target.y+h_offset);
   }
 
   self.constructor(graph, selector);
