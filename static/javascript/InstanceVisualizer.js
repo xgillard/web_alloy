@@ -79,9 +79,9 @@ function InstanceVisualizer(graph, selector, width, height){
     // this defines the label and references the proper path
     self.links.append("text")
          .append("textPath")
-         .attr("dy", "-10px")
          .attr("xlink:href", function(d){return "#"+self.path_id(d)})
          .attr("startOffset", "50%")
+         .append("tspan").attr("dy", "-3px")
          .text(function(d){return d.label})
          ;
   };

@@ -1,17 +1,14 @@
 text {
 	font-size: 10pt;
+	text-anchor: middle;
+	alignment-baseline: middle;
 }
 .link {
   cursor: move
 }
-
 .node{
   cursor: move;
 }
 .node > text {
-  cursor: move;
-
   fill: white;
-  text-anchor: middle;
-  alignment-baseline: middle;
 }
