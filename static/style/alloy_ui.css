@@ -1,5 +1,6 @@
 body {
     overflow: hidden;
+    background-color: #E0F0FF;
 }
 
 #menu {
@@ -17,6 +18,17 @@ body {
 
     border: 1px solid black;
     font-size: 10pt;
+    background-color: white;
+
+    -webkit-transition: .5s;
+    -moz-transition: .5s;
+    transition: .5s;
+
+    cursor: pointer;
+}
+
+#menu > a:hover {
+    background-color: #FFCC99;
 }
 
 #editor {
@@ -27,6 +39,7 @@ body {
     width  : 50%;
     height : calc(100% - 50px);
     margin : 0;
+    border : 1px solid black; 
 }
 
 #outcome{
@@ -36,7 +49,7 @@ body {
     width  : calc(50% - 2em);
     height : calc(100% - 50px - 2em);
     margin : 0;
-    background-color: lightgray;
+    background-color: #F0F0F5;
     padding: 1em;
     border: 1px solid black;
     overflow: scroll;

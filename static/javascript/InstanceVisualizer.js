@@ -3,14 +3,14 @@
  * see http://bl.ocks.org/mbostock/3750558 for his original work.
  **********************************************************************************/
 
-function InstanceVisualizer(graph, selector){
+function InstanceVisualizer(graph, selector, width, height){
   var self   = this;
 
-  this.constructor = function(graph, selector){
+  this.constructor = function(graph, selector, width, height){
     self.graph = graph;
     // Dimension of the enclosing SVG drawing area
-    self.width = 500;
-    self.height= 500;
+    self.width = width  || 500;
+    self.height= height || 500;
 
     // TODO: un-hardcode that !
     // Dimension of the 'atom' blocks
@@ -189,6 +189,6 @@ function InstanceVisualizer(graph, selector){
     return "M "+(d.source.x+w_offset)+" "+(d.source.y+h_offset)+d.mid_point+(d.target.x+w_offset)+" "+(d.target.y+h_offset);
   }
 
-  self.constructor(graph, selector);
+  self.constructor(graph, selector, width, height);
 
 }

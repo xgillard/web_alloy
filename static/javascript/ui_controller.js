@@ -37,7 +37,8 @@ function execute(){
         if(found){
           clear();
           var instance = new Instance(rsp_data);
-          var viz      = new InstanceVisualizer(instance, "#outcome");
+          var out = $("#outcome");
+          var viz = new InstanceVisualizer(instance, "#outcome", out.width(), out.height());
         } else {
           $("#outcome").append("div").attr("class", "error").text(xml.text());
         }
