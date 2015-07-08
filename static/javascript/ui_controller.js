@@ -38,7 +38,7 @@ function execute(){
         var found = xml.find("success").length > 0;
         if(found){
           clear();
-          var instance = new Instance(rsp_data);
+          var instance = new Instance(rsp_data).projected("10")[0];
           var out = $("#outcome");
           var viz = new InstanceVisualizer(instance, "#outcome", out.width(), out.height());
         } else {
