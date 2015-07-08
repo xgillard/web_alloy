@@ -41,8 +41,8 @@ function InstanceVisualizer(graph, selector, width, height){
 
     // initializes the dataset
     self.force
-         .nodes(self.graph.atoms)
-         .links(self.graph.relations)
+         .nodes(values(self.graph.all_atoms))
+         .links(self.graph.all_links)
          .start();
   };
 
@@ -53,7 +53,7 @@ function InstanceVisualizer(graph, selector, width, height){
    */
   this.render_links = function(){
     self.links = self.svg.selectAll(".link");
-    self.links = self.links.data(self.graph.relations).enter()
+    self.links = self.links.data(self.graph.all_links).enter()
                       .append("g")
                       .attr("class", "link")
                       .attr("stroke", function(d){return self.palette(parseInt(d.type_id) % 20)})
@@ -93,7 +93,9 @@ function InstanceVisualizer(graph, selector, width, height){
    */
   this.render_nodes = function(){
     self.nodes = self.svg.selectAll(".node");
-    self.nodes = self.nodes.data(self.graph.atoms).enter()
+
+    var atoms  = values(self.graph.all_atoms);
+    self.nodes = self.nodes.data(atoms).enter()
             .append("g")
             .attr("class", "node")
             .attr("width",  self.block_w)
@@ -106,7 +108,7 @@ function InstanceVisualizer(graph, selector, width, height){
           .attr("height", self.block_h)
           .attr("rx", 10).attr("ry", 10)
           .attr("fill", function(d){
-                          var col = parseInt(d.type.type_id % 20);
+                          var col = parseInt(d.signature.id % 20);
                           return self.palette(col);
                         })
           ;
@@ -120,19 +122,19 @@ function InstanceVisualizer(graph, selector, width, height){
                 .attr("height", self.block_h)
                 .text(d.label);
 
-            if(d.skolem_names.length > 0){
+            if(d.markers.length > 0){
 
-              var skolem= "";
-              for(var i = 0; i<d.skolem_names.length; i++){
-                skolem += d.skolem_names[i];
-                if(i+1<d.skolem_names.length) skolem += ", "
+              var mark= "";
+              for(var i = 0; i<d.markers.length; i++){
+                mark += d.markers[i];
+                if(i+1<d.markers.length) mark += ", "
               }
               
               node.append("text")
                 .attr("width",  self.block_w)
                 .attr("height", self.block_h)
                 .attr("dy", "1em")
-                .text("("+skolem+")");
+                .text("("+mark+")");
             }
           });
   };
