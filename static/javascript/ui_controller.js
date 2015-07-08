@@ -37,15 +37,38 @@ function execute(){
         var xml   = $( $.parseXML(rsp_data) );
         var found = xml.find("success").length > 0;
         if(found){
-          clear();
-          var instance = new Instance(rsp_data).projected("this/State")[0];
-          var out = $("#outcome");
-          var viz = new InstanceVisualizer(instance, "#outcome", out.width(), out.height());
+          show_result(new Instance(rsp_data));
         } else {
           $("#outcome").append("div").attr("class", "error").text(xml.text());
         }
       }
     );
+}
+
+// Just show the result
+function show_result(instance){
+  clear();
+
+  var sig_names = values(instance.sig)
+                    .filter(function(s){return !s.one})
+                    .map(function(s){return s.label});
+
+  $("#outcome").append("<div>Project on : <select id='choice'></select></div>");
+
+  d3.select("#choice")
+        .selectAll("option")
+        .data(sig_names)
+        .enter()
+        .append("option")
+        .attr("value", function(d){return d;})
+        .text(function(d){return d;});
+
+  var out = $("#outcome");
+  var viz = new InstanceVisualizer(instance, "#outcome", out.width(), out.height());
+
+  $("#choice").change(function(){
+    show_result(instance.projected($("#choice").val())[0]);
+  })
 }
 
 /**

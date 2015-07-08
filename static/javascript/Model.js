@@ -10,11 +10,10 @@ function Sig (snippet){
 	self.parentID   = self.xml.attr("parentID");
 	self.builtin    = self.xml.attr("builtin") == "yes"
 	self.private    = self.xml.attr("private") == "yes"
+	self.one 		= self.xml.attr("one") == "yes"
 
 	var atms        = self.xml.find("atom").toArray();
 	self.atoms      = toMap("label", atms.map(curry(create, Atom, self)) );
-	self.atoms_names= keys(self.atoms);
-
 }
 
 /**
@@ -61,7 +60,6 @@ function Instance(xml_text){
 	var sigs        = self.xml.find("sig").toArray();
 
 	self.sig        = toMap("id", sigs.map(curry(create, Sig)).filter(function(s){return !s.private}) );
-	self.sig_names  = keys(self.sig);
 	self.all_atoms  = toMap("label", flatten( values(self.sig).map(function(s){ return values(s.atoms) }) ));
 
 	// Build relation links
@@ -123,7 +121,6 @@ Instance.prototype.projected = function(on){
 		sigs.splice(sigs.indexOf(sig), 1); // REMOVE sig FROM sigs
 		ret.sig = toMap("id", sigs);
 
-		ret.sig_names= keys(ret.sig);
 		ret.all_atoms= toMap("label", flatten( values(ret.sig).map(function(s){ return values(s.atoms) }) ));
 		ret.all_links= flatten( values(ret.all_atoms).map(function(a){return a.links;}) );
 
