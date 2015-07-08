@@ -104,6 +104,11 @@ function Instance(xml_text){
 	self.all_links = flatten( values(self.all_atoms).map(function(a){return a.links;}) )
 }
 
+/**
+ * This function returns the same information as this instance but projected on the given
+ * signature. 
+ * Concretely, it returns an array of instances that are projected.
+ */
 Instance.prototype.projected = function(on){
 	var self = this;
 	return values(self.sig[on].atoms).map(function(_atom){
