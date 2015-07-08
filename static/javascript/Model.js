@@ -111,7 +111,10 @@ function Instance(xml_text){
  */
 Instance.prototype.projected = function(on){
 	var self = this;
-	return values(self.sig[on].atoms).map(function(_atom){
+
+	var _sig = remap("label", self.sig);
+
+	return values(_sig[on].atoms).map(function(_atom){
 		var ret = new Instance(self.xml_text);
 		var sig = ret.sig[on];
 		var atom= ret.all_atoms[_atom.label];

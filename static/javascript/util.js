@@ -39,6 +39,12 @@ function toMap(key, array){
 	}, {});
 }
 /**
+ * This function changes the key that indexes the map to be an otherone
+ */
+function remap(new_key, map){
+	return toMap(new_key, values(map));
+}
+/**
  * This returns the set of keys contained in a map 
  */
 function keys(map){
