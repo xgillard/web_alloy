@@ -82,7 +82,7 @@ function InstanceVisualizer(graph, selector, width, height){
          .attr("xlink:href", function(d){return "#"+self.path_id(d)})
          .attr("startOffset", "50%")
          .append("tspan").attr("dy", "-3px")
-         .text(function(d){return d.label})
+         .text(function(d){return d.label + " ->"})
          ;
   };
 
