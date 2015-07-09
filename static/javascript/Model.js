@@ -100,35 +100,76 @@ function Instance(xml_text){
 	});
 
 	self.all_links = flatten( values(self.all_atoms).map(function(a){return a.links;}) )
+
+	// this field is only present to avoid multiple recomputation of the same info
+	self.l_sig= remap("label", self.sig);
+}
+
+/**
+ * This PRIVATE method projects the current instance on the given signature and atom
+ */
+Instance.prototype.__project = function(sig_id, atomname){
+	var self = this;
+	
+	// sanity checks
+	var sig = self.sig[sig_id];
+	if( sig==undefined) return self;
+
+	var atom= self.all_atoms[atomname];
+	if( atom==undefined) return self;
+
+	var sigs= values(self.sig);
+	sigs = self.__drop_tree(sigs, sig);
+	self.sig = toMap("id", sigs);
+
+	self.all_atoms= toMap("label", flatten( values(self.sig).map(function(s){ return values(s.atoms) }) ));
+	self.all_links= flatten( values(self.all_atoms).map(function(a){return a.links;}) )
+						.filter(function(t){return self.all_atoms[t.target.label]!=undefined});
+
+	// add marker telling what projection was made
+	atom.links.forEach(function(link){
+		link.target.markers.push(link.label);
+	});
+
+	self.l_sig= remap("label", self.sig);
+	return self;
+};
+
+Instance.prototype.__drop_tree = function(sigs, s){
+	var children = sigs.filter(function(c){return c.parentID == s.id})
+	sigs.splice(sigs.indexOf(s), 1);
+
+	children.forEach(curry(Instance.prototype.__drop_tree, sigs));
+	return sigs;
+}
+
+Instance.prototype.atoms_of = function(s){
+	var self     = this;
+	var children = values(self.sig).filter(function(c){return c.parentID == s.id})
+	var ret      = children.reduce(function(a, i){return a.concat(self.atoms_of(i))}, values(s.atoms));
+
+	return ret;
 }
 
 /**
  * This function returns the same information as this instance but projected on the given
  * signature. 
- * Concretely, it returns an array of instances that are projected.
+ * @param on: a map (object) that maps the signatures on which to project with the atom to project on
  */
 Instance.prototype.projected = function(on){
 	var self = this;
+	var inst = new Instance(self.xml_text);
+	var ret  = keys(on).reduce(function(instance, sig){
+		return instance.__project(sig, on[sig]);
+	}, inst);
 
-	var _sig = remap("label", self.sig);
+	return ret;
+}
 
-	return values(_sig[on].atoms).map(function(_atom){
-		var ret = new Instance(self.xml_text);
-		var sig = ret.sig[on];
-		var atom= ret.all_atoms[_atom.label];
-
-		var sigs= values(ret.sig);
-		sigs.splice(sigs.indexOf(sig), 1); // REMOVE sig FROM sigs
-		ret.sig = toMap("id", sigs);
-
-		ret.all_atoms= toMap("label", flatten( values(ret.sig).map(function(s){ return values(s.atoms) }) ));
-		ret.all_links= flatten( values(ret.all_atoms).map(function(a){return a.links;}) );
-
-		// add marker telling what projection was made
-		atom.links.forEach(function(link){
-			link.target.markers.push(link.label);
-		});
-
-		return ret;
-	});
+/**
+ * Returns the 'root' signatures (those that are direct children of 'univ')
+ */
+Instance.prototype.root_signatures = function(){
+  var univ_id   = this.l_sig["univ"].id;
+  return values(this.sig).filter(function(s){return s.parentID == univ_id})
 }

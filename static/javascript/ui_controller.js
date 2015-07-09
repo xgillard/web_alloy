@@ -19,11 +19,6 @@ function boot_editor(){
   editor.getSession().setMode("ace/mode/alloy");
 }
 
-// This function empties the log
-function clear(){
-  $("#outcome").empty();
-}
-
 // This function is basically nothing but a stub to handle the 
 // execution (analysis) of some page
 function execute(){
@@ -37,7 +32,7 @@ function execute(){
         var xml   = $( $.parseXML(rsp_data) );
         var found = xml.find("success").length > 0;
         if(found){
-          show_result(new Instance(rsp_data));
+          success(new Instance(rsp_data));
         } else {
           $("#outcome").append("div").attr("class", "error").text(xml.text());
         }
@@ -45,33 +40,59 @@ function execute(){
     );
 }
 
+function success(instance){
+  // Store it in the document so that it can be used later on w/o requiring 
+  // round-trip to server.
+  document.getElementById("outcome").instance = instance;
+
+  // display the possible projections
+  $("#projection").empty();
+
+  var sig_names = instance.root_signatures().map(function(s){return s.label});
+
+  var label = d3.select("#projection")
+        .selectAll("input[type='checkbox'][name='project']")
+        .data(sig_names).enter()
+        .append("label");
+  label .append("span").text(function(d){return d;});
+  label .append("input").attr("type", "checkbox").attr("name","project").attr("value", function(d){return d;})
+        .on("change", display_result);
+
+  display_result();
+}
+
+function compute_projection(){
+  var instance = document.getElementById("outcome").instance;
+
+  return $("#projection input[type='checkbox'][name='project']").toArray()
+      .filter(function(input){return input.checked})
+      .reduce(function(a, i){
+        var s    = instance.l_sig[i.value];
+        var atoms= instance.atoms_of(s);
+        if(atoms.length > 0) { 
+          a[s.id]  = atoms[0].label; 
+        }
+        return a;
+      }, {});
+}
+
 // Just show the result
-function show_result(instance){
-  clear();
+function display_result(){
+  var out = $("#result");
+  out.empty();
 
-  var sig_names = values(instance.sig)
-                    .filter(function(s){return !s.one})
-                    .map(function(s){return s.label});
+  var instance = document.getElementById("outcome").instance;
+  if($("#choice").val()!=""){
+    var projection= compute_projection();
+    instance      = instance.projected(projection);
+  }
+  var viz      = new InstanceVisualizer(instance, "#result", out.innerWidth(), out.innerHeight());
+}
 
-  d3.select("#outcome")
-        .text("Projected on")
-        .append("select")
-        .attr("id", "choice");
-
-  d3.select("#choice")
-        .selectAll("option")
-        .data(sig_names)
-        .enter()
-        .append("option")
-        .attr("value", function(d){return d;})
-        .text(function(d){return d;});
-
-  var out = $("#outcome");
-  var viz = new InstanceVisualizer(instance, "#outcome", out.width(), out.height());
-
-  $("#choice").change(function(){
-    show_result(instance.projected($("#choice").val())[0]);
-  })
+// This function empties the log
+function clear(){
+  $("#projection").empty();
+  $("#result").empty();
 }
 
 /**
