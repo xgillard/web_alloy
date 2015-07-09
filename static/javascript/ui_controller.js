@@ -56,22 +56,42 @@ function success(instance){
         .append("label");
   label .append("span").text(function(d){return d;});
   label .append("input").attr("type", "checkbox").attr("name","project").attr("value", function(d){return d;})
-        .on("change", display_result);
+        .on("change", project);
 
   display_result();
 }
 
+function project(e){
+  // Checked is a SET that contains all the selected projection signatures
+  var checked = document.getElementById("projection").checked || [];
+  var index_e = checked.indexOf(e);
+  var input_e = $("input[type='checkbox'][name='project'][value='"+e+"']");
+  if(index_e < 0){
+    checked.push(e);
+
+    var instance= document.getElementById("outcome").instance;
+
+    var atoms   = instance.atoms_of(instance.l_sig[e]);
+    var options = atoms.reduce(function(a, i){return a+"<option value='"+i.label+"'>"+i.label+"</option>"}, "");
+    $("#atom_nav").append("<select class='atom' name='"+e+"'>"+options+"</select>").on("change", display_result);  
+  }
+  if(index_e>=0 && !input_e.prop('checked') ){
+    checked.splice(index_e, 1);
+    $("#atom_nav > select[name='"+e+"']").remove();
+  }
+  document.getElementById("projection").checked = checked;
+
+  display_result();
+}
+
+// 
 function compute_projection(){
   var instance = document.getElementById("outcome").instance;
 
-  return $("#projection input[type='checkbox'][name='project']").toArray()
-      .filter(function(input){return input.checked})
+  return $("#atom_nav > select.atom").toArray()
       .reduce(function(a, i){
-        var s    = instance.l_sig[i.value];
-        var atoms= instance.atoms_of(s);
-        if(atoms.length > 0) { 
-          a[s.id]  = atoms[0].label; 
-        }
+        var s    = instance.l_sig[i.name];
+        a[s.id]  = i.value; 
         return a;
       }, {});
 }
@@ -81,12 +101,10 @@ function display_result(){
   var out = $("#result");
   out.empty();
 
-  var instance = document.getElementById("outcome").instance;
-  if($("#choice").val()!=""){
-    var projection= compute_projection();
-    instance      = instance.projected(projection);
-  }
-  var viz      = new InstanceVisualizer(instance, "#result", out.innerWidth(), out.innerHeight());
+  var instance  = document.getElementById("outcome").instance;
+  var projection= compute_projection();
+  instance      = instance.projected(projection);
+  var viz       = new InstanceVisualizer(instance, "#result", out.innerWidth(), out.innerHeight());
 }
 
 // This function empties the log
