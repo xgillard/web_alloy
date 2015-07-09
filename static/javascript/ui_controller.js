@@ -61,6 +61,7 @@ function success(instance){
   display_result();
 }
 
+// TODO: refactor this
 function project(e){
   // Checked is a SET that contains all the selected projection signatures
   var checked = document.getElementById("projection").checked || [];
@@ -71,13 +72,29 @@ function project(e){
 
     var instance= document.getElementById("outcome").instance;
 
-    var atoms   = instance.atoms_of(instance.l_sig[e]);
-    var options = atoms.reduce(function(a, i){return a+"<option value='"+i.label+"'>"+i.label+"</option>"}, "");
-    $("#atom_nav").append("<select class='atom' name='"+e+"'>"+options+"</select>").on("change", display_result);  
+    var atoms   = instance.atoms_of(instance.l_sig[e]).map(function(a){return a.label});
+    var options = atoms.reduce(function(a, i){return a+"<option value='"+i+"'>"+i+"</option>"}, "");
+    $("#atom_nav").append("<span name='"+e+"'><select name='"+e+"' class='atom'>"+options+"</select></span>").on("change", display_result);
+
+    var selector= $("#atom_nav > span[name='"+e+"'] > select");
+
+
+    $("<button>&lt;&lt</button>").click(function(){
+      var current = atoms.indexOf(selector.val());
+      selector.val(atoms[(current-1+atoms.length) % atoms.length]); // the +atoms.length makes it wrap around
+      display_result();
+    }).insertBefore(selector);
+
+    $("<button>&gt;&gt</button>").click(function(){
+      var current = atoms.indexOf(selector.val());
+      selector.val(atoms[(current+1) % atoms.length]); 
+      display_result();
+    }).insertAfter(selector);
+
   }
   if(index_e>=0 && !input_e.prop('checked') ){
     checked.splice(index_e, 1);
-    $("#atom_nav > select[name='"+e+"']").remove();
+    $("#atom_nav > span[name='"+e+"']").remove();
   }
   document.getElementById("projection").checked = checked;
 
@@ -88,7 +105,7 @@ function project(e){
 function compute_projection(){
   var instance = document.getElementById("outcome").instance;
 
-  return $("#atom_nav > select.atom").toArray()
+  return $("#atom_nav > span > select.atom").toArray()
       .reduce(function(a, i){
         var s    = instance.l_sig[i.name];
         a[s.id]  = i.value; 
