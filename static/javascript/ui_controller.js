@@ -53,7 +53,10 @@ function show_result(instance){
                     .filter(function(s){return !s.one})
                     .map(function(s){return s.label});
 
-  $("#outcome").append("<div>Project on : <select id='choice'></select></div>");
+  d3.select("#outcome")
+        .text("Projected on")
+        .append("select")
+        .attr("id", "choice");
 
   d3.select("#choice")
         .selectAll("option")
