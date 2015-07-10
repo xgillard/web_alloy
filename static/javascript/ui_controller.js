@@ -41,87 +41,14 @@ function execute(){
 }
 
 function success(instance){
-  // Store it in the document so that it can be used later on w/o requiring 
-  // round-trip to server.
-  document.getElementById("outcome").instance = instance;
-
-  // display the possible projections
-  $("#projection").empty();
-
-  var sig_names = instance.root_signatures().map(function(s){return s.label});
-
-  var label = d3.select("#projection")
-        .selectAll("input[type='checkbox'][name='project']")
-        .data(sig_names).enter()
-        .append("label");
-  label .append("span").text(function(d){return d;});
-  label .append("input").attr("type", "checkbox").attr("name","project").attr("value", function(d){return d;})
-        .on("change", project);
-
-  display_result();
-}
-
-// TODO: refactor this
-function project(e){
-  // Checked is a SET that contains all the selected projection signatures
-  var checked = document.getElementById("projection").checked || [];
-  var index_e = checked.indexOf(e);
-  var input_e = $("input[type='checkbox'][name='project'][value='"+e+"']");
-  if(index_e < 0){
-    checked.push(e);
-
-    var instance= document.getElementById("outcome").instance;
-
-    var atoms   = instance.atoms_of(instance.l_sig[e]).map(function(a){return a.label});
-    var options = atoms.reduce(function(a, i){return a+"<option value='"+i+"'>"+i+"</option>"}, "");
-    $("#atom_nav").append("<span name='"+e+"'><select name='"+e+"' class='atom'>"+options+"</select></span>").on("change", display_result);
-
-    var selector= $("#atom_nav > span[name='"+e+"'] > select");
-
-
-    $("<button>&lt;&lt</button>").click(function(){
-      var current = atoms.indexOf(selector.val());
-      selector.val(atoms[(current-1+atoms.length) % atoms.length]); // the +atoms.length makes it wrap around
-      display_result();
-    }).insertBefore(selector);
-
-    $("<button>&gt;&gt</button>").click(function(){
-      var current = atoms.indexOf(selector.val());
-      selector.val(atoms[(current+1) % atoms.length]); 
-      display_result();
-    }).insertAfter(selector);
-
-  }
-  if(index_e>=0 && !input_e.prop('checked') ){
-    checked.splice(index_e, 1);
-    $("#atom_nav > span[name='"+e+"']").remove();
-  }
-  document.getElementById("projection").checked = checked;
-
-  display_result();
-}
-
-// 
-function compute_projection(){
-  var instance = document.getElementById("outcome").instance;
-
-  return $("#atom_nav > span > select.atom").toArray()
-      .reduce(function(a, i){
-        var s    = instance.l_sig[i.name];
-        a[s.id]  = i.value; 
-        return a;
-      }, {});
+  new ProjectionNav(instance, "#projection", "#atom_nav", display_result);
 }
 
 // Just show the result
-function display_result(){
+function display_result(instance){
   var out = $("#result");
   out.empty();
-
-  var instance  = document.getElementById("outcome").instance;
-  var projection= compute_projection();
-  instance      = instance.projected(projection);
-  var viz       = new InstanceVisualizer(instance, "#result", out.innerWidth(), out.innerHeight());
+  new InstanceVisualizer(instance, "#result", out.innerWidth(), out.innerHeight());
 }
 
 // This function empties the log
