@@ -37,7 +37,7 @@ function execute(){
         if(found){
           success(new Instance(rsp_data));
         } else {
-          $("#outcome").append("div").attr("class", "error").text(xml.text());
+          $("#result").append("div").attr("class", "error").text(xml.text());
         }
       }
     );
