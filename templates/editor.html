@@ -10,12 +10,20 @@
 
   <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/ace_editor/ace.js') }}"     ></script>
   <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/jquery.js') }}"             ></script>
-  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/d3/d3.min.js') }}"          ></script>
+
+
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/cytoscape/build/cytoscape.min.js') }}" ></script>
 
   <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/util.js') }}" ></script> 
   <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/Model.js') }}" ></script> 
-  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/ProjectionNav.js') }}" ></script> 
-  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/InstanceVisualizer.js') }}" ></script>
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/ProjectionNav.js') }}" ></script>
+  
+  <!--
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/d3/d3.min.js') }}"          ></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/InstanceVisualizer.js') }}" ></script>
+  -->
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/LayoutPicker.js') }}" ></script>
+  <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/CyViz.js') }}" ></script>
 
   <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='javascript/ui_controller.js') }}"      ></script>
 </head>
