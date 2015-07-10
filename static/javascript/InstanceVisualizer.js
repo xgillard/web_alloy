@@ -12,6 +12,11 @@ function InstanceVisualizer(graph, selector, width, height){
     self.width = width  || 500;
     self.height= height || 500;
 
+    // decorate nodes
+    values(self.graph.all_atoms).forEach(function(n){n.x = 0; n.y = 0;});
+    // decorate links
+    graph.all_links.forEach(function(l){l.mid_point = " L ";});
+
     // TODO: un-hardcode that !
     // Dimension of the 'atom' blocks
     self.block_w= 100;
