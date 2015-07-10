@@ -8,6 +8,7 @@ from flask import *
 from time import time
 from io import open
 from subprocess import Popen, PIPE
+from logging import getLogger, ERROR
 
 # Initializes the Flask micro webserver
 app = Flask(__name__)
@@ -60,4 +61,9 @@ def wrap_error(error):
 # as the main application
 #
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80)
+    getLogger('werkzeug').setLevel(ERROR)
+
+    public = dict(host='0.0.0.0',  port=80)
+    local  = dict(host='127.0.0.1',port=5000)
+
+    app.run(**local)
