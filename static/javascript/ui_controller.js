@@ -2,6 +2,7 @@
  * This file contains the 'control' logic of the Alloy web-UI.
  */
 
+var layout_picker = null;
 // Setup the event handlers for the different options
 $(document).ready(function(){
   boot_editor();
@@ -9,6 +10,8 @@ $(document).ready(function(){
   $("#mit-logo").click(function(){open_in_tab('http://www.mit.edu')})
   $("#execute").click(execute);
   $("#clear").click(clear);
+  layout_picker = new LayoutPicker("layout", display_result);
+  $("#outcome").prepend(layout_picker.select);
 });
 
 // This function initializes the editor to use the ACE editor with
@@ -41,18 +44,22 @@ function execute(){
 }
 
 function success(instance){
+  layout_picker.instance = instance;
   new ProjectionNav(instance, "#projection", "#atom_nav", display_result);
 }
 
 // Just show the result
 function display_result(instance){
-  var out = $("#result");
+  var layout= $("#layout").val();
+  var out   = $("#result");
   out.empty();
-  new InstanceVisualizer(instance, "#result", out.innerWidth(), out.innerHeight());
+  layout_picker.instance = instance;
+  new InstanceVisualizer(layout, instance, "#result", out.innerWidth(), out.innerHeight());
 }
 
 // This function empties the log
 function clear(){
+  layout_picker.instance = null;
   $("#projection").empty();
   $("#result").empty();
 }

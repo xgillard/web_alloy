@@ -29,11 +29,6 @@ function Atom(parent_sig, snippet){
 	// initialized by the instance only
 	self.markers    = [];
 	self.links      = [];
-
-	// disregard these, they're present to avoid computation error
-	// during rendering
-	self.x          = 0;
-	self.y          = 0;
 }
 
 /**
@@ -44,10 +39,6 @@ function Tuple(label, type_id, src, dest){
   this.type_id      = type_id;
   this.source       = src;
   this.target       = dest;
-
-  // disregard this attribute, it is only made present to facilitate rendering
-  // it is not a conceptual property of the tuple
-  this.mid_point    = " L ";
 }
 
 /**
