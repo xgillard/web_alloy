@@ -3,6 +3,9 @@
  */
 var please_wait   = new PleaseWait("The analyzer is processing your model");
 var layout_picker = null;
+var visualizer    = new InstanceVisualizer("#result");
+var remember_pos  = false; // need to remember positions ?
+
 // Setup the event handlers for the different options
 $(document).ready(function(){
   boot_editor();
@@ -10,7 +13,7 @@ $(document).ready(function(){
   $("#mit-logo").click(function(){open_in_tab('http://www.mit.edu')})
   $("#execute").click(execute);
   $("#clear").click(clear);
-  layout_picker = new LayoutPicker("layout", display_result);
+  layout_picker = new LayoutPicker("layout", function(inst){ remember_pos = false; display_result(inst) });
   $("#outcome").prepend(layout_picker.select);
 });
 
@@ -49,8 +52,14 @@ function execute(){
 }
 
 function success(instance){
+
   layout_picker.instance = instance;
-  new ProjectionNav(instance, "#projection", "#atom_nav", display_result);
+  new ProjectionNav(instance, "#projection", "#atom_nav", 
+      function(inst, rem){ 
+          remember_pos = rem;
+          display_result(inst);
+      }
+  );
 }
 
 // Just show the result
@@ -59,11 +68,14 @@ function display_result(instance){
   var out   = $("#result");
   out.empty();
   layout_picker.instance = instance;
-  new InstanceVisualizer(layout, instance, "#result", out.innerWidth(), out.innerHeight());
+
+  visualizer.display(instance, layout, remember_pos);
+  remember_pos = true;
 }
 
 // This function empties the log
 function clear(){
+  remember_pos           = false;
   layout_picker.instance = null;
   $("#projection").empty();
   $("#result").empty();

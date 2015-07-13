@@ -25,13 +25,13 @@ ProjectionNav.prototype._display = function(){
   	node.append(box);
   });
 
-  this.callback();
+  this.callback(this, true);
 }
 
-ProjectionNav.prototype.callback = function(){
-	var projection = this._compute_projection();
-	var projected  = this.instance.projected(projection);
-	this.cb_fn(projected);
+ProjectionNav.prototype.callback = function(self, remember_positions){
+	var projection = self._compute_projection();
+	var projected  = self.instance.projected(projection);
+	self.cb_fn(projected, remember_positions);
 }
 
 ProjectionNav.prototype._project = function(self, label, e){
@@ -45,7 +45,7 @@ ProjectionNav.prototype._project = function(self, label, e){
     self.checked.splice(index, 1);
     $(self.nav).find("span[name='"+label+"']").remove();
   }
-  self.callback();
+  self.callback(self, false);
 }
 
 ProjectionNav.prototype._mkCheckBoxes = function(signatures){
@@ -73,20 +73,20 @@ ProjectionNav.prototype._mkNavBlock = function(sig){
 	var block   = $("<span name='"+sig+"'><select name='"+sig+"' class='atom'>"+options+"</select></span>");
 	var select  = block.find("select");
 
-	select.on("change", self.callback);
+	select.on("change", curry(self.callback, self, true));
 
     // button : << 
     $("<button>&lt;&lt</button>").click(function(){
       var current = atoms.indexOf(select.val());
       select.val(atoms[(current-1+atoms.length) % atoms.length]); // the +atoms.length makes it wrap around
-      self.callback();
+      self.callback(self, true);
     }).insertBefore(select);
 
     // button : >>
     $("<button>&gt;&gt</button>").click(function(){
       var current = atoms.indexOf(select.val());
       select.val(atoms[(current+1) % atoms.length]); 
-      self.callback();
+      self.callback(self, true);
     }).insertAfter(select);
 
     return block;
