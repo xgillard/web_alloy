@@ -41,7 +41,7 @@ function InstanceVisualizer(layout, instance, selector, width, height){
 }
 
 InstanceVisualizer.prototype.LAYOUTS= [
-		"random"      , "grid"        , "circle", 
+		"circle"      , "grid"        , "random",
 		"concentric"  , "breadthfirst", "cose"/*,
 	    "cola"        , "spread"      , "arbor" , 
 		"springy"     , "dagre"      */ ]
