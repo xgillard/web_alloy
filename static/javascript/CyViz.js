@@ -38,6 +38,31 @@ function InstanceVisualizer(layout, instance, selector, width, height){
    						'text-outline-width': 2,
         				'text-outline-color': 'data(color)'
    					})
+   					.selector(".dampened").css({
+	   					"opacity" : .4
+	   				}),
+   					
+   		ready: function(e){
+   			var cy = this;
+   			cy.on("mouseover", 'edge', function(evt){
+   				var edge    = evt.cyTarget;
+   				cy.elements().forEach(function(e){
+   					if(!(e == edge || e == edge.source() || e == edge.target())) {
+   						e.addClass("dampened")	
+   					}
+   				})
+   			})
+   			cy.on("mouseover", 'node', function(evt){
+   				var node = evt.cyTarget;
+   				cy.elements().difference(node.closedNeighborhood()).forEach(function(e){
+   					e.addClass("dampened");
+   				})
+   			})
+   			cy.on("mouseout", function(evt){
+   				cy.edges().forEach(function(e){e.removeClass("dampened")});
+   				cy.elements().forEach(function(e){e.removeClass("dampened")});
+   			})
+   		}
 	});
 }
 
