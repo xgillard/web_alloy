@@ -78,7 +78,7 @@ body {
 #projection > label {
     display: table-row;
 }
-#projection > label > * {
+#projection > label > span {
     display: table-cell;
 }
 

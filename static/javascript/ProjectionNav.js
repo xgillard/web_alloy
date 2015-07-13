@@ -52,7 +52,7 @@ ProjectionNav.prototype._mkCheckBoxes = function(signatures){
 	var self = this;
 	return signatures.map(function(s){
 		var label= s.label;
-		var text = "<label><span>"+label+"</span><input type='checkbox' value='"+label+"' />";
+		var text = "<label><input type='checkbox' value='"+label+"' /> <span>"+label+"</span>";
 		var node = $(text)
     node.on("change", curry(self._project, self, label));
     return node;
