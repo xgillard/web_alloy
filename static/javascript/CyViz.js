@@ -1,6 +1,7 @@
 
 function InstanceVisualizer(layout, instance, selector, width, height){
 	var self = this;
+
 	$(selector).cytoscape({
 		layout: {
 			// ???dagre, spread, arbor, springy???
@@ -47,10 +48,10 @@ InstanceVisualizer.prototype.LAYOUTS= [
 		"springy"     , "dagre"      */ ]
 
 InstanceVisualizer.prototype.SHAPES = [
-		'rhomboid' , 'roundrectangle', 'ellipse', 
-		'triangle' , 'pentagon'      , 'hexagon',
-		'heptagon' , 'octagon'       , 'star'   ,
-		'diamond'  , 'vee' ];
+		'roundrectangle','rhomboid'  , 'ellipse', 
+		'triangle'      , 'pentagon' , 'hexagon',
+		'heptagon'      , 'octagon'  , 'star'   ,
+		'diamond'       , 'vee' ];
 
 InstanceVisualizer.prototype.COLORS = [
 		'#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78',
@@ -61,6 +62,7 @@ InstanceVisualizer.prototype.COLORS = [
 
 InstanceVisualizer.prototype._instanceToGraph = function(instance) {
 	var self = this;
+	self._ensureDisplaySthg(instance);
 	return {
 		nodes: values(instance.all_atoms).map(self._atomToNode),
 		edges: instance.all_links.map(self._relToEdge)
@@ -127,4 +129,15 @@ InstanceVisualizer.prototype._idToShape = function(id){
 	var shapes = InstanceVisualizer.prototype.SHAPES;
 	var idx    = InstanceVisualizer.prototype._hash(id) % shapes.length;
 	return shapes[idx];
+}
+
+InstanceVisualizer.prototype._ensureDisplaySthg = function(instance){
+	if(values(instance.all_atoms).length == 0){
+		instance.all_atoms["ShowSomething"] = {
+			label: "Due to your settings, every atom is hidden",
+			signature: {id: 0},
+			markers: [],
+			links: []
+		};
+	}
 }
