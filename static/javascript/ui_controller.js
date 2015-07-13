@@ -1,7 +1,7 @@
 /*
  * This file contains the 'control' logic of the Alloy web-UI.
  */
-
+var please_wait   = new PleaseWait("The analyzer is processing your model");
 var layout_picker = null;
 // Setup the event handlers for the different options
 $(document).ready(function(){
@@ -28,10 +28,14 @@ function execute(){
   var editor = ace.edit("editor");
   var text   = editor.getSession().getValue();
   
+  please_wait.show();
+
   $.post(
       "/execute", 
       {content: text}, 
       function(rsp_data){
+        please_wait.hide();
+        
         var xml   = $( $.parseXML(rsp_data) );
         var found = xml.find("success").length > 0;
         if(found){
