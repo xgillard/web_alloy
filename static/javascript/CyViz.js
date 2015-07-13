@@ -1,17 +1,31 @@
 
-function InstanceVisualizer(layout, instance, selector, width, height){
+function InstanceVisualizer(selector){
 	var self = this;
 
-	$(selector).cytoscape({
-		layout: {
-			// ???dagre, spread, arbor, springy???
-			// random, grid, circle, concentric, breadthfirst, cose, cola, spread, arbor, springy
-			name: layout,
-			filt: true,
-			padding: 70
-		},
-		elements: self._instanceToGraph(instance),
-		style: cytoscape.stylesheet()
+	self.selector    = selector;
+	self.displayed   = null;
+}
+
+InstanceVisualizer.prototype.LAYOUTS= [
+		"circle"      , "grid"        , "random",
+		"concentric"  , "breadthfirst", "cose"/*,
+	    "cola"        , "spread"      , "arbor" , 
+		"springy"     , "dagre"      */ ]
+
+InstanceVisualizer.prototype.SHAPES = [
+		'roundrectangle','rhomboid'  , 'ellipse', 
+		'triangle'      , 'pentagon' , 'hexagon',
+		'heptagon'      , 'octagon'  , 'star'   ,
+		'diamond'       , 'vee' ];
+
+InstanceVisualizer.prototype.COLORS = [
+		'#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78',
+		'#2ca02c', '#98df8a', '#d62728', '#ff9896',
+		'#9467bd', '#c5b0d5', '#8c564b', '#c49c94',
+		'#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
+		'#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
+
+InstanceVisualizer.prototype.STYLESHEET = cytoscape.stylesheet()
    					.selector('node').css({
    						'content'         : 'data(label)',
    						'text-valign'     : 'center',
@@ -43,66 +57,46 @@ function InstanceVisualizer(layout, instance, selector, width, height){
 	   				})
 	   				.selector("edge.dampened").css({
 	   					"opacity" : .1
-	   				}),
-   					
+	   				});
+
+InstanceVisualizer.prototype.display = function(instance, layout, remember){
+	var self 		 = this;
+	var remembered   = remember ? self.currentPositions() : {} ;
+
+	self.displayed   = $(this.selector).cytoscape({
+		layout: {
+			name: layout,
+			filt: true,
+			padding: 70
+		},
+		elements: self._instanceToGraph(instance, remembered),
+		style: self.STYLESHEET,
    		ready: function(e){
-   			var cy = this;
-   			cy.on("mouseover", 'edge', function(evt){
-   				var edge    = evt.cyTarget;
-   				cy.elements().forEach(function(e){
-   					if(!(e == edge || e == edge.source() || e == edge.target())) {
-   						e.addClass("dampened")	
-   					}
-   				})
-   			})
-   			cy.on("mouseover", 'node', function(evt){
-   				var node = evt.cyTarget;
-   				cy.elements().difference(node.closedNeighborhood()).forEach(function(e){
-   					e.addClass("dampened");
-   				})
-   			})
-   			cy.on("mouseout", function(evt){
-   				cy.edges().forEach(function(e){e.removeClass("dampened")});
-   				cy.elements().forEach(function(e){e.removeClass("dampened")});
-   			})
+   			var cy  = this;
+   			self.cy = cy;
+   			cy.elements().forEach(function(e){e.unlock()})
+   			cy.on("mouseover", 'edge', curry(self._highlightEdge, cy))
+   			cy.on("mouseover", 'node', curry(self._highlightNode, cy))
+   			cy.on("mouseout", curry(self._undoHighlight, cy))
    		}
 	});
 }
 
-InstanceVisualizer.prototype.LAYOUTS= [
-		"circle"      , "grid"        , "random",
-		"concentric"  , "breadthfirst", "cose"/*,
-	    "cola"        , "spread"      , "arbor" , 
-		"springy"     , "dagre"      */ ]
-
-InstanceVisualizer.prototype.SHAPES = [
-		'roundrectangle','rhomboid'  , 'ellipse', 
-		'triangle'      , 'pentagon' , 'hexagon',
-		'heptagon'      , 'octagon'  , 'star'   ,
-		'diamond'       , 'vee' ];
-
-InstanceVisualizer.prototype.COLORS = [
-		'#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78',
-		'#2ca02c', '#98df8a', '#d62728', '#ff9896',
-		'#9467bd', '#c5b0d5', '#8c564b', '#c49c94',
-		'#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
-		'#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
-
-InstanceVisualizer.prototype._instanceToGraph = function(instance) {
+InstanceVisualizer.prototype._instanceToGraph = function(instance, remembered) {
 	var self = this;
 	self._ensureDisplaySthg(instance);
 	return {
-		nodes: values(instance.all_atoms).map(self._atomToNode),
+		nodes: values(instance.all_atoms).map(curry(self._atomToNode, remembered)),
 		edges: instance.all_links.map(self._relToEdge)
 	};
 }
 
-InstanceVisualizer.prototype._atomToNode = function(atom) {
+InstanceVisualizer.prototype._atomToNode = function(remembered, atom) {
 	var taint= InstanceVisualizer.prototype._idToColor(parseInt(atom.signature.id));
 	var form = InstanceVisualizer.prototype._idToShape(parseInt(atom.signature.id));
 	var descr= atom.label+InstanceVisualizer.prototype._markerText(atom);
 	var size = descr.length;
-	return {
+	var ret  =  {
 		data: {
 			id   : atom.label,
 			label: descr,
@@ -114,6 +108,14 @@ InstanceVisualizer.prototype._atomToNode = function(atom) {
 		grabbable: true,
 		selectable: true
 	};
+
+	var old = remembered[atom.label];
+	if(old != undefined && old != null){
+		ret.position = old.position;
+		ret.locked   = true;
+	} 
+
+	return ret;
 }
 
 InstanceVisualizer.prototype._relToEdge = function(rel) {
@@ -168,4 +170,38 @@ InstanceVisualizer.prototype._ensureDisplaySthg = function(instance){
 			links: []
 		};
 	}
+}
+
+InstanceVisualizer.prototype._highlightEdge = function(cy, evt){
+	var edge    = evt.cyTarget;
+	cy.elements().forEach(function(e){
+		if(!(e == edge || e == edge.source() || e == edge.target())) {
+			e.addClass("dampened")	
+		}
+	})
+}
+
+InstanceVisualizer.prototype._highlightNode = function(cy, evt){
+	var node = evt.cyTarget;
+	cy.elements().difference(node.closedNeighborhood()).forEach(function(e){
+		e.addClass("dampened");
+	})
+}
+
+InstanceVisualizer.prototype._undoHighlight = function(cy, evt){
+	cy.elements().forEach(function(e){e.removeClass("dampened")});
+}
+
+InstanceVisualizer.prototype.currentPositions = function(){
+	if(this.cy == undefined || this.cy == null) return {}
+	var elts = this.cy.elements();
+	return toMap("id", elts
+							.filter(function(i, e){return e.isNode()})
+							.map(function(e){
+									return { 
+										id: 		e.data().id,
+										position: 	e.position()
+									};
+							})
+				);
 }
