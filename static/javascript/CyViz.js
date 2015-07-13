@@ -38,8 +38,11 @@ function InstanceVisualizer(layout, instance, selector, width, height){
    						'text-outline-width': 2,
         				'text-outline-color': 'data(color)'
    					})
-   					.selector(".dampened").css({
+   					.selector("node.dampened").css({
 	   					"opacity" : .4
+	   				})
+	   				.selector("edge.dampened").css({
+	   					"opacity" : .1
 	   				}),
    					
    		ready: function(e){
