@@ -1,2 +1,4 @@
 .idea/*
 web_alloy/*
+/nbproject/private/
+nbproject
