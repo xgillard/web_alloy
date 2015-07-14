@@ -19,7 +19,7 @@ def index():
     """
     This function serves the main page of the Alloy editor
     """
-    return send_from_directory("static/", "static.html") #render_template("editor.html")
+    return send_from_directory("static/", "static.html")
 
 @app.route('/js/<path:path>', methods=["GET","POST"])
 def javascript(path):
@@ -73,7 +73,7 @@ def wrap_error(error):
 # as the main application
 #
 if __name__ == "__main__":
-#    getLogger('werkzeug').setLevel(ERROR)
+    getLogger('werkzeug').setLevel(ERROR)
 
     public = dict(host='0.0.0.0',  port=80)
     local  = dict(host='127.0.0.1',port=5000)
