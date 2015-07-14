@@ -1,14 +1,12 @@
 /*
  * This file contains the 'control' logic of the Alloy web-UI.
  */
-define(['jquery', 'ace', 'Backend', 
+define(['jquery', 'ace',
         "web_alloy/PleaseWait", 'web_alloy/LayoutPicker', "web_alloy/Model",
         'web_alloy/Viz', 'web_alloy/ProjectionNav'], 
-function($, ace, Backend, PleaseWait, LayoutPicker, Model, Viz, ProjectionNav) {
+function($, ace, PleaseWait, LayoutPicker, Model, Viz, ProjectionNav) {
     // Forces JS to behave in strict mode
     "use strict";
-    
-    var backend       = new Backend();
     
     var please_wait   = new PleaseWait("The analyzer is processing your model");
     var layout_picker = null;
@@ -44,7 +42,7 @@ function($, ace, Backend, PleaseWait, LayoutPicker, Model, Viz, ProjectionNav) {
 
       please_wait.show();
 
-      backend.call("/execute", text, function(rsp_data){
+      $.post("/target", {content: text}, function(rsp_data){
             please_wait.hide();
 
             var xml   = $( $.parseXML(rsp_data) );
