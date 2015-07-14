@@ -1,29 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Alloy Editor</title>
   
   <link rel="stylesheet" href="{{ url_for('static', filename='style/alloy_ui.css') }}"    />
   <link rel="stylesheet" href="{{ url_for('static', filename='style/instance_ui.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style/please_wait.css') }}" />
-  <title>Alloy Editor</title>
-
-  <script src="{{ url_for('static', filename='js/require.js') }}"                               ></script>
-  
-  <script src="{{ url_for('static', filename='js/_libs/ace/ace.js') }}"     			></script>
-  <script src="{{ url_for('static', filename='js/_libs/jquery.js') }}"             		></script>
-  <script src="{{ url_for('static', filename='js/_libs/cytoscape/build/cytoscape.min.js') }}" 	></script>
-
-  <script src="{{ url_for('static', filename='js/web_alloy/util.js') }}" 			></script> 
-  <script src="{{ url_for('static', filename='js/web_alloy/Model.js') }}" 			></script> 
-  <script src="{{ url_for('static', filename='js/web_alloy/ProjectionNav.js') }}" 		></script>
-  <script src="{{ url_for('static', filename='js/web_alloy/PleaseWait.js') }}" 			></script>
-  
-  <script src="{{ url_for('static', filename='js/web_alloy/LayoutPicker.js') }}"		></script>
-  <script src="{{ url_for('static', filename='js/web_alloy/CyViz.js') }}" 			></script>
-
-  <script src="{{ url_for('static', filename='js/ui_controller.js') }}"      			></script>
+ 
+  <script src="{{ url_for('static', filename='js/require.js') }}" 
+          data-main="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 
 <body>

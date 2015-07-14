@@ -19,7 +19,19 @@ def index():
     """
     This function serves the main page of the Alloy editor
     """
-    return render_template("editor.html")
+    return send_from_directory("static/", "static.html") #render_template("editor.html")
+
+@app.route('/js/<path:path>', methods=["GET","POST"])
+def javascript(path):
+    return send_from_directory("static/js/", path)
+
+@app.route('/style/<path:path>', methods=["GET","POST"])
+def style(path):
+    return send_from_directory("static/style/", path)
+
+@app.route('/image/<path:path>', methods=["GET","POST"])
+def image(path):
+    return send_from_directory("static/image/", path)
 
 @app.route("/execute_off", methods=["GET","POST"])
 def reaction():
@@ -61,7 +73,7 @@ def wrap_error(error):
 # as the main application
 #
 if __name__ == "__main__":
-    getLogger('werkzeug').setLevel(ERROR)
+#    getLogger('werkzeug').setLevel(ERROR)
 
     public = dict(host='0.0.0.0',  port=80)
     local  = dict(host='127.0.0.1',port=5000)

@@ -1,166 +1,190 @@
-/**
- * This class represents a signature (obviously !)
- */
-function Sig (snippet){
-	var self        = this;
-	self.xml        = $(snippet);
+define(['jquery', 'web_alloy/util'], function($, util){
+    var toMap   = util.toMap;
+    var remap   = util.remap;
+    var curry   = util.curry;
+    var create  = util.create;
+    var values  = util.values;
+    var flatten = util.flatten;
+    var keys    = util.keys;
+    
+    /**
+     * This class represents a signature (obviously !)
+     * @param {XML} snippet the xml fragment representing this sig.
+     */
+    function Sig (snippet){
+            var self        = this;
+            self.xml        = $(snippet);
 
-	self.label      = self.xml.attr("label")
-	self.id         = self.xml.attr("ID");
-	self.parentID   = self.xml.attr("parentID");
-	self.builtin    = self.xml.attr("builtin") == "yes"
-	self.private    = self.xml.attr("private") == "yes"
-	self.one 		= self.xml.attr("one") == "yes"
+            self.label      = self.xml.attr("label");
+            self.id         = self.xml.attr("ID");
+            self.parentID   = self.xml.attr("parentID");
+            self.builtin    = self.xml.attr("builtin") === "yes";
+            self.private    = self.xml.attr("private") === "yes";
+            self.one 	    = self.xml.attr("one")     === "yes";
 
-	var atms        = self.xml.find("atom").toArray();
-	self.atoms      = toMap("label", atms.map(curry(create, Atom, self)) );
-}
+            var atms        = self.xml.find("atom").toArray();
+            self.atoms      = toMap("label", atms.map(curry(create, Atom, self)) );
+    };
 
-/**
- * This class represents an atom (obviously !)
- */
-function Atom(parent_sig, snippet){
-	var self        = this;
-	self.xml        = $(snippet);
-	
-	self.label      = self.xml.attr("label");
-	self.signature  = parent_sig;
+    /**
+     * This class represents an atom (obviously !)
+     * @param {Sig} parent_sig the 'type' associated with this atom
+     * @param {XML} snippet the xml fragment representing this object
+     */
+    function Atom(parent_sig, snippet){
+            var self        = this;
+            self.xml        = $(snippet);
 
-	// initialized by the instance only
-	self.markers    = [];
-	self.links      = [];
-}
+            self.label      = self.xml.attr("label");
+            self.signature  = parent_sig;
 
-/**
- * This class models a tuple (one relation line) in a bi-reation
- */
-function Tuple(label, type_id, src, dest){
-  this.label        = label;
-  this.type_id      = type_id;
-  this.source       = src;
-  this.target       = dest;
-}
+            // initialized by the instance only
+            self.markers    = [];
+            self.links      = [];
+    };
 
-/**
- * This class represents an instance 
- */
-function Instance(xml_text){
-	var self        = this;
-	self.xml_text   = xml_text;
-	self.xml        = $( $.parseXML(xml_text) );
-	var sigs        = self.xml.find("sig").toArray();
+    /**
+     * This class models a tuple (one relation line) in a bi-reation
+     * @param {String} label the string labelling this bi-relation
+     * @param {Int} type_id the type associated with the kind of relation embodied
+     *                      by this tuple.
+     * @param {Atom} src the source atom
+     * @param {Atom} dest the destination (target)
+     */
+    function Tuple(label, type_id, src, dest){
+      this.label        = label;
+      this.type_id      = type_id;
+      this.source       = src;
+      this.target       = dest;
+    };
 
-	self.sig        = toMap("id", sigs.map(curry(create, Sig)).filter(function(s){return !s.private}) );
-	self.all_atoms  = toMap("label", flatten( values(self.sig).map(function(s){ return values(s.atoms) }) ));
+    /**
+     * This class represents an instance 
+     * @param {XML} xml_text the xml fragment representing this instance
+     */
+    function Instance(xml_text){
+            var self        = this;
+            self.xml_text   = xml_text;
+            self.xml        = $( $.parseXML(xml_text) );
+            var sigs        = self.xml.find("sig").toArray();
 
-	// Build relation links
-	self.xml.find("field").toArray().forEach(
-		function(field){
-            var $f     = $(field);
-            var type_id= $f.attr("ID");
-            
-            if($f.attr("private") == "yes") return;
+            self.sig        = toMap("id", sigs.map(curry(create, Sig)).filter(function(s){return !s.private;}) );
+            self.all_atoms  = toMap("label", flatten( values(self.sig).map(function(s){ return values(s.atoms); }) ));
 
-            $f.find("tuple").toArray().forEach(
-               function(tuple){
-                  var label  = $f.attr("label");
-                  var endpts = $(tuple).find("atom").toArray();
+            // Build relation links
+            self.xml.find("field").toArray().forEach(
+                    function(field){
+                var $f     = $(field);
+                var type_id= $f.attr("ID");
 
-                  for(var i = 0; i<endpts.length-1; i++){
-                   	var src    = $(endpts[i]).attr("label");
-                    var dst    = $(endpts[i+1]).attr("label");
+                if($f.attr("private") === "yes") return;
 
-                    var src_ref= self.all_atoms[src];
-                    var dst_ref= self.all_atoms[dst];
-                    var tuple_r= new Tuple(label, type_id, src_ref, dst_ref); 
-                    src_ref.links.push(tuple_r);
+                $f.find("tuple").toArray().forEach(
+                   function(tuple){
+                      var label  = $f.attr("label");
+                      var endpts = $(tuple).find("atom").toArray();
 
-                    label = src_ref.label +"."+label
-                  }           
-               });
-	});
+                      for(var i = 0; i<endpts.length-1; i++){
+                            var src    = $(endpts[i]).attr("label");
+                        var dst    = $(endpts[i+1]).attr("label");
 
-	// Handle markers
-	self.xml.find("skolem").toArray().forEach(function(skolem){
-		var label = $(skolem).attr("label");
-        $(skolem).find("atom")
-                 .toArray()
-                 .forEach(function(atom){
-                      self.all_atoms[$(atom).attr("label")].markers.push(label);
-                  });
-	});
+                        var src_ref= self.all_atoms[src];
+                        var dst_ref= self.all_atoms[dst];
+                        var tuple_r= new Tuple(label, type_id, src_ref, dst_ref); 
+                        src_ref.links.push(tuple_r);
 
-	self.all_links = flatten( values(self.all_atoms).map(function(a){return a.links;}) )
+                        label = src_ref.label +"."+label;
+                      }           
+                   });
+            });
 
-	// this field is only present to avoid multiple recomputation of the same info
-	self.l_sig= remap("label", self.sig);
-}
+            // Handle markers
+            self.xml.find("skolem").toArray().forEach(function(skolem){
+                    var label = $(skolem).attr("label");
+            $(skolem).find("atom")
+                     .toArray()
+                     .forEach(function(atom){
+                          self.all_atoms[$(atom).attr("label")].markers.push(label);
+                      });
+            });
 
-/**
- * This PRIVATE method projects the current instance on the given signature and atom
- */
-Instance.prototype.__project = function(sig_id, atomname){
-	var self = this;
-	
-	// sanity checks
-	var sig = self.sig[sig_id];
-	if( sig==undefined) return self;
+            self.all_links = flatten( values(self.all_atoms).map(function(a){return a.links;}) );
 
-	var atom= self.all_atoms[atomname];
-	if( atom==undefined) return self;
+            // this field is only present to avoid multiple recomputation of the same info
+            self.l_sig= remap("label", self.sig);
+    }
 
-	var sigs= values(self.sig);
-	sigs = self.__drop_tree(sigs, sig);
-	self.sig = toMap("id", sigs);
+    /**
+     * This PRIVATE method projects the current instance on the given signature and atom
+     * @param {String} sig_id the signature identifier
+     * @param {String} atomname the name of the Atom on which to project
+     */
+    Instance.prototype.__project = function(sig_id, atomname){
+            var self = this;
 
-	self.all_atoms= toMap("label", flatten( values(self.sig).map(function(s){ return values(s.atoms) }) ));
-	self.all_links= flatten( values(self.all_atoms).map(function(a){return a.links;}) )
-						.filter(function(t){return self.all_atoms[t.target.label]!=undefined});
+            // sanity checks
+            var sig = self.sig[sig_id];
+            if( sig===undefined) return self;
 
-	// add marker telling what projection was made
-	atom.links.forEach(function(link){
-		link.target.markers.push(link.label);
-	});
+            var atom= self.all_atoms[atomname];
+            if( atom===undefined) return self;
 
-	self.l_sig= remap("label", self.sig);
-	return self;
-};
+            var sigs= values(self.sig);
+            sigs = self.__drop_tree(sigs, sig);
+            self.sig = toMap("id", sigs);
 
-Instance.prototype.__drop_tree = function(sigs, s){
-	var children = sigs.filter(function(c){return c.parentID == s.id})
-	sigs.splice(sigs.indexOf(s), 1);
+            self.all_atoms= toMap("label", flatten( values(self.sig).map(function(s){ return values(s.atoms); }) ));
+            self.all_links= flatten( values(self.all_atoms).map(function(a){return a.links;}) )
+                                                    .filter(function(t){return self.all_atoms[t.target.label]!==undefined;});
 
-	children.forEach(curry(Instance.prototype.__drop_tree, sigs));
-	return sigs;
-}
+            // add marker telling what projection was made
+            atom.links.forEach(function(link){
+                    link.target.markers.push(link.label);
+            });
 
-Instance.prototype.atoms_of = function(s){
-	var self     = this;
-	var children = values(self.sig).filter(function(c){return c.parentID == s.id})
-	var ret      = children.reduce(function(a, i){return a.concat(self.atoms_of(i))}, values(s.atoms));
+            self.l_sig= remap("label", self.sig);
+            return self;
+    };
 
-	return ret;
-}
+    Instance.prototype.__drop_tree = function(sigs, s){
+            var children = sigs.filter(function(c){return c.parentID === s.id;});
+            sigs.splice(sigs.indexOf(s), 1);
 
-/**
- * This function returns the same information as this instance but projected on the given
- * signature. 
- * @param on: a map (object) that maps the signatures on which to project with the atom to project on
- */
-Instance.prototype.projected = function(on){
-	var self = this;
-	var inst = new Instance(self.xml_text);
-	var ret  = keys(on).reduce(function(instance, sig){
-		return instance.__project(sig, on[sig]);
-	}, inst);
+            children.forEach(curry(Instance.prototype.__drop_tree, sigs));
+            return sigs;
+    };
 
-	return ret;
-}
+    Instance.prototype.atoms_of = function(s){
+            var self     = this;
+            var children = values(self.sig).filter(function(c){return c.parentID === s.id;});
+            var ret      = children.reduce(function(a, i){return a.concat(self.atoms_of(i));}, values(s.atoms));
 
-/**
- * Returns the 'root' signatures (those that are direct children of 'univ')
- */
-Instance.prototype.root_signatures = function(){
-  var univ_id   = this.l_sig["univ"].id;
-  return values(this.sig).filter(function(s){return s.parentID == univ_id})
-}
+            return ret;
+    };
+
+    /**
+     * This function returns the same information as this instance but projected on the given
+     * signature. 
+     * @param {Map} on a map (object) that maps the signatures on which to project with the atom to project on
+     */
+    Instance.prototype.projected = function(on){
+            var self = this;
+            var inst = new Instance(self.xml_text);
+            var ret  = keys(on).reduce(function(instance, sig){
+                    return instance.__project(sig, on[sig]);
+            }, inst);
+
+            return ret;
+    };
+
+    /**
+     * Returns the 'root' signatures (those that are direct children of 'univ')
+     */
+    Instance.prototype.root_signatures = function(){
+      var univ_id   = this.l_sig["univ"].id;
+      return values(this.sig).filter(function(s){return s.parentID === univ_id;});
+    };
+
+    // Other classes should be considered private
+    return Instance;
+});
