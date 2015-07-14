@@ -8,9 +8,15 @@ define(['qunit'], function(QUnit){
     }
     
     Runner.prototype.run = function(Lib){
-        var tests = Object.keys(Lib);
+        var suite = Lib.SuiteInfo;
+        QUnit.module(suite.title, {
+            beforeEach: suite.setup,
+            afterEach : suite.tearDown
+        });
+        
+        var tests = Object.keys(Lib.TestCases);
         tests.forEach(function(test){
-            QUnit.test(test, Lib[test]);
+            QUnit.test(test, Lib.TestCases[test]);
         });
     };
     
