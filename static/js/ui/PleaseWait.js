@@ -6,7 +6,7 @@ define(['jquery'], function($){
     }
 
     PleaseWait.prototype.show = function(){
-            $("body").append(this.tag);
+            $(document.body).append(this.tag);
     };
 
     PleaseWait.prototype.hide = function(){

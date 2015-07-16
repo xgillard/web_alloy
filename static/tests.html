@@ -10,7 +10,7 @@
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
   <script>
-      require(['tests/Runner', 'tests/alloy/Instance'], 
+      require(['tests/Runner', 'tests/alloy/Instance', "tests/ui/PleaseWait"], 
       function(Runner){
           var args = Array.prototype.slice.call(arguments, 1);
           new Runner(args);
