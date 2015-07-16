@@ -1,4 +1,8 @@
-define(['jquery','util/_', 'alloy/Instance', "tests/sample_instance" ],
+/*
+ * This test suite is definitely too weak and should be expanded but at least it
+ * gives me some kind of confidence regarding non-regression of the code.
+ */
+define(['jquery','util/_', 'alloy/Instance', "tests/alloy/sample_instance" ],
 function($, _, Instance, sample){
   
    function json(obj){
@@ -7,7 +11,7 @@ function($, _, Instance, sample){
    
    return {
       SuiteInfo : {
-          title   : "Testing alloy/Instance module",
+          title   : "alloy/Instance",
           setup   : _.noop,
           tearDown: _.noop
       },
