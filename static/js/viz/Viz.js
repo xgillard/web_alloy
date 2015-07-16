@@ -1,9 +1,8 @@
 define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     
-    function Viz(selector){
-            var self = this;
-            self.selector    = selector;
-            self.displayed   = null;
+    // TODO: un-hardcode width and height
+    function Viz(){
+      this.tag   = $("<div class='viz' style='width: 600px; height: 400px' />");
     }
 
     Viz.prototype.LAYOUTS= [
@@ -56,152 +55,163 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                                             .selector("edge.dampened").css({
                                                     "opacity" : .1
                                             });
-
-    Viz.prototype.display = function(instance, layout, remember){
-            var self 		 = this;
-            var remembered   = remember ? self.currentPositions() : {} ;
-
-            self.displayed   = $(this.selector).cytoscape({
-                    layout: {
-                            name: layout,
-                            filt: true,
-                            padding: 70
-                    },
-                    elements: self._instanceToGraph(instance, remembered),
-                    style: self.STYLESHEET,
-                    ready: function(e){
-                            var cy  = this;
-                            self.cy = cy;
-                            cy.elements().forEach(function(e){e.unlock();});
-                            cy.on("mouseover", 'edge', util.curry(self._highlightEdge, cy));
-                            cy.on("mouseover", 'node', util.curry(self._highlightNode, cy));
-                            cy.on("mouseout", util.curry(self._undoHighlight, cy));
-                    }
-            });
+    
+    Viz.prototype.appendTo = function(target){
+      return this.tag.appendTo(target);
     };
-
-    Viz.prototype._instanceToGraph = function(instance, remembered) {
-            var self = this;
-            self._ensureDisplaySthg(instance);
-            return {
-                    nodes: util.values(instance.all_atoms).map(util.curry(self._atomToNode, remembered)),
-                    edges: instance.all_links.map(self._relToEdge)
-            };
+    
+    Viz.prototype.remove = function(){
+      this.tag.remove();
     };
+    
+    Viz.prototype.update = function(instance, layout, remember){
+      var self 		 = this;
+      var remembered   = remember ? currentPositions(self) : {} ;
 
-    Viz.prototype._atomToNode = function(remembered, atom) {
-            var taint= Viz.prototype._idToColor(parseInt(atom.signature.id));
-            var form = Viz.prototype._idToShape(parseInt(atom.signature.id));
-            var descr= atom.label+Viz.prototype._markerText(atom);
-            var size = descr.length;
-            var ret  =  {
-                    data: {
-                            id   : atom.label,
-                            label: descr,
-                            color: taint,
-                            shape: form,
-                            width: 50,
-                            height:50
-                    },
-                    grabbable: true,
-                    selectable: true
-            };
-
-            var old = remembered[atom.label];
-            if(old !== undefined && old !== null){
-                    ret.position = old.position;
-                    ret.locked   = true;
-            } 
-
-            return ret;
-    };
-
-    Viz.prototype._relToEdge = function(rel) {
-            return {
-                    data: {
-                            id: rel.source.label+"_"+rel.label+"_"+rel.target.label,
-                            label : rel.label,
-                            source: rel.source.label,
-                            target: rel.target.label,
-                            color : Viz.prototype._idToColor(parseInt(rel.type_id))
-                    },
-                    grabbable: true,
-                    selectable:true
-            };
-    };
-
-    Viz.prototype._markerText = function(atom){
-            var mark= "";
-            if(atom.markers.length>0){
-                    mark += ': (';
-                    for(var i = 0; i<atom.markers.length; i++){
-                        mark += atom.markers[i];
-                        if(i+1<atom.markers.length) mark += ", ";
-                    }
-                    mark += ')';
+      this.tag.cytoscape({
+            layout: {
+                    name: layout,
+                    fit: true,
+                    padding: 70
+            },
+            elements: instanceToGraph(instance, remembered),
+            style: self.STYLESHEET,
+            ready: function(e){
+                    var cy  = this;
+                    self.cy = cy;
+                    cy.elements().forEach(function(e){e.unlock();});
+                    cy.on("mouseover", 'edge', _.partial(highlightEdge, cy));
+                    cy.on("mouseover", 'node', _.partial(highlightNode, cy));
+                    cy.on("mouseout", _.partial(undoHighlight, cy));
             }
-            return mark;
+        });
     };
 
-    Viz.prototype._hash = function(id){
-            return id * 41 % 97;
+    function instanceToGraph(instance, remembered) {
+        ensureDisplaySthg(instance);
+        return {
+            nodes: _.map(instance.atoms,  _.partial(atomToNode, instance, remembered)),
+            edges: _.map(instance.tuples, tupleToEdge)
+        };
     };
 
-    Viz.prototype._idToColor = function(id){
-            var colors = Viz.prototype.COLORS;
-            var idx    = Viz.prototype._hash(id) % colors.length;
-            return colors[idx];
+    function ensureDisplaySthg(instance){
+        if(_.isEmpty(instance.atoms)){
+            instance.atoms.push({
+                type_id: -1,
+                label  : "Due to your settings, every atom is hidden"
+            });
+        }
     };
 
-    Viz.prototype._idToShape = function(id){
-            var shapes = Viz.prototype.SHAPES;
-            var idx    = Viz.prototype._hash(id) % shapes.length;
-            return shapes[idx];
+    function atomToNode(instance, remembered, atom) {
+        var taint= idToColor(parseInt(atom.type_id));
+        var form = idToShape(parseInt(atom.type_id));
+        var descr= atom.label+markerText(instance, atom);
+        var ret  =  {
+                data: {
+                    id   : atom.label,
+                    label: descr,
+                    color: taint,
+                    shape: form,
+                    width: 50,
+                    height:50
+                },
+                grabbable: true,
+                selectable: true
+        };
+
+        var old = remembered[atom.label];
+        if(old !== undefined && old !== null){
+            ret.position = old.position;
+            ret.locked   = true;
+        } 
+
+        return ret;
     };
 
-    Viz.prototype._ensureDisplaySthg = function(instance){
-            if(util.values(instance.all_atoms).length === 0){
-                    instance.all_atoms["ShowSomething"] = {
-                            label: "Due to your settings, every atom is hidden",
-                            signature: {id: 0},
-                            markers: [],
-                            links: []
-                    };
+    function tupleToEdge(tuple) {
+        return {
+            data: {
+                id    : tuple.src+"_"+tuple.label+"_"+tuple.dst,
+                label : tuple.label,
+                source: tuple.src,
+                target: tuple.dst,
+                color : idToColor(parseInt(tuple.type_id))
+            },
+            grabbable: true,
+            selectable:true
+        };
+    };
+
+    function markerText(instance, atom){
+        var mark   = "";
+        var markers= instance.markersOf(atom);
+        if(markers.length>0){
+            mark += ': (';
+            for(var i = 0; i<markers.length; i++){
+                mark += markers[i];
+                if(i+1<markers.length) mark += ", ";
             }
+            mark += ')';
+        }
+        return mark;
     };
 
-    Viz.prototype._highlightEdge = function(cy, evt){
-            var edge    = evt.cyTarget;
-            cy.elements().forEach(function(e){
-                    if(!(e === edge || e === edge.source() || e === edge.target())) {
-                            e.addClass("dampened");	
-                    }
-            });
+    function hash(id){
+        return id * 41 % 97;
     };
 
-    Viz.prototype._highlightNode = function(cy, evt){
-            var node = evt.cyTarget;
-            cy.elements().difference(node.closedNeighborhood()).forEach(function(e){
-                    e.addClass("dampened");
-            });
+    function idToColor(id){
+        var colors = Viz.prototype.COLORS;
+        var idx    = hash(id) % colors.length;
+        return colors[idx];
     };
 
-    Viz.prototype._undoHighlight = function(cy, evt){
-            cy.elements().forEach(function(e){e.removeClass("dampened");});
+    function idToShape(id){
+        var shapes = Viz.prototype.SHAPES;
+        var idx    = hash(id) % shapes.length;
+        return shapes[idx];
     };
 
-    Viz.prototype.currentPositions = function(){
-            if(this.cy === undefined || this.cy === null) return {};
-            var elts = this.cy.elements();
-            return util.toMap("id", elts
-                      .filter(function(i, e){return e.isNode();})
-                      .map(function(e){
-                            return { 
-                                   id: 		e.data().id,
-                                   position: 	e.position()
-                            };
-                      })
-                   );
+    function highlightEdge(cy, evt){
+        var edge    = evt.cyTarget;
+        cy.elements().forEach(function(e){
+            if(!(e === edge || e === edge.source() || e === edge.target())) {
+                e.addClass("dampened");	
+            }
+        });
+    };
+
+    function highlightNode(cy, evt){
+        var node = evt.cyTarget;
+        cy.elements().difference(node.closedNeighborhood()).forEach(function(e){
+            e.addClass("dampened");
+        });
+    };
+
+    function undoHighlight(cy, evt){
+        cy.elements().forEach(function(e){
+            e.removeClass("dampened");
+        });
+    };
+
+    function currentPositions(self){
+        if(self.cy === undefined || self.cy === null) return {};
+        return _.indexBy( _.map(nodes(self), nodeToMemo), 'id' );
+    };
+    
+    function nodes(self){
+        return _.filter(self.cy.elements(), function(e){
+           return e.isNode(); 
+        });
+    };
+    
+    function nodeToMemo(node){
+        return {
+          id      : node.data().id,
+          position: node.position()
+        };
     };
     
     return Viz;
