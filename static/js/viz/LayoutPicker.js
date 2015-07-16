@@ -1,4 +1,4 @@
-define(['jquery', 'web_alloy/Viz'], function($, Viz){
+define(['jquery', 'alloy/Viz'], function($, Viz){
     
     function LayoutPicker(id, callback){
             var self     = this;

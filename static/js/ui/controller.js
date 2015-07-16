@@ -2,8 +2,8 @@
  * This file contains the 'control' logic of the Alloy web-UI.
  */
 define(['jquery', 'ace',
-        "web_alloy/PleaseWait", 'web_alloy/LayoutPicker', "web_alloy/Model",
-        'web_alloy/Viz', 'web_alloy/ProjectionNav'], 
+        "alloy/PleaseWait", 'alloy/LayoutPicker', "alloy/Model",
+        'alloy/Viz', 'alloy/ProjectionNav'], 
 function($, ace, PleaseWait, LayoutPicker, Model, Viz, ProjectionNav) {
     // Forces JS to behave in strict mode
     "use strict";

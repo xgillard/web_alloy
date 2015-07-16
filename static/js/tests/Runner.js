@@ -1,22 +1,15 @@
-define(['qunit'], function(QUnit){
+define(['qunit', 'jquery', 'underscore'], function(QUnit, $, _){
     
     function Runner(Libs){
         var self = this;
         Libs.forEach(function(t){self.run(t);});
-        
         QUnit.start();
     }
     
     Runner.prototype.run = function(Lib){
-        var suite = Lib.SuiteInfo;
-        QUnit.module(suite.title, {
-            beforeEach: suite.setup,
-            afterEach : suite.tearDown
-        });
-        
-        var tests = Object.keys(Lib.TestCases);
+        var tests = _.keys(Lib);
         tests.forEach(function(test){
-            QUnit.test(test, Lib.TestCases[test]);
+            QUnit.test(test, Lib[test]);
         });
     };
     

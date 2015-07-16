@@ -2,7 +2,7 @@
  * This file contains the logic required to provide the 'navigation' logic
  * related to the different 'projections' 
  */
-define(['jquery', "web_alloy/util"], function($, util){
+define(['jquery', "alloy/util"], function($, util){
     function ProjectionNav(instance, boxes_location, nav_location, callback_function){
            this.instance = instance;
            this.boxes    = boxes_location;		// selector: where to put the checkboxes
