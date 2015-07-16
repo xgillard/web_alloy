@@ -53,6 +53,10 @@ define(['jquery', 'util/_', 'ui/Dropdown', 'viz/Viz'], function($,_, Dropdown, V
                 var picker = new Dropdown([1, 2, 3], callback);
                 picker.val(2);
                 assert.equal(called, true);
+            },
+            options_returns_a_copy_of_valueset: function(assert){
+                var picker = new Dropdown([1, 2, 3], _.noop);
+                assert.equal(json(picker.options()), json([1,2,3]));
             }
         }
    };

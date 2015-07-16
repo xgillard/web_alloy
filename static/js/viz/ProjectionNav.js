@@ -3,6 +3,9 @@
  * related to the different 'projections' 
  */
 define(['jquery', "util/_"], function($, _){
+    function ProjectionNav(sig, atoms, callback){
+        
+    }
     function ProjectionNav(instance, boxes_location, nav_location, callback_function){
            this.instance = instance;
            this.boxes    = boxes_location;		// selector: where to put the checkboxes

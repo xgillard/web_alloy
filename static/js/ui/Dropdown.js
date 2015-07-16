@@ -1,16 +1,22 @@
 define(['jquery', 'util/_', 'viz/Viz'], function($, _){
     
     function Dropdown(options, callback){
-        this.dropdown= dropdown(options, callback);
+        this._opts   = options;
+        this.dropdown= dropdown(options, _.partial(call_with_my_val, this, callback));
     };
     
-    Dropdown.prototype.appendTo = function(selector){
-        $(selector).append(this.dropdown);
+    Dropdown.prototype.options  = function(){
+        return [].concat(this._opts);  
+    };
+    
+    Dropdown.prototype.appendTo = function(target){
+        this.dropdown.appendTo(target);
     };
     
     Dropdown.prototype.remove = function(){
         $(this.dropdown).remove();
     };
+    
     Dropdown.prototype.val = function(){
         function get(){
             return this.dropdown.val();
@@ -33,6 +39,10 @@ define(['jquery', 'util/_', 'viz/Viz'], function($, _){
         });
         dropdown.on("change", callback);
         return dropdown;
+    };
+    
+    function call_with_my_val(self, fn){
+        return fn(self.val());
     };
     
     return Dropdown;
