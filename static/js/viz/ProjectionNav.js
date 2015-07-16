@@ -2,7 +2,7 @@
  * This file contains the logic required to provide the 'navigation' logic
  * related to the different 'projections' 
  */
-define(['jquery', "alloy/util"], function($, util){
+define(['jquery', "util/_"], function($, _){
     function ProjectionNav(instance, boxes_location, nav_location, callback_function){
            this.instance = instance;
            this.boxes    = boxes_location;		// selector: where to put the checkboxes
@@ -54,7 +54,7 @@ define(['jquery', "alloy/util"], function($, util){
                     var label= s.label;
                     var text = "<label><input type='checkbox' value='"+label+"' /> <span>"+label+"</span>";
                     var node = $(text);
-        node.on("change", util.curry(self._project, self, label));
+        node.on("change", _.partial(self._project, self, label));
         return node;
             });
     };
@@ -73,7 +73,7 @@ define(['jquery', "alloy/util"], function($, util){
             var block   = $("<span name='"+sig+"'><select name='"+sig+"' class='atom'>"+options+"</select></span>");
             var select  = block.find("select");
 
-            select.on("change", util.curry(self.callback, self, true));
+            select.on("change", _.partial(self.callback, self, true));
 
         // button : << 
         $("<button>&lt;&lt</button>").click(function(){

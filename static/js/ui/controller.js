@@ -2,8 +2,8 @@
  * This file contains the 'control' logic of the Alloy web-UI.
  */
 define(['jquery', 'ace',
-        "alloy/PleaseWait", 'alloy/LayoutPicker', "alloy/Model",
-        'alloy/Viz', 'alloy/ProjectionNav'], 
+        "ui/PleaseWait", 'ui/Dropdown', "alloy/Instance",
+        'viz/Viz', 'viz/ProjectionNav'], 
 function($, ace, PleaseWait, LayoutPicker, Model, Viz, ProjectionNav) {
     // Forces JS to behave in strict mode
     "use strict";
@@ -42,7 +42,7 @@ function($, ace, PleaseWait, LayoutPicker, Model, Viz, ProjectionNav) {
 
       please_wait.show();
 
-      $.post("/target", {content: text}, function(rsp_data){
+      $.post("/execute", {content: text}, function(rsp_data){
             please_wait.hide();
 
             var xml   = $( $.parseXML(rsp_data) );

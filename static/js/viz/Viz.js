@@ -1,4 +1,4 @@
-define(['jquery', 'cytoscape', 'alloy/util'], function($, cytoscape, util){
+define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     
     function Viz(selector){
             var self = this;
