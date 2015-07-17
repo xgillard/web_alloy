@@ -31,7 +31,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     Viz.prototype.remove = function(){
       this.tag.remove();
     };
-    Viz.prototype.currentPositions = function(){
+    Viz.prototype.positions = function(){
       if(this.cy === undefined || this.cy === null) return {};
       return _.indexBy( _.map(nodes(this), nodeToMemo), 'id' );
     };
