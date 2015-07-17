@@ -60,7 +60,7 @@ function($, _, ace, Instance, PleaseWait, Conf, Viz) {
               if(found){
                 success(rsp_data, cfg, viz);
               } else {
-                failure(rsp_data);
+                failure(xml);
               }
           }
         );
@@ -73,7 +73,7 @@ function($, _, ace, Instance, PleaseWait, Conf, Viz) {
       viz.appendTo($("#outcome"));
     };
     
-    function failure(){
+    function failure(xml){
       $("#result").append("div").attr("class", "error").text(xml.text());
     };
 
