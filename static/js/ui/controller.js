@@ -74,7 +74,7 @@ function($, _, ace, Instance, PleaseWait, Conf, Viz) {
     };
     
     function failure(xml){
-      var err = "<div class='error'>"+xml.text+"</div>";
+      var err = "<div class='error'>"+xml.text()+"</div>";
       $("#outcome").append(err);
     };
 
