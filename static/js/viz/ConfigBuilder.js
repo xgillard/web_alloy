@@ -30,8 +30,9 @@ define(['jquery', 'util/_'], function($,_){
         return self._instance;
       };
       function set(x){
-        self._instance = x;
-        self._reset_pos= true;
+        self._instance  = x;
+        self._projection= {};
+        self._reset_pos = true;
       };
       
       var fn = arguments.length === 0 ? get : set;

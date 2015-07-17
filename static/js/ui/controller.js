@@ -71,7 +71,6 @@ function($, _, ace, Instance, PleaseWait, Conf, Viz) {
       cfg.appendTo($("#outcome"));
       cfg.instance(instance);
       viz.appendTo($("#outcome"));
-      viz.render({instance: instance});
     };
     
     function failure(){
