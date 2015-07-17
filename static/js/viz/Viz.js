@@ -1,18 +1,18 @@
 define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     
     // TODO: un-hardcode width and height
-    function Viz(){
-      this.tag   = $("<div class='viz' style='width: 600px; height: 400px' />");
+    function Viz(style){
+      this.tag   = $("<div class='viz' />").css(style);
     }
 
     Viz.prototype.LAYOUTS= [
-                    "circle"      , "grid"        , "random",
-                    "concentric"  , "breadthfirst", "cose" ];
+                    "circle"        , "grid"        , "random",
+                    "concentric"    , "breadthfirst", "cose" ];
 
     Viz.prototype.SHAPES = [
-                    'roundrectangle','rhomboid'  , 'ellipse', 
-                    'triangle'      , 'pentagon' , 'hexagon',
-                    'heptagon'      , 'octagon'  , 'star'   ,
+                    'roundrectangle', 'rhomboid'    , 'ellipse', 
+                    'triangle'      , 'pentagon'    , 'hexagon',
+                    'heptagon'      , 'octagon'     , 'star'   ,
                     'diamond'       , 'vee' ];
 
     Viz.prototype.COLORS = [
@@ -22,39 +22,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
                     '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
 
-    Viz.prototype.STYLESHEET = cytoscape.stylesheet()
-                                            .selector('node').css({
-                                                    'content'         : 'data(label)',
-                                                    'text-valign'     : 'center',
-                                                    'shape'           : 'data(shape)',
-                                                    'background-color': 'data(color)',
-                                                    'width'           : 'data(width)',
-                                                    'height'          : 'data(height)',
-                                                    'color'           : 'white',
-                                                    'text-outline-width': 2,
-                                            'text-outline-color': '#777',
-                                            })
-                                            .selector('edge').css({
-                                                    'content'         : 'data(label)',
-                                                    'color'			  : 'white',	
-                                                    'width'			  : 2,
-                                                    'curve-style'     : 'bezier',
-                                                    'line-color'      : 'data(color)',
-                                                    'target-arrow-shape': 'triangle-backcurve',
-                                                    'target-arrow-fill': 'filled',
-                                                    'target-arrow-color': 'data(color)',
-                                                    'edge-text-rotation': 'autorotate',
-                                                    'text-halign'     : 'center',
-                                                    'text-valign'     : 'center',
-                                                    'text-outline-width': 2,
-                                            'text-outline-color': 'data(color)'
-                                            })
-                                            .selector("node.dampened").css({
-                                                    "opacity" : .4
-                                            })
-                                            .selector("edge.dampened").css({
-                                                    "opacity" : .1
-                                            });
+    Viz.prototype.STYLESHEET = dynamicstyle(edgestyle(nodestyle(cytoscape.stylesheet())));
     
     Viz.prototype.appendTo = function(target){
       return this.tag.appendTo(target);
@@ -63,18 +31,19 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     Viz.prototype.remove = function(){
       this.tag.remove();
     };
-    
-    Viz.prototype.update = function(instance, layout, remember){
-      var self 		 = this;
-      var remembered   = remember ? currentPositions(self) : {} ;
-
+    Viz.prototype.currentPositions = function(){
+      if(this.cy === undefined || this.cy === null) return {};
+      return _.indexBy( _.map(nodes(this), nodeToMemo), 'id' );
+    };
+    Viz.prototype.render = function(config){
+      var self = this;
       this.tag.cytoscape({
             layout: {
-                    name: layout,
+                    name: config.layout || 'circle',
                     fit: true,
                     padding: 70
             },
-            elements: instanceToGraph(instance, remembered),
+            elements: mkGraph(config),
             style: self.STYLESHEET,
             ready: function(e){
                     var cy  = this;
@@ -87,10 +56,12 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         });
     };
 
-    function instanceToGraph(instance, remembered) {
+    function mkGraph(config) {
+        var instance  = config.instance;
+        var remembered= config.positions || {};
         ensureDisplaySthg(instance);
         return {
-            nodes: _.map(instance.atoms,  _.partial(atomToNode, instance, remembered)),
+            nodes: _.map(instance.atoms,  _.partial(atomToNode, config)),
             edges: _.map(instance.tuples, tupleToEdge)
         };
     };
@@ -104,10 +75,10 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         }
     };
 
-    function atomToNode(instance, remembered, atom) {
+    function atomToNode(config, atom) {
         var taint= idToColor(parseInt(atom.type_id));
         var form = idToShape(parseInt(atom.type_id));
-        var descr= atom.label+markerText(instance, atom);
+        var descr= atom.label+markerText(config.instance, atom);
         var ret  =  {
                 data: {
                     id   : atom.label,
@@ -120,8 +91,8 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                 grabbable: true,
                 selectable: true
         };
-
-        var old = remembered[atom.label];
+        var rem = config.positions || {};
+        var old = rem[atom.label];
         if(old !== undefined && old !== null){
             ret.position = old.position;
             ret.locked   = true;
@@ -195,11 +166,6 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
             e.removeClass("dampened");
         });
     };
-
-    function currentPositions(self){
-        if(self.cy === undefined || self.cy === null) return {};
-        return _.indexBy( _.map(nodes(self), nodeToMemo), 'id' );
-    };
     
     function nodes(self){
         return _.filter(self.cy.elements(), function(e){
@@ -212,6 +178,48 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
           id      : node.data().id,
           position: node.position()
         };
+    };
+    
+    function nodestyle(stylesheet){
+        stylesheet.selector('node')
+                  .css({
+                    'content'           : 'data(label)',
+                    'text-valign'       : 'center',
+                    'shape'             : 'data(shape)',
+                    'background-color'  : 'data(color)',
+                    'width'             : 'data(width)',
+                    'height'            : 'data(height)',
+                    'color'             : 'white',
+                    'text-outline-width': 2,
+                    'text-outline-color': '#777'
+                    });
+        return stylesheet;
+    };
+    
+    function edgestyle(stylesheet){
+        stylesheet.selector('edge')
+                  .css({
+                    'content'           : 'data(label)',
+                    'color'             : 'white',	
+                    'width'             : 2,
+                    'curve-style'       : 'bezier',
+                    'line-color'        : 'data(color)',
+                    'target-arrow-shape': 'triangle-backcurve',
+                    'target-arrow-fill' : 'filled',
+                    'target-arrow-color': 'data(color)',
+                    'edge-text-rotation': 'autorotate',
+                    'text-halign'       : 'center',
+                    'text-valign'       : 'center',
+                    'text-outline-width': 2,
+                    'text-outline-color': 'data(color)'
+                    });
+        return stylesheet;
+    };
+    
+    function dynamicstyle(stylesheet){
+        stylesheet.selector("node.dampened").css({ "opacity" : .4 })
+                  .selector("edge.dampened").css({ "opacity" : .1 });
+        return stylesheet;
     };
     
     return Viz;

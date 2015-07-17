@@ -7,7 +7,6 @@ function($, _, Viz, Instance, sample){
     };
    
     function target(){
-      //return $(document.body);
       return $("#qunit-fixture");
     };
     
@@ -17,19 +16,45 @@ function($, _, Viz, Instance, sample){
     
     return {
         SuiteInfo: {
-           title: 'viz/Viz'
+           title: 'viz/Viz',
+           setup: function(){target().empty();}
         },
         TestCases: {
-           test_it_works: function(assert){
+          appendTo_makes_the_widget_visible: function(assert){
+            var instance = new Instance(sample);
+            var tested   = new Viz({width:'300px', height:'300px'});
+            tested.appendTo(target());
+            assert.ok(isShown(".viz"));
+          },
+          remove_hides_the_widget: function(assert){
+            var instance = new Instance(sample);
+            var tested   = new Viz({width:'300px', height:'300px'});
+            tested.appendTo(target());
+            tested.remove();
+            assert.ok(!isShown(".viz"));
+          }, 
+          render_accepts_config_where_only_instance_is_present: function(assert){
                var instance = new Instance(sample);
-               var tested   = new Viz();
-               
-               //target().empty();
+               var tested   = new Viz({width:'300px', height:'300px'});
                tested.appendTo(target());
-               tested.update(instance, 'circle', false);
-               
+               tested.render({instance: instance});
                assert.ok("ok");
-           } 
+          }, 
+          render_accepts_config_with_layout: function(assert){
+               var instance = new Instance(sample);
+               var tested   = new Viz({width:'300px', height:'300px'});
+               tested.appendTo(target());
+               tested.render({instance: instance, layout: 'grid'});
+               assert.ok("ok");
+          },
+          render_accepts_config_with_positions: function(assert){
+               var instance = new Instance(sample);
+               var tested   = new Viz({width:'300px', height:'300px'});
+               tested.appendTo(target());
+               //tested.appendTo($(document.body));
+               tested.render({instance: instance, positions: {'Man$0': {position: {x: 0, y: 0}}}});
+               assert.ok("ok");
+          }
         }
     };
     
