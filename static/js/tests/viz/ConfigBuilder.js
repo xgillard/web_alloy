@@ -91,17 +91,26 @@ define(
            tested.projection(MOCK_PROJECTION);
            assert.equal(json(tested.projection()), json(MOCK_PROJECTION));  
          },
-         projection_keeps_positions: function(assert){
+         projection_keeps_positions_iff_no_new_sig: function(assert){
            var tested  = new Builder(new MockViz());
            tested._instance = new MockInstance();
+           tested._projection = MOCK_PROJECTION;
            tested.projection(MOCK_PROJECTION);
-           
+            
            var expected = {
                instance: MOCK_PROJECTED,
                layout: 'circle',
                positions: MOCK_POSITIONS
            };
-           assert.equal(json(tested.build()), json(expected));  
+           assert.equal(json(tested.build()), json(expected)); 
+           
+           tested.projection({});
+           expected = {
+               instance: MOCK_PROJECTED,
+               layout: 'circle',
+               positions: {}
+           };
+           assert.equal(json(tested.build()), json(expected)); 
          },
          // BUILD
          build_throws_exception_when_no_instance_defined: function(assert){
