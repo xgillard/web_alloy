@@ -1,91 +1,81 @@
 /*
  * This file contains the 'control' logic of the Alloy web-UI.
  */
-define(['jquery', 'ace',
-        "ui/PleaseWait", 'ui/Dropdown', "alloy/Instance",
-        'viz/Viz', 'viz/ProjectionNav'], 
-function($, ace, PleaseWait, LayoutPicker, Model, Viz, ProjectionNav) {
+define(['jquery', 'util/_', 'ace',
+        "alloy/Instance",
+        "ui/PleaseWait",
+        'viz/Viz'], 
+function($, _, ace, Instance, PleaseWait, Viz) {
     // Forces JS to behave in strict mode
     "use strict";
     
-    var please_wait   = new PleaseWait("The analyzer is processing your model");
-    var layout_picker = null;
-    var visualizer    = new Viz("#result");
+    // deferred elsewhere
     var remember_pos  = false; // need to remember positions ?
     
-    var init          = function() {
+    var please_wait   = new PleaseWait("The analyzer is processing your model");
+    function init() {
         // Setup the event handlers for the different options
         $(document).ready(function(){
-          boot_editor();
-          $("#alloy-logo").click(function(){open_in_tab('http://alloy.mit.edu/alloy/index.html');});
-          $("#mit-logo").click(function(){open_in_tab('http://www.mit.edu');});
-          $("#execute").click(execute);
+          $("#alloy-logo").click(_.partial(open_in_tab, 'http://alloy.mit.edu/alloy/index.html'));
+          $("#mit-logo").click(_.partial(open_in_tab, 'http://www.mit.edu'));
           $("#clear").click(clear);
-          layout_picker = new LayoutPicker("layout", function(inst){ remember_pos = false; display_result(inst); });
-          $("#outcome").prepend(layout_picker.select);
+          
+          var out    = $("#outcome");
+          var editor = mkEdit();
+          
+          var viz    = new Viz({width: out.innerWidth(), height: out.innerHeight()});
+
+          $("#execute").click(_.partial(execute, editor, viz));
         });
     };
 
     // This function initializes the editor to use the ACE editor with
     // Alloy highligher
-    function boot_editor(){
+    function mkEdit(){
       var editor = ace.edit("editor");
       editor.setTheme("ace/theme/chrome");
       editor.getSession().setMode("ace/mode/alloy");
+      return editor;
     }
 
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
-    function execute(){
-      var editor = ace.edit("editor");
+    function execute(editor, viz){
       var text   = editor.getSession().getValue();
 
       please_wait.show();
 
-      $.post("/execute", {content: text}, function(rsp_data){
-            please_wait.hide();
-
-            var xml   = $( $.parseXML(rsp_data) );
-            var found = xml.find("success").length > 0;
-            if(found){
-              success(new Model(rsp_data));
-            } else {
+      $.post("/execute", 
+            {content: text}, 
+            function(rsp_data){
+              please_wait.hide();
               clear();
-              $("#result").append("div").attr("class", "error").text(xml.text());
-            }
+              
+              var xml   = $( $.parseXML(rsp_data) );
+              var found = xml.find("success").length > 0;
+              if(found){
+                success(rsp_data, viz);
+              } else {
+                failure(rsp_data);
+              }
           }
         );
     }
 
-    function success(instance){
-
-      layout_picker.instance = instance;
-      new ProjectionNav(instance, "#projection", "#atom_nav", 
-          function(inst, rem){ 
-              remember_pos = rem;
-              display_result(inst);
-          }
-      );
-    }
-
-    // Just show the result
-    function display_result(instance){
-      var layout= $("#layout").val();
-      var out   = $("#result");
-      out.empty();
-      layout_picker.instance = instance;
-
-      visualizer.display(instance, layout, remember_pos);
-      remember_pos = true;
-    }
+    function success(rsp, viz){
+      var instance = new Instance(rsp);
+      viz.appendTo($("#outcome"));
+      viz.render({instance: instance});
+    };
+    
+    function failure(){
+      $("#result").append("div").attr("class", "error").text(xml.text());
+    };
 
     // This function empties the log
     function clear(){
-      remember_pos           = false;
-      layout_picker.instance = null;
-      $("#projection").empty();
-      $("#result").empty();
-    }
+      $("#outcome").empty();
+    };
 
     /**
      * CREDITS: 
