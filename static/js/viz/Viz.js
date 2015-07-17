@@ -2,6 +2,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     
     // TODO: un-hardcode width and height
     function Viz(style){
+      this.style = style;
       this.tag   = $("<div class='viz' />").css(style);
     }
 
@@ -37,8 +38,12 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     };
     Viz.prototype.render = function(config){
       var self = this;
+      // replace the graph zone
+      this.tag.empty();
+      var graph = $("<div class='viz_graph'></div>").css(this.style);
+      this.tag.append(graph);
       
-      this.tag.cytoscape({
+      graph.cytoscape({
             layout: {
                     name: config.layout || 'circle',
                     fit: true,
@@ -70,7 +75,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     function ensureDisplaySthg(instance){
         if(_.isEmpty(instance.atoms)){
             instance.atoms.push({
-                type_id: -1,
+                type_id: 0,
                 label  : "Due to your settings, every atom is hidden"
             });
         }

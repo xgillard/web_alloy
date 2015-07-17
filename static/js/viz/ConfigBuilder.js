@@ -46,7 +46,7 @@ define(['jquery', 'util/_'], function($,_){
       };
       function set(x){
         if(self._projection === undefined) self._reset_pos = true;
-        if(_.keys(x) > _.keys(self._projection)) self._reset_pos = true;
+        if(_.keys(x).length !== _.keys(self._projection).length) self._reset_pos = true;
         self._projection = x;
       };
       
