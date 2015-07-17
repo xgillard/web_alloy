@@ -16,7 +16,8 @@ define(
     ConfigView.prototype.instance = function(inst){
       if(inst === this.builder.instance()) return;
       this.builder.instance(inst);
-      this.projection = inst === undefined ? undefined : new Projector(inst, _.partial(changeProjection, this));
+      if(inst === undefined) return;
+      this.projection = new Projector(inst, _.partial(changeProjection, this));
       this.firechanged();
     };
     
