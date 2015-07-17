@@ -45,6 +45,8 @@ define(['jquery', 'util/_'], function($,_){
         return self._projection;
       };
       function set(x){
+        if(self._projection === undefined) self._reset_pos = true;
+        if(_.keys(x) > _.keys(self._projection)) self._reset_pos = true;
         self._projection = x;
       };
       
@@ -56,11 +58,13 @@ define(['jquery', 'util/_'], function($,_){
         var self = this;
         if(this._instance === undefined) throw "Cannot build config: no instance was defined";
         var inst = self._instance.projected(self._projection);
-        return {
+        var ret  =  {
             instance : inst,
             layout   : self._layout,
             positions: self._reset_pos ? {} : self._viz.positions()
         };
+        self._reset_pos = false;
+        return ret;
     };
     
     return ConfigBuilder;
