@@ -74,7 +74,8 @@ function($, _, ace, Instance, PleaseWait, Conf, Viz) {
     };
     
     function failure(xml){
-      $("#outcome").append("div").attr("class", "error").text(xml.text());
+      var err = $("<div class='error'>"+xml.text+"</div>");
+      $("#outcome").append(err);
     };
 
     // This function empties the log
