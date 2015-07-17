@@ -46,7 +46,8 @@ define(['jquery', 'util/_'], function($,_){
     };
     
     function checkbox(sig, callback){
-        var cb    = $("<input type='checkbox' />").attr('name', sig).val(sig).change(callback);
+        var cb    = $("<input type='checkbox' />").attr('name', sig).val(sig);
+        cb[0].onchange = callback;
         var text  = $("<span />").text(sig);
         return $("<label />").append(cb).append(text);
     };

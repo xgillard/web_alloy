@@ -33,11 +33,11 @@ define(['jquery', 'util/_', 'viz/Viz'], function($, _){
     };
     
     function dropdown(options, callback) {
-        var dropdown = $("<select></select>");
+        var dropdown = $("<select class='dropdown'></select>");
         _.each(options, function(l){
             dropdown.append("<option value='"+l+"'>"+l+"</option>");
         });
-        dropdown.on("change", callback);
+        dropdown[0].onchange = callback;
         return dropdown;
     };
     

@@ -6,8 +6,8 @@ define(['jquery', 'util/_', 'ui/Dropdown'], function($,_,Dropdown){
     function AtomNav(sig, atoms, callback){
       var self      = this;
       this.dropdown = new Dropdown(atoms, _.partial(callback, self, sig));
-      this.left     = NavButton("<<", this.dropdown, prev);
-      this.right    = NavButton(">>", this.dropdown, next);
+      this.left     = new NavButton("<<", this.dropdown, prev).tag;
+      this.right    = new NavButton(">>", this.dropdown, next).tag;
       this.tag      = $("<span class='atom_nav' ></span>");
       
       this.left.appendTo(this.tag);
@@ -46,10 +46,11 @@ define(['jquery', 'util/_', 'ui/Dropdown'], function($,_,Dropdown){
     };
     
     function NavButton(label, dropdown, strategy){
-        return $("<button>"+_.escape(label)+"</button>").click(function(){
+        this.tag = $("<button>"+_.escape(label)+"</button>");
+        this.tag[0].onclick = function(){
           var succ = strategy(dropdown);
           dropdown.val(succ);
-        });
+        };
     };
     
     return AtomNav;

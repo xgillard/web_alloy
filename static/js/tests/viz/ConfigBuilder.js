@@ -1,5 +1,5 @@
 define(
-  ['jquery', 'util/_', 'config/ConfigBuilder'], 
+  ['jquery', 'util/_', 'viz/ConfigBuilder'], 
   function($,_, Builder){
    
    var MOCK_POSITIONS = {atom: {position: {x: 100, y: 100}}};
@@ -20,7 +20,7 @@ define(
    
    return {
      SuiteInfo: {
-         title: "config/ConfigBuilder"
+         title: "viz/ConfigBuilder"
      },
      TestCases: {
          // INSTANCE

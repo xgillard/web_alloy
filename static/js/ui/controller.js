@@ -4,8 +4,9 @@
 define(['jquery', 'util/_', 'ace',
         "alloy/Instance",
         "ui/PleaseWait",
+        'viz/ConfigView',
         'viz/Viz'], 
-function($, _, ace, Instance, PleaseWait, Viz) {
+function($, _, ace, Instance, PleaseWait, Conf, Viz) {
     // Forces JS to behave in strict mode
     "use strict";
     
@@ -24,8 +25,11 @@ function($, _, ace, Instance, PleaseWait, Viz) {
           var editor = mkEdit();
           
           var viz    = new Viz({width: out.innerWidth(), height: out.innerHeight()});
+          var cfg    = new Conf(viz, function(conf){
+             viz.render(conf); 
+          });
 
-          $("#execute").click(_.partial(execute, editor, viz));
+          $("#execute").click(_.partial(execute, editor, cfg, viz));
         });
     };
 
@@ -40,7 +44,7 @@ function($, _, ace, Instance, PleaseWait, Viz) {
 
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
-    function execute(editor, viz){
+    function execute(editor, cfg, viz){
       var text   = editor.getSession().getValue();
 
       please_wait.show();
@@ -54,7 +58,7 @@ function($, _, ace, Instance, PleaseWait, Viz) {
               var xml   = $( $.parseXML(rsp_data) );
               var found = xml.find("success").length > 0;
               if(found){
-                success(rsp_data, viz);
+                success(rsp_data, cfg, viz);
               } else {
                 failure(rsp_data);
               }
@@ -62,8 +66,10 @@ function($, _, ace, Instance, PleaseWait, Viz) {
         );
     }
 
-    function success(rsp, viz){
+    function success(rsp, cfg, viz){
       var instance = new Instance(rsp);
+      cfg.appendTo($("#outcome"));
+      cfg.instance(instance);
       viz.appendTo($("#outcome"));
       viz.render({instance: instance});
     };
