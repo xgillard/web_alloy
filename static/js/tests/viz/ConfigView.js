@@ -6,8 +6,8 @@ function($,_, Conf, Viz, Inst, sample){
     };
    
     function target(){
-      return $(document.body);
-      //return $("#qunit-fixture");
+      //return $(document.body);
+      return $("#qunit-fixture");
     };
     
     function isShown(selector){

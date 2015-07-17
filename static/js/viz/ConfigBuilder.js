@@ -55,8 +55,9 @@ define(['jquery', 'util/_'], function($,_){
     ConfigBuilder.prototype.build = function(){
         var self = this;
         if(this._instance === undefined) throw "Cannot build config: no instance was defined";
+        var inst = self._instance.projected(self._projection);
         return {
-            instance : self._instance.projected(self._projection),
+            instance : inst,
             layout   : self._layout,
             positions: self._reset_pos ? {} : self._viz.positions()
         };

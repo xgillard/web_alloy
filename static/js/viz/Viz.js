@@ -37,7 +37,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     };
     Viz.prototype.render = function(config){
       var self = this;
-      this.tag.empty();
+      
       this.tag.cytoscape({
             layout: {
                     name: config.layout || 'circle',

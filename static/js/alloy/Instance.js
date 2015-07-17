@@ -166,9 +166,9 @@ function($,_, Sig, Atom, Tuple){
         return ret;
     };
 
-    var byId   = _.memoize(function(list){return _.indexBy(list, "id");});
-    var byLabel= _.memoize(function(list){return _.indexBy(list, "label");});
-    var byAtom = _.memoize(function(list){return _.groupBy(list, "atom");});
+    var byId   = function(list){return _.indexBy(list, "id");};
+    var byLabel= function(list){return _.indexBy(list, "label");};
+    var byAtom = function(list){return _.groupBy(list, "atom");};
     
     function mkField(snippet){
         var $f    = $(snippet);
