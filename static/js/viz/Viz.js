@@ -67,7 +67,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         ensureDisplaySthg(instance);
         return {
             nodes: _.map(instance.atoms,  _.partial(atomToNode, config)),
-            edges: _.map(instance.tuples, tupleToEdge)
+            edges: _.map(instance.tuples, _.partial(tupleToEdge,config))
         };
     };
 
@@ -105,15 +105,25 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
 
         return ret;
     };
-
-    function tupleToEdge(tuple) {
+  
+    function tupleToEdge(config, tuple) {
+        function codirected_to_edge(inst, src, dst){
+            var atom = inst.atom(src);
+            var links= inst.linksOf(atom);
+            return _.pluck(_.sortBy(_.where(links, {src: src, dst: dst}), 'label'), 'label');
+        };
+        
+        var codir = codirected_to_edge(config.instance, tuple.src, tuple.dst);
+        var off   = _.indexOf(codir, tuple.label, true) + 1;
+        
         return {
             data: {
-                id    : tuple.src+"_"+tuple.label+"_"+tuple.dst,
-                label : tuple.label,
-                source: tuple.src,
-                target: tuple.dst,
-                color : idToColor(parseInt(tuple.type_id))
+                id          : tuple.src+"_"+tuple.label+"_"+tuple.dst,
+                label       : tuple.label,
+                source      : tuple.src,
+                target      : tuple.dst,
+                color       : idToColor(parseInt(tuple.type_id)),
+                controlPoint: (off * 50)+'px'
             },
             grabbable: true,
             selectable:true
@@ -207,11 +217,6 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     'content'           : 'data(label)',
                     'color'             : 'white',	
                     'width'             : 2,
-                    
-                    'curve-style'       : 'unbundled-bezier',
-                    'control-point-distance': '50px',
-                    'control-point-weight': .5,
-                    
                     'line-color'        : 'data(color)',
                     'target-arrow-shape': 'triangle-backcurve',
                     'target-arrow-fill' : 'filled',
@@ -220,7 +225,11 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     'text-halign'       : 'center',
                     'text-valign'       : 'center',
                     'text-outline-width': 2,
-                    'text-outline-color': 'data(color)'
+                    'text-outline-color': 'data(color)',
+                    // controlling the curve look 
+                    'curve-style'           : 'unbundled-bezier',
+                    'control-point-distance': 'data(controlPoint)',
+                    'control-point-weight'  : .5
                     });
         return stylesheet;
     };
