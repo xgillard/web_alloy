@@ -102,17 +102,17 @@ function($,_, Sig, Atom, Tuple){
       return ret;
     };
 
-    Instance.prototype.univ = _.memoize(function(){
+    Instance.prototype.univ = function(){
         return this.signature("univ");
-    });
+    };
     
     /**
      * Returns the 'root' signatures (those that are direct children of 'univ')
      */
-    Instance.prototype.rootSignatures = _.memoize(function(){
+    Instance.prototype.rootSignatures = function(){
       var self = this;
       return _.where(this.sigs, {parentID: self.univ().id});
-    });
+    };
     
     /**
      * This function returns the same information as this instance but projected on the given
