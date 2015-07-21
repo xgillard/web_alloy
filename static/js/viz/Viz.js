@@ -1,6 +1,5 @@
 define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     
-    // TODO: un-hardcode width and height
     function Viz(style){
       this.style = style;
       this.tag   = $("<div class='viz' />").css(style);
@@ -208,7 +207,11 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     'content'           : 'data(label)',
                     'color'             : 'white',	
                     'width'             : 2,
-                    'curve-style'       : 'bezier',
+                    
+                    'curve-style'       : 'unbundled-bezier',
+                    'control-point-distance': '50px',
+                    'control-point-weight': .5,
+                    
                     'line-color'        : 'data(color)',
                     'target-arrow-shape': 'triangle-backcurve',
                     'target-arrow-fill' : 'filled',
