@@ -126,6 +126,8 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                 source      : tuple.src,
                 target      : tuple.dst,
                 color       : idToColor(parseInt(tuple.type_id)),
+                // Curvestyle computation lets us make sure that self looping path are displayable
+                curveStyle  : tuple.src === tuple.dst ? 'bezier' : 'unbundled-bezier',
                 controlPoint: (off * 50)+'px'
             },
             grabbable: true,
@@ -230,7 +232,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     'text-outline-width': 2,
                     'text-outline-color': 'data(color)',
                     // controlling the curve look 
-                    'curve-style'           : 'unbundled-bezier',
+                    'curve-style'           : 'data(curveStyle)',
                     'control-point-distance': 'data(controlPoint)',
                     'control-point-weight'  : .5
                     });
