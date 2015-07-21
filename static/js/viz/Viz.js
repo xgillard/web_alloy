@@ -107,6 +107,9 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     };
   
     function tupleToEdge(config, tuple) {
+        // Computing the codirected edges and control points helps to avoid codirected/parrallel
+        // edges to be rendered on top of one another. (In that case only one of the edges would
+        // be visible.
         function codirected_to_edge(inst, src, dst){
             var atom = inst.atom(src);
             var links= inst.linksOf(atom);
