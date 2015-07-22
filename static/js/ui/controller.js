@@ -21,9 +21,10 @@ function($, _, ace, Instance, PleaseWait, Conf, Viz) {
           $("#mit-logo").click(_.partial(open_in_tab, 'http://www.mit.edu'));
           $("#clear").click(clear);
           
-          var out    = $("#outcome");
+          
           var editor = mkEdit();
           
+          var out    = $("#outcome");
           var viz    = new Viz({width: out.innerWidth(), height: out.innerHeight()});
           var cfg    = new Conf(viz, function(conf){
              viz.render(conf); 
