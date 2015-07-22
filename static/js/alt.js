@@ -34,14 +34,31 @@ require(
    var cfg    = new Conf(viz, function(conf){ viz.render(conf); });
    $("#execute").click(_.partial(execute, editor));
    
-   $("#viz-tab").click(function(){
-      if($(this).hasClass('disabled')) return false;
-      activate("viz-tab");
-      viz.render();
-   });
+   $("#viz-tab").click(show_viz);
+   
+   byDefaultOpenEditor();
+   
+   function byDefaultOpenEditor(){
+       if(document.location.hash===""){
+           document.location.hash = "#editor";
+       }
+       $(document.location.hash+"-tab").parent().addClass('active');
+   }
+   
+   function show_viz(){
+       return iff_active(function(){
+           activate("viz-tab");
+           viz.render();
+       });
+   }
    
    function tab(id){
-       $("#"+id).click(_.partial(activate, id));
+       $("#"+id).click(_.partial(iff_active, _.partial(activate, id)));
+   }
+   
+   function iff_active(fn){
+       if($(this).hasClass('disabled')) return false;
+       fn();
    }
    
    function activate(id){
@@ -88,7 +105,7 @@ require(
       cfg.appendTo($("#outcome"));
       cfg.instance(instance);
       viz.appendTo($("#outcome"));
-      ui.Alert('success', 'Instance found');
+      ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
       
       $("#viz-tab").removeClass('disabled');
       $("#config-tab").removeClass('disabled');
