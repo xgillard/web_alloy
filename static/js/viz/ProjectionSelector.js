@@ -1,19 +1,27 @@
-define(['jquery', 'util/_', 'viz/SigSelector', 'viz/AtomNav'], function($,_,SigSelector,AtomNav){
+define(
+  ['jquery', 'util/_', 'viz/SigSelector', 'viz/AtomNav', 'bootstrap'], 
+  function($,_,SigSelector,AtomNav){
     
     function ProjectionSelector(instance, callback){
+        var self = this;
         this.instance   = instance;
         this.callback   = _.partial(call_with_my_val, this, callback);
                 
-        this.tag        = $("<div class='projection_selector navbar navbar-default navbar-fixed-bottom' />");
-        this.atomZone   = $("<div class='atom_zone' />");
-        
+        this.tag        = $(mkTag());
+        this.container  = $(mkContainer());
+        this.tag.append(this.container);
+
         this.atomNavs   = {};
         this.sigSelector= new SigSelector(
                                 _.pluck(instance.rootSignatures(), 'label'), 
-                                _.partial(navigateAtoms, this));
+                                _.partial(navigateAtoms, self));
         
-        this.sigSelector.appendTo(this.tag);
-        this.atomZone.appendTo(this.tag);
+        this.projButton = $(mkButton())[0];
+        this.container.append(this.projButton);
+
+        this.projButton.onclick = function(){
+           mkModal('Projection', self.sigSelector.tag).modal();
+       };
     };
     
     ProjectionSelector.prototype.appendTo = function(target){
@@ -63,6 +71,37 @@ define(['jquery', 'util/_', 'viz/SigSelector', 'viz/AtomNav'], function($,_,SigS
        return fn.apply(this, arguments);
     };
     
+    function mkTag(){
+        return "<div class='projection_selector navbar navbar-default navbar-fixed-bottom'></div>";
+    };
+    function mkContainer(){
+        return "<div class='container'></div>";
+    };
+    function mkButton(){
+        return "<button type='button' data-toggle='popover' class='btn btn-primary navbar-btn'>Projection</button>";
+    };
+    
+    function mkModal(title, content){
+        var mod = $(
+               "<div class='modal fade in' >" +
+               "<div class='modal-dialog'>"+
+               "<div class='modal-content'>"+
+               "<div class='modal-header'>"+
+               "<button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"+
+               "<h4 class='modal-title'>"+title+"</h4>"+
+               "</div>"+
+               "<div class='modal-body'>"+
+               "<p></p>" +
+               "</div>"+
+               "</div><!-- /.modal-content -->"+
+               "</div><!-- /.modal-dialog -->" +
+               "</div>"
+               );
+       mod.find(".modal-body > p").append(content);
+       mod.on("hidden.bs.modal", function(){mod.remove();});  
+       return mod;
+    };
+    
     function navigateAtoms(self, selection){
         var selected  = selectedSigs(selection);
         var defined   = definedNavs(self);
@@ -83,7 +122,7 @@ define(['jquery', 'util/_', 'viz/SigSelector', 'viz/AtomNav'], function($,_,SigS
            var atoms= _.pluck(self.instance.atomsOf(sig), 'label');
            var nav  = new AtomNav(s, atoms, self.callback);
            self.atomNavs[s] = nav;
-           nav.appendTo(self.atomZone);
+           nav.appendTo(self.container);
         });
         
         // if there was a modification, we want to make sure the listener is 
