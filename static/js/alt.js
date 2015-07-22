@@ -30,6 +30,7 @@ require(
    var please_wait = new ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
    
+   var instance = undefined;
    var viz    = new Viz();
    var cfg    = new Conf(viz, function(conf){ viz.render(conf); });
    $("#execute").click(_.partial(execute, editor));
@@ -57,14 +58,15 @@ require(
    }
    
    function iff_active(fn){
-       if($(this).hasClass('disabled')) return false;
+       if(instance === undefined) return false;
        fn();
    }
    
    function activate(id){
-     if($(this).hasClass('disabled')) return false;
-     $(".active").removeClass('active');
-     $("#"+id).parent().addClass('active');
+     iff_active(function(){
+        $(".active").removeClass('active');
+        $("#"+id).parent().addClass('active');
+     });
    }
    
     // This function initializes the editor to use the ACE editor with
@@ -101,7 +103,7 @@ require(
     }
 
     function success(rsp){
-      var instance = new Instance(rsp);
+      instance = new Instance(rsp);
       cfg.appendTo($("#outcome"));
       cfg.instance(instance);
       viz.appendTo($("#outcome"));
@@ -112,6 +114,7 @@ require(
     };
     
     function failure(xml){
+      instance = undefined;
       $("#viz-tab").addClass('disabled');
       $("#config-tab").addClass('disabled');
       ui.Alert('danger', xml.text());
