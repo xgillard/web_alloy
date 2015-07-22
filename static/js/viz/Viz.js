@@ -1,8 +1,8 @@
 define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     
-    function Viz(style){
-      this.style = style;
-      this.tag   = $("<div class='viz' />").css(style);
+    function Viz(){
+      this.style = {position: 'relative', width: '100%', height: '100%', float: 'left'};
+      this.tag   = $("<div class='viz' />").css(this.style);
     }
 
     Viz.prototype.LAYOUTS= [
@@ -37,6 +37,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     };
     Viz.prototype.render = function(config){
       var self = this;
+      this._lastconf = config || this._lastconf;
       // replace the graph zone
       this.tag.empty();
       var graph = $("<div class='viz_graph'></div>").css(this.style);
@@ -44,11 +45,11 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
       
       graph.cytoscape({
             layout: {
-                    name: config.layout || 'circle',
+                    name: self._lastconf.layout || 'circle',
                     fit: true,
                     padding: 70
             },
-            elements: mkGraph(config),
+            elements: mkGraph(self._lastconf),
             style: self.STYLESHEET,
             ready: function(e){
                     var cy  = this;

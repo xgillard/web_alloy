@@ -21,15 +21,9 @@ require(
     "ui/PleaseWait",
     'viz/ConfigView',
     'viz/Viz',
+    'ui/UI',
     'bootstrap'], 
-  function($,_,ace, Instance, PleaseWait, Conf, Viz){
-    /*
-    $("button").button().addClass('btn').addClass('btn-primary').popover({
-        html: true, 
-        content: "<h1>This could be awesome !</h1>"
-    });
-    */
-   
+  function($,_,ace, Instance, PleaseWait, Conf, Viz, ui){
    tab("editor-tab");
    tab("viz-tab");
    tab("config-tab");
@@ -43,12 +37,7 @@ require(
    
    $("#viz-tab").click(function(){
       activate("viz-tab");
-      var out = $("#outcome");
-      var dimension = {width: out.innerWidth(), height: out.innerWidth()};
-      viz.style = dimension;
-      viz.tag.css(dimension);
-      viz.render(cfg.builder.build());
-      alert('done');
+      viz.render();
    });
    
    function tab(id){
@@ -63,7 +52,7 @@ require(
     // This function initializes the editor to use the ACE editor with
     // Alloy highligher
     function mkEdit(){
-      var editor = ace.edit("text-editor");
+      var editor = ace.edit("text_editor");
       editor.setTheme("ace/theme/chrome");
       editor.getSession().setMode("ace/mode/alloy");
       return editor;
@@ -98,27 +87,18 @@ require(
       cfg.appendTo($("#outcome"));
       cfg.instance(instance);
       viz.appendTo($("#outcome"));
-      $("#editor-tab-content").append(dismissible_alert('success', 'Instance found'));
+      $("#editor").append(ui.Alert('success', 'Instance found'));
     };
     
     function failure(xml){
       var err = "<div class='error'>"+_.escape(xml.text())+"</div>";
       $("#outcome").append(err);
-      $("#editor-tab-content").append(dismissible_alert('danger', xml.text()));
+      $("#editor").append(ui.Alert('danger', xml.text()));
     };
     
-    
-    function dismissible_alert(type, mesg){
-        return "<div class='alert alert-dismissible alert-"+type+"' role='alert'>"+
-        "<button type='button' class='close' data-dismiss='alert'>&times;</button>"+
-        mesg +
-        "</div>";
-    }
-
     // This function empties the log
     function clear(){
       $("#outcome").empty();
     };
-
    
 });
