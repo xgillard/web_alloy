@@ -1,21 +1,23 @@
 define(['jquery', 'util/_','bootstrap'], function($, _){
     
     function Dropdown(options, callback){
-      this.value   = options[0];
+      this._options= options;
       this.callback= callback;
+      this.value   = options[0] || '' ;
+      
       this.button  = mkButton(this.value);
       this.drop    = mkDrop(options, _.partial(updatingButtonLabel, this));
       
       this.tag   = $("<div class='btn-group'></div>");
       this.tag.append(this.button);
       this.tag.append(this.drop);
-      
-      return this.tag;
     };
     
     Dropdown.prototype.val = function(){
         if(arguments.length>0){
             this.value = arguments[0];
+            this.button.html(mkButtonText(this.value)); 
+            this.callback(this.value); 
         }
         return this.value;
     };
@@ -27,10 +29,12 @@ define(['jquery', 'util/_','bootstrap'], function($, _){
         $(this.tag).remove();
     };
     
+    Dropdown.prototype.options = function(){
+       return this._options;
+    };
+    
     function updatingButtonLabel(self, val){
-       self.value = val;
-       self.button.html(mkButtonText(val)); 
-       self.callback(val); 
+       self.val(val);
     };
     
     function mkButton(text){
@@ -53,8 +57,9 @@ define(['jquery', 'util/_','bootstrap'], function($, _){
         return drop;
     };
     function mkOption(option,callback){
-        var link = $("<a style='cursor: pointer'>"+option+'</a>').click(_.partial(callback, option));
+        var link = $("<a style='cursor: pointer'>"+option+'</a>');
         var opt  = $("<li></li>").append(link);
+        link[0].onclick = _.partial(callback, option);
         return opt;
     };
     

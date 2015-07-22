@@ -13,7 +13,7 @@ define(
         if(type==='success'){
             window.setTimeout(function(){
                 pop.alert('close');
-            }, 3000);
+            }, 1500);
         }
     };
         

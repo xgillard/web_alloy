@@ -4,7 +4,7 @@ define(['jquery', 'util/_', 'viz/SigSelector', 'viz/AtomNav'], function($,_,SigS
         this.instance   = instance;
         this.callback   = _.partial(call_with_my_val, this, callback);
                 
-        this.tag        = $("<div class='projection_selector' />");
+        this.tag        = $("<div class='projection_selector navbar navbar-default navbar-fixed-bottom' />");
         this.atomZone   = $("<div class='atom_zone' />");
         
         this.atomNavs   = {};

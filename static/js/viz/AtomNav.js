@@ -5,10 +5,13 @@ define(['jquery', 'util/_', 'ui/Dropdown'], function($,_,Dropdown){
      */
     function AtomNav(sig, atoms, callback){
       var self      = this;
-      this.dropdown = new Dropdown(atoms, _.partial(callback, self, sig));
-      this.left     = new NavButton("<<", this.dropdown, prev).tag;
-      this.right    = new NavButton(">>", this.dropdown, next).tag;
-      this.tag      = $("<span class='atom_nav' ></span>");
+      this.updated  = _.partial(fireUpdate, self, sig, callback);
+      this.dropdown = new Dropdown(atoms, this.updated);
+      this.left     = new NavButton("<<", this, prev).tag;
+      this.right    = new NavButton(">>", this, next).tag;
+      this.tag      = $("<span class='btn-group atom_nav' ></span>");
+      
+      this.dropdown.tag.addClass('dropup');
       
       this.left.appendTo(this.tag);
       this.dropdown.appendTo(this.tag);
@@ -27,29 +30,32 @@ define(['jquery', 'util/_', 'ui/Dropdown'], function($,_,Dropdown){
         return this.dropdown.val.apply(this.dropdown, arguments);
     };
     
-    function currentIndex(dropdown) {
-      return _.indexOf(dropdown.options(), dropdown.val());
+    function fireUpdate(self, sig, callback){
+        callback(self, sig, self.val());
     };
     
-    function prev(dropdown){
-      var atoms = dropdown.options();
-      var cur   = currentIndex(dropdown);
+    function currentIndex(options, value) {
+      return _.indexOf(options, value);
+    };
+    
+    function prev(atoms, value){
+      var cur   = currentIndex(atoms, value);
       var sz    = atoms.length;
       return atoms[(cur - 1 + sz)%sz];
     };
     
-    function next(dropdown){
-      var atoms = dropdown.options();
-      var cur   = currentIndex(dropdown);
+    function next(atoms, value){
+      var cur   = currentIndex(atoms, value);
       var sz    = atoms.length;
       return atoms[(cur + 1)%sz]; 
     };
     
-    function NavButton(label, dropdown, strategy){
-        this.tag = $("<button>"+_.escape(label)+"</button>");
+    function NavButton(label, nav, strategy){
+        this.tag = $("<button class='btn btn-default'>"+_.escape(label)+"</button>");
         this.tag[0].onclick = function(){
-          var succ = strategy(dropdown);
-          dropdown.val(succ);
+          var succ = strategy(nav.dropdown.options(), nav.dropdown.val());
+          nav.dropdown.val(succ);
+          nav.updated(succ);
         };
     };
     
