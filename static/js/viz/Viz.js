@@ -45,7 +45,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
       
       graph.cytoscape({
             layout: {
-                    name: self._lastconf.layout || 'circle',
+                    name: self._lastconf ? self._lastconf.layout : 'circle',
                     fit: true,
                     padding: 70
             },

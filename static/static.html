@@ -5,53 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <title>Alloy Editor</title>
-
-        <link rel="stylesheet" href="style/instance_ui.css" />
-        <link rel="stylesheet" href="style/please_wait.css" />
         <link rel="stylesheet" href="style/bootstrap.min.css" />
+        <link rel="stylesheet" href="style/alloy_ui.css"      />
+        <link rel="stylesheet" href="style/please_wait.css"   />
+        <link rel="stylesheet" href="style/instance_ui.css"   />
 
         <script src="js/require.js" data-main="js/alt.js"></script>
-        
-        <style>
-            body{
-                padding-top: 70px;
-            }
-            
-            #text_editor {
-                /* Don't change this absolute value: it is required by ACE editor */
-                position: absolute;
-                top    : 50px;
-                left   : 0;
-                width  : 100%;
-                height : calc(100% - 50px);
-                margin : 0;
-            }
-            
-            #outcome {
-                position: absolute;
-                top    : 50px;
-                left   : 0;
-                width  : 100%;
-                height : calc(100% - 50px);
-                margin : 0;
-            }
-            
-            .tab-content{ 
-                display: none;
-                width: 100%;
-                height:100%;
-            }
-            .tab-content:target{
-                display: block;
-            }
-            .alert{
-                position: absolute;
-                z-index: 1000;
-                top: 90px;
-                left: 12%;
-                width: 75%;
-            }
-        </style>
     </head>
 
     <body>
