@@ -19,7 +19,7 @@ define(['jquery', 'util/_','bootstrap'], function($, _){
             this.value = arguments[0];
             this.callback(this.value);
             
-            if(this.label !== undefined){
+            if(this._label !== undefined){
                 this.button.html(mkButtonText(this.value)); 
             }
         }
