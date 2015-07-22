@@ -49,7 +49,7 @@ define(['jquery', 'util/_'], function($,_){
         var cb    = $("<input type='checkbox' />").attr('name', sig).val(sig);
         cb[0].onchange = callback;
         var text  = $("<span />").text(sig);
-        return $("<label />").append(cb).append(text);
+        return $("<label />").append(text).append(cb);
     };
     
     return SigSelector;

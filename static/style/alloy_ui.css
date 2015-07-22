@@ -29,10 +29,30 @@ body{
 .tab-content:target{
     display: block;
 }
+
 .alert{
     position: absolute;
     z-index: 1000;
     top: 90px;
     left: 12%;
     width: 75%;
+}
+
+.sig_selector {
+    display: table;
+    width: 100%;
+}
+.sig_selector > label {
+    display: table-row;
+}
+.sig_selector > label:hover{
+    background-color: rgba(127, 127, 127, .1);
+}
+.sig_selector > label > * {
+    display: table-cell;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.sig_selector > label > input[type='checkbox'] {
+    text-align: right;
 }
