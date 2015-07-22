@@ -18,17 +18,16 @@ require.config({
 require(
   ['jquery', 'util/_', 'ace',
     "alloy/Instance",
-    "ui/PleaseWait",
     'viz/ConfigView',
     'viz/Viz',
     'ui/UI',
     'bootstrap'], 
-  function($,_,ace, Instance, PleaseWait, Conf, Viz, ui){
+  function($,_,ace, Instance, Conf, Viz, ui){
    tab("editor-tab");
    tab("viz-tab");
    tab("config-tab");
    
-   var please_wait = new PleaseWait("The analyzer is processing your model");
+   var please_wait = new ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
    
    var viz    = new Viz();
