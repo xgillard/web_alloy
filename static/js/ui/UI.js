@@ -3,10 +3,18 @@ define(
   function($,_, drop, wait){
     
     function _alert(type, mesg){
-        return "<div class='alert alert-dismissible alert-"+type+"' role='alert'>"+
-        "<button type='button' class='close' data-dismiss='alert'>&times;</button>"+
-        mesg +
-        "</div>";
+        var pop = 
+                $("<div class='alert alert-dismissible alert-"+type+" fade in' role='alert'>"+
+                    "<button type='button' class='close' data-dismiss='alert'>&times;</button>"+
+                    mesg +
+                  "</div>");
+        $(document.body).append(pop);
+        pop.alert();
+        if(type==='success'){
+            window.setTimeout(function(){
+                pop.alert('close');
+            }, 2000);
+        }
     };
         
     return {

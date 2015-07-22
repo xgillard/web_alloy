@@ -45,9 +45,9 @@
                 display: block;
             }
             .alert{
+                position: absolute;
                 z-index: 1000;
-                position: fixed;
-                bottom: 50px;
+                top: 90px;
                 left: 12%;
                 width: 75%;
             }
@@ -70,10 +70,10 @@
                                 <a id="editor-tab" href="#editor">Editor</a>
                             </li>
                             <li>
-                                <a id="viz-tab"    href="#viz">Visualizer</a>
+                                <a id="viz-tab"    href="#viz" class='disabled'>Visualizer</a>
                             </li>
                             <li>
-                                <a id="config-tab" href="#config">Configuration</a>
+                                <a id="config-tab" href="#config" class='disabled'>Configuration</a>
                             </li>
                         </ul>
                     </div>

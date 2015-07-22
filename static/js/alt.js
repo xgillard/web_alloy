@@ -35,6 +35,7 @@ require(
    $("#execute").click(_.partial(execute, editor));
    
    $("#viz-tab").click(function(){
+      if($(this).hasClass('disabled')) return false;
       activate("viz-tab");
       viz.render();
    });
@@ -44,6 +45,7 @@ require(
    }
    
    function activate(id){
+     if($(this).hasClass('disabled')) return false;
      $(".active").removeClass('active');
      $("#"+id).parent().addClass('active');
    }
@@ -86,13 +88,16 @@ require(
       cfg.appendTo($("#outcome"));
       cfg.instance(instance);
       viz.appendTo($("#outcome"));
-      $("#editor").append(ui.Alert('success', 'Instance found'));
+      ui.Alert('success', 'Instance found');
+      
+      $("#viz-tab").removeClass('disabled');
+      $("#config-tab").removeClass('disabled');
     };
     
     function failure(xml){
-      var err = "<div class='error'>"+_.escape(xml.text())+"</div>";
-      $("#outcome").append(err);
-      $("#editor").append(ui.Alert('danger', xml.text()));
+      $("#viz-tab").addClass('disabled');
+      $("#config-tab").addClass('disabled');
+      ui.Alert('danger', xml.text());
     };
     
     // This function empties the log
