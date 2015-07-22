@@ -37,12 +37,9 @@ require(
    var please_wait = new PleaseWait("The analyzer is processing your model");
    var editor      = mkEdit();
    
-   var viz    = new Viz({width: '500px', height: '500px'});
-   var cfg    = new Conf(viz, function(conf){
-       viz.render(conf); 
-   });
-   $("#execute").click(_.partial(execute, editor, cfg, viz));
-   
+   var viz    = new Viz();
+   var cfg    = new Conf(viz, function(conf){ viz.render(conf); });
+   $("#execute").click(_.partial(execute, editor));
    
    $("#viz-tab").click(function(){
       activate("viz-tab");
@@ -51,6 +48,7 @@ require(
       viz.style = dimension;
       viz.tag.css(dimension);
       viz.render(cfg.builder.build());
+      alert('done');
    });
    
    function tab(id){
@@ -65,7 +63,7 @@ require(
     // This function initializes the editor to use the ACE editor with
     // Alloy highligher
     function mkEdit(){
-      var editor = ace.edit("editor");
+      var editor = ace.edit("text-editor");
       editor.setTheme("ace/theme/chrome");
       editor.getSession().setMode("ace/mode/alloy");
       return editor;
@@ -73,7 +71,7 @@ require(
     
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
-    function execute(editor, cfg, viz){
+    function execute(editor){
       var text   = editor.getSession().getValue();
 
       please_wait.show();
@@ -87,7 +85,7 @@ require(
               var xml   = $( $.parseXML(rsp_data) );
               var found = xml.find("success").length > 0;
               if(found){
-                success(rsp_data, cfg, viz);
+                success(rsp_data);
               } else {
                 failure(xml);
               }
@@ -95,7 +93,7 @@ require(
         );
     }
 
-    function success(rsp, cfg, viz){
+    function success(rsp){
       var instance = new Instance(rsp);
       cfg.appendTo($("#outcome"));
       cfg.instance(instance);

@@ -66,17 +66,22 @@
                         </div>
 
                         <ul class="nav navbar-nav">
-                            <li role="presentation" class="active"><a href="#editor-tab-content" id="editor-tab">Editor</a></li>
-                            <li role="presentation" ><a href="#viz-tab-content" id="viz-tab">Visualizer</a></li>
-                            <li role="presentation" ><a href="#config-tab-content" id="config-tab">Configuration</a></li>
+                            <li class="active">
+                                <a id="editor-tab" href="#editor">Editor</a>
+                            </li>
+                            <li>
+                                <a id="viz-tab"    href="#viz">Visualizer</a>
+                            </li>
+                            <li>
+                                <a id="config-tab" href="#config">Configuration</a>
+                            </li>
                         </ul>
-                        
                     </div>
                 </nav>
             </header>
             
-            <section id="editor-tab-content" class="tab-content">
-                <pre id="editor"></pre>
+            <section id="editor" class="tab-content">
+                <pre id="text-editor"></pre>
                 
                 <nav class="navbar navbar-default navbar-fixed-bottom">
                     <div class="container">
@@ -88,11 +93,11 @@
                 </nav>
             </section>
             
-            <section id="viz-tab-content" class="tab-content">
+            <section id="viz" class="tab-content">
                 <div id="outcome"></div> 
             </section>
             
-            <section id="config-tab-content" class="tab-content">
+            <section id="config" class="tab-content">
                 
             </section>
             
