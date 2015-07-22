@@ -53,6 +53,7 @@ define(['jquery', 'util/_', 'ui/Dropdown'], function($,_,Dropdown){
     function NavButton(label, nav, strategy){
         this.tag = $("<button class='btn btn-default'>"+_.escape(label)+"</button>");
         this.tag[0].onclick = function(){
+          if(nav.dropdown.options().length===0) return;
           var succ = strategy(nav.dropdown.options(), nav.dropdown.val());
           nav.dropdown.val(succ);
           nav.updated(succ);

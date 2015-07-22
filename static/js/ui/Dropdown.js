@@ -4,7 +4,7 @@ define(['jquery', 'util/_','bootstrap'], function($, _){
       this._options= options;
       this._label  = label || null;
       this.callback= callback;
-      this.value   = options[0] || '' ;
+      this.value   = options[0] || ' ' ;
       
       this.button  = mkButton(this._label === null ? this.value : label);
       this.drop    = mkDrop(options, _.partial(updatingButtonLabel, this));
