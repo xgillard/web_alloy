@@ -1,11 +1,12 @@
 define(['jquery', 'util/_','bootstrap'], function($, _){
     
-    function Dropdown(options, callback){
+    function Dropdown(options, callback, label){
       this._options= options;
+      this._label  = label;
       this.callback= callback;
       this.value   = options[0] || '' ;
       
-      this.button  = mkButton(this.value);
+      this.button  = mkButton(label === undefined ? this.value : label);
       this.drop    = mkDrop(options, _.partial(updatingButtonLabel, this));
       
       this.tag   = $("<div class='btn-group'></div>");
@@ -16,8 +17,11 @@ define(['jquery', 'util/_','bootstrap'], function($, _){
     Dropdown.prototype.val = function(){
         if(arguments.length>0){
             this.value = arguments[0];
-            this.button.html(mkButtonText(this.value)); 
-            this.callback(this.value); 
+            this.callback(this.value);
+            
+            if(this.label !== undefined){
+                this.button.html(mkButtonText(this.value)); 
+            }
         }
         return this.value;
     };

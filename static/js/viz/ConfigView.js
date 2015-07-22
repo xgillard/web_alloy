@@ -8,9 +8,19 @@ define(
     function ConfigView(viz, callback){
         this.builder    = new Builder(viz);
         this.firechanged= _.partial(onchange, this, callback); 
-        this.tag        = $("<div class='config_view'></div>");
-        this.layout     = new Dropdown(viz.LAYOUTS, _.partial(changeLayout, this));
+        
+        this.tag        = $(mkTag());
+        this.container  = $(mkContainer());
+        this.tag.append(this.container);
+
+        this.layout     = new Dropdown(viz.LAYOUTS, _.partial(changeLayout, this), "Layout");
         this.projection = undefined;
+        
+        this.layout.tag.addClass('dropup');
+        this.layout.tag.find('.btn')
+                       .removeClass('btn-default')
+                       .addClass('btn-info')
+                       .addClass('navbar-btn');
     };
     
     ConfigView.prototype.instance = function(inst){
@@ -30,6 +40,13 @@ define(
       return this.tag.remove();
     };
     
+    function mkTag(){
+        return "<div class='config_view navbar navbar-default navbar-fixed-bottom'></div>";
+    };
+    function mkContainer(){
+        return "<div class='container'></div>";
+    };
+    
     function changeLayout(self, layout){
         self.builder.layout(layout);
         self.firechanged();
@@ -41,9 +58,17 @@ define(
     };
     
     function updateView(self){
-        self.tag.empty();
-        if(self.layout !== undefined)    self.layout.appendTo(self.tag);
-        if(self.projection !== undefined)self.projection.appendTo(self.tag);
+        self.container.empty();
+        
+        if(self.projection !== undefined){
+            self.projection.appendTo(self.container);
+        }
+        
+        if(self.layout !== undefined) {
+            var cont = $("<div class='navbar-right'></div>");
+            cont.append(self.layout.tag);
+            self.container.append(cont);
+        }
     }
     
     function onchange(self, fn){

@@ -8,16 +8,13 @@ define(
         this.callback   = _.partial(call_with_my_val, this, callback);
                 
         this.tag        = $(mkTag());
-        this.container  = $(mkContainer());
-        this.tag.append(this.container);
-
         this.atomNavs   = {};
         this.sigSelector= new SigSelector(
                                 _.pluck(instance.rootSignatures(), 'label'), 
                                 _.partial(navigateAtoms, self));
         
         this.projButton = $(mkButton())[0];
-        this.container.append(this.projButton);
+        this.tag.append(this.projButton);
 
         this.projButton.onclick = function(){
            mkModal('Projection', self.sigSelector.tag).modal();
@@ -72,10 +69,7 @@ define(
     };
     
     function mkTag(){
-        return "<div class='projection_selector navbar navbar-default navbar-fixed-bottom'></div>";
-    };
-    function mkContainer(){
-        return "<div class='container'></div>";
+        return "<div class='projection_selector navbar-left'></div>";
     };
     function mkButton(){
         return "<button type='button' data-toggle='popover' class='btn btn-primary navbar-btn'>Projection</button>";
@@ -122,7 +116,7 @@ define(
            var atoms= _.pluck(self.instance.atomsOf(sig), 'label');
            var nav  = new AtomNav(s, atoms, self.callback);
            self.atomNavs[s] = nav;
-           nav.appendTo(self.container);
+           nav.appendTo(self.tag);
         });
         
         // if there was a modification, we want to make sure the listener is 
