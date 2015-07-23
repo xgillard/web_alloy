@@ -38,7 +38,11 @@ require(
    var viztb       = new config.ui.VizToolBar(conf);
    
    var conf_evts   = conf.CHANGED+" "+conf.PROJ_CHG+" "+conf.PROJ_RST+" "+conf.INST_RST;
-   $(conf).on(conf_evts, function(v){viz.render(conf);});
+   $(conf).on(conf_evts, function(v){
+       if(conf.instance()){
+         viz.render(conf);
+       }
+   });
    
    $("#outcome").append(viz.tag);
    $("#outcome").append(viztb.tag);
