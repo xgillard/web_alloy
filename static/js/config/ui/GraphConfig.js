@@ -31,9 +31,9 @@ define(
     
     function setVal(self, value){
         // reset event handling
-        $(self.model).off("config:changed");
+        $(self.model).off(self.model.CHANGED);
         self.model = value;
-        $(self.model).on("config:changed", _.partial(update, self));
+        $(self.model).on(self.model.CHANGED, _.partial(update, self));
     };
     
     function update(self, value){

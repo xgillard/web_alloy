@@ -19,14 +19,14 @@ define(['underscore'], function(_){
        return _.partial.apply(this, args);
     };
     
-    _.get_or_set = function(self, key, args, onset){
+    _.get_or_set = function(self, key, args, event, onset){
           if(args.length === 0) return self[key];
           
           var _onset = onset || _.noop;
           var value  = args[0];
           self[key]  = value;
           _onset(value);
-          $(self).trigger("config:changed");
+          $(self).trigger(event);
           return self;
       };
     

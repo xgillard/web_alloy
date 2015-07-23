@@ -1,8 +1,9 @@
 define(['jquery', 'util/_', 'config/Palettes'], function($,_, Palettes){
       /*
        * Allowed configuration events are: 
-       * config:changed
+       * config:changed:general
        */
+      var CHANGED = "config:changed:general";
       
       function Configuration(){
           // Graph related stuff
@@ -16,34 +17,36 @@ define(['jquery', 'util/_', 'config/Palettes'], function($,_, Palettes){
           this['_orig.atom.names' ] = true;
       };
       
+      Configuration.prototype.CHANGED = CHANGED;
+      
       Configuration.prototype.layout = function(){
-        return _.get_or_set(this, '_layout', arguments);
+        return _.get_or_set(this, '_layout', arguments, CHANGED);
       };
       
       Configuration.prototype.nodePalette = function(){
         var self = this;
-        _.get_or_set(this, '_node.palette', arguments, function(value){
+        _.get_or_set(this, '_node.palette', arguments, CHANGED, function(value){
             self['_node.palette.val'] = Palettes[value];
         });
       };
       
       Configuration.prototype.edgePalette = function(){
         var self = this;
-        _.get_or_set(this, '_edge.palette', arguments, function(value){
+        _.get_or_set(this, '_edge.palette', arguments, CHANGED, function(value){
             self['_node.palette.val'] = Palettes[value];
         });
       };
       
       Configuration.prototype.fontFamily = function(){
-        return _.get_or_set(this, '_font.family', arguments);
+        return _.get_or_set(this, '_font.family', arguments, CHANGED);
       };
       
       Configuration.prototype.fontSize = function(){
-        return _.get_or_set(this, '_font.size', arguments);
+        return _.get_or_set(this, '_font.size', arguments, CHANGED);
       };
       
       Configuration.prototype.originalAtomNames = function(){
-        return _.get_or_set(this, '_orig.atom.names', arguments);
+        return _.get_or_set(this, '_orig.atom.names', arguments, CHANGED);
       };
       
       return Configuration;
