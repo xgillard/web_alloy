@@ -18,29 +18,32 @@ require.config({
 require(
   ['jquery', 'util/_', 'ace',
     "alloy/Instance",
-    'viz/ConfigView',
     'viz/Viz',
     'config/_',
     'ui/UI',
     'bootstrap'], 
-  function($,_,ace, Instance, Conf, Viz, config, ui){
+  function($,_,ace, Instance, Viz, config, ui){
    tab("editor-tab");
    tab("viz-tab");
    tab("config-tab");
    
-   var conf      = new config.Config();
-   var graphConf = new config.ui.GraphConfig(conf);
-   
-   $(conf).on("config:changed", function(v){console.log("CHANGED = "+JSON.stringify(v));});
-   
-   $("#graph-config").append(graphConf.tag);
    
    var please_wait = new ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
+   //
+   var conf        = new config.Config();
+   var viz         = new Viz();
+   //
+   var graphConf   = new config.ui.GraphConfig(conf);
+   var viztb       = new config.ui.VizToolBar(conf);
    
-   var instance = undefined;
-   var viz    = new Viz();
-   var cfg    = new Conf(viz, function(conf){ viz.render(conf); });
+   $(conf).on("config:changed", function(v){console.log("CHANGED = "+JSON.stringify(v));});
+   
+   $("#outcome").append(viz.tag);
+   $("#outcome").append(viztb.tag);
+      
+   $("#graph-config").append(graphConf.tag);
+
    $("#execute").click(_.partial(execute, editor));
    
    $("#viz-tab").click(show_viz);
@@ -55,26 +58,17 @@ require(
    }
    
    function show_viz(){
-       return iff_active(function(){
-           activate("viz-tab");
-           viz.render();
-       });
+       activate("viz-tab");
+       viz.render(conf);
    }
    
    function tab(id){
-       $("#"+id).click(_.partial(iff_active, _.partial(activate, id)));
-   }
-   
-   function iff_active(fn){
-       if(instance === undefined) return false;
-       fn();
+       $("#"+id).click(_.partial(activate, id));
    }
    
    function activate(id){
-     iff_active(function(){
-        $(".active").removeClass('active');
-        $("#"+id).parent().addClass('active');
-     });
+       $(".active").removeClass('active');
+       $("#"+id).parent().addClass('active');
    }
    
     // This function initializes the editor to use the ACE editor with
@@ -97,7 +91,6 @@ require(
             {content: text}, 
             function(rsp_data){
               please_wait.hide();
-              clear();
               
               var xml   = $( $.parseXML(rsp_data) );
               var found = xml.find("success").length > 0;
@@ -111,10 +104,9 @@ require(
     }
 
     function success(rsp){
-      instance = new Instance(rsp);
-      cfg.appendTo($("#outcome"));
-      cfg.instance(instance);
-      viz.appendTo($("#outcome"));
+      var instance = new Instance(rsp);
+      conf.instance(instance);
+      
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
       
       $("#viz-tab").removeClass('disabled');
@@ -122,15 +114,10 @@ require(
     };
     
     function failure(xml){
-      instance = undefined;
+      conf.instance(null);
       $("#viz-tab").addClass('disabled');
       $("#config-tab").addClass('disabled');
       ui.Alert('danger', xml.text());
     };
     
-    // This function empties the log
-    function clear(){
-      $("#outcome").empty();
-    };
-   
 });

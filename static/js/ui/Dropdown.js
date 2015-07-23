@@ -16,21 +16,13 @@ define(['jquery', 'util/_','bootstrap'], function($, _){
     
     Dropdown.prototype.val = function(){
         if(arguments.length>0){
+            if(this.value === arguments[0]) return;
             this.value = arguments[0];
-            this.callback(this.value);
-            
             if(this._label === null){
                 this.button.html(mkButtonText(this.value)); 
             }
         }
         return this.value;
-    };
-    Dropdown.prototype.appendTo = function(target){
-        this.tag.appendTo(target);
-    };
-    
-    Dropdown.prototype.remove = function(){
-        $(this.tag).remove();
     };
     
     Dropdown.prototype.options = function(){

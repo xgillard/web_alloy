@@ -15,7 +15,7 @@ define(
         this.originalNames= checkbox('atom.orig.name', function(value){self.model.originalAtomNames(value);});
         
         this.tag = mkTag(this);
-        setVal(model);
+        setVal(this, model);
     };
     
     GraphConfig.val = function(){
