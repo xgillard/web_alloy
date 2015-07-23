@@ -20,12 +20,20 @@ require(
     "alloy/Instance",
     'viz/ConfigView',
     'viz/Viz',
+    'config/Config',
     'ui/UI',
     'bootstrap'], 
-  function($,_,ace, Instance, Conf, Viz, ui){
+  function($,_,ace, Instance, Conf, Viz, config, ui){
    tab("editor-tab");
    tab("viz-tab");
    tab("config-tab");
+   
+   var conf      = new config.Config();
+   var graphConf = new config.GraphConfig(conf);
+   
+   $(conf).on("config:changed", function(v){console.log("CHANGED = "+JSON.stringify(v));});
+   
+   $("#graph-config").append(graphConf.tag);
    
    var please_wait = new ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
