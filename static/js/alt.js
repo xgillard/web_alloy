@@ -37,7 +37,8 @@ require(
    var graphConf   = new config.ui.GraphConfig(conf);
    var viztb       = new config.ui.VizToolBar(conf);
    
-   $(conf).on("config:changed", function(v){console.log("CHANGED = "+JSON.stringify(v));});
+   var conf_evts   = conf.CHANGED+" "+conf.PROJ_CHG+" "+conf.PROJ_RST+" "+conf.INST_RST;
+   $(conf).on(conf_evts, function(v){viz.render(conf);});
    
    $("#outcome").append(viz.tag);
    $("#outcome").append(viztb.tag);

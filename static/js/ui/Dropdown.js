@@ -31,6 +31,7 @@ define(['jquery', 'util/_','bootstrap'], function($, _){
     
     function updatingButtonLabel(self, val){
        self.val(val);
+       self.callback(val);
     };
     
     function mkButton(text){

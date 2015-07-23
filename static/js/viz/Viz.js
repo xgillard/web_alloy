@@ -38,6 +38,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     Viz.prototype.render = function(config){
       var self = this;
       this._lastconf = config || this._lastconf;
+      this._displayed= this._lastconf.instance().projected(this._lastconf.projection().projections) || this._displayed;
       // replace the graph zone
       this.tag.empty();
       var graph = $("<div class='viz_graph'></div>").css(this.style);
@@ -45,11 +46,11 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
       
       graph.cytoscape({
             layout: {
-                    name: self._lastconf ? self._lastconf.layout : 'circle',
+                    name: self._lastconf ? self._lastconf.layout() : 'circle',
                     fit: true,
                     padding: 70
             },
-            elements: mkGraph(self._lastconf),
+            elements: mkGraph(self, self._lastconf),
             style: self.STYLESHEET,
             ready: function(e){
                     var cy  = this;
@@ -62,13 +63,12 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         });
     };
 
-    function mkGraph(config) {
-        var instance  = config.instance;
+    function mkGraph(self, config) {
         var remembered= config.positions || {};
-        ensureDisplaySthg(instance);
+        ensureDisplaySthg(self._displayed);
         return {
-            nodes: _.map(instance.atoms,  _.partial(atomToNode, config)),
-            edges: _.map(instance.tuples, _.partial(tupleToEdge,config))
+            nodes: _.map(self._displayed.atoms,  _.partial(atomToNode, self, config)),
+            edges: _.map(self._displayed.tuples, _.partial(tupleToEdge,self, config))
         };
     };
 
@@ -81,10 +81,10 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         }
     };
 
-    function atomToNode(config, atom) {
+    function atomToNode(self, config, atom) {
         var taint= idToColor(parseInt(atom.type_id));
         var form = idToShape(parseInt(atom.type_id));
-        var descr= atom.label+markerText(config.instance, atom);
+        var descr= atom.label+markerText(self._displayed, atom);
         var ret  =  {
                 data: {
                     id   : atom.label,
@@ -107,7 +107,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         return ret;
     };
   
-    function tupleToEdge(config, tuple) {
+    function tupleToEdge(self, config, tuple) {
         // Computing the codirected edges and control points helps to avoid codirected/parrallel
         // edges to be rendered on top of one another. (In that case only one of the edges would
         // be visible.
@@ -117,7 +117,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
             return _.pluck(_.sortBy(_.where(links, {src: src, dst: dst}), 'label'), 'label');
         };
         
-        var codir = codirected_to_edge(config.instance, tuple.src, tuple.dst);
+        var codir = codirected_to_edge(self._displayed, tuple.src, tuple.dst);
         var off   = _.indexOf(codir, tuple.label, true) + 1;
         
         return {
