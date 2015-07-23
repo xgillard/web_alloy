@@ -1,11 +1,11 @@
 define(
   ['jquery', 'util/_', 'ui/_', 'config/Layouts', 'config/Palettes', 'config/Fonts', 'bootstrap'], 
-  function($,_, ui, layouts, palette, fonts){
+  function($,_, ui, Layouts, palette, fonts){
       
     function GraphConfig(model){
         var self          = this;
         this.model        = model;
-        this.layout       = new ui.Dropdown(layouts.Layouts, function(value){self.model.layout(value);});
+        this.layout       = new ui.Dropdown(Layouts, function(value){self.model.layout(value);});
         this.nodePalette  = new ui.Dropdown(_.keys(palette), function(value){self.model.nodePalette(value);});
         this.edgePalette  = new ui.Dropdown(_.keys(palette), function(value){self.model.edgePalette(value);});
         

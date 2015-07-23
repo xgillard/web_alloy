@@ -12,7 +12,7 @@ define(
         this.container  = $(mkContainer());
         this.tag.append(this.container);
 
-        this.layout     = new Dropdown(Layouts.Layouts, _.partial(changeLayout, this), "Layout");
+        this.layout     = new Dropdown(Layouts, _.partial(changeLayout, this), "Layout");
         this.projection = new Projector(model);
         
         this.layout.tag.addClass('dropup');

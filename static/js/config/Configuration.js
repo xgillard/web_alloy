@@ -19,10 +19,8 @@ define(
           // Graph related stuff
           this['_layout'          ] = 'circle';
           this['_node_palette'    ] = 'Default';
-          this['_node_palette_val'] = Palettes['Default'];
           this['_edge_palette'    ] = 'Default';
-          this['_edge_palette_val'] = Palettes['Default'];
-          this['_font_family'     ] = 'Arial';
+          this['_font_family'     ] = 'sans-serif';
           this['_font_size'       ] = '12';
           
           this['_projection'      ] = new Projection();
@@ -42,17 +40,19 @@ define(
       };
       
       Configuration.prototype.nodePalette = function(){
-        var self = this;
-        return _.get_or_set(this, '_node_palette', arguments, CHANGED, function(value){
-            self['_node_palette_val'] = Palettes[value];
-        });
+        return _.get_or_set(this, '_node_palette', arguments, CHANGED);
+      };
+      
+      Configuration.prototype.nodePaletteVal = function(){
+          return Palettes[this.nodePalette()];
       };
       
       Configuration.prototype.edgePalette = function(){
-        var self = this;
-        return _.get_or_set(this, '_edge_palette', arguments, CHANGED, function(value){
-            self['_edge_palette_val'] = Palettes[value];
-        });
+        return _.get_or_set(this, '_edge_palette', arguments, CHANGED);
+      };
+      
+      Configuration.prototype.edgePaletteVal = function(){
+          return Palettes[this.edgePalette()];
       };
       
       Configuration.prototype.fontFamily = function(){

@@ -5,7 +5,5 @@ define([],function(){
      "concentric" , "breadthfirst", "cose" 
    ];
     
-   return {
-       Layouts: layouts
-   };
+   return layouts;
 });

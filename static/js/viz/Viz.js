@@ -1,28 +1,9 @@
-define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
+define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytoscape){
     
     function Viz(){
       this.style = {position: 'relative', width: '100%', height: '100%', float: 'left'};
       this.tag   = $("<div class='viz' />").css(this.style);
-    }
-
-    Viz.prototype.LAYOUTS= [
-                    "circle"        , "grid"        , "random",
-                    "concentric"    , "breadthfirst", "cose" ];
-
-    Viz.prototype.SHAPES = [
-                    'roundrectangle', 'rhomboid'    , 'ellipse', 
-                    'triangle'      , 'pentagon'    , 'hexagon',
-                    'heptagon'      , 'octagon'     , 'star'   ,
-                    'diamond'       , 'vee' ];
-
-    Viz.prototype.COLORS = [
-                    '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78',
-                    '#2ca02c', '#98df8a', '#d62728', '#ff9896',
-                    '#9467bd', '#c5b0d5', '#8c564b', '#c49c94',
-                    '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7',
-                    '#bcbd22', '#dbdb8d', '#17becf', '#9edae5'];
-
-    Viz.prototype.STYLESHEET = dynamicstyle(edgestyle(nodestyle(cytoscape.stylesheet())));
+    };
     
     Viz.prototype.appendTo = function(target){
       return this.tag.appendTo(target);
@@ -51,7 +32,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     padding: 70
             },
             elements: mkGraph(self, self._lastconf),
-            style: self.STYLESHEET,
+            style: css(self._lastconf),
             ready: function(e){
                     var cy  = this;
                     self.cy = cy;
@@ -82,8 +63,8 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
     };
 
     function atomToNode(self, config, atom) {
-        var taint= idToColor(parseInt(atom.type_id));
-        var form = idToShape(parseInt(atom.type_id));
+        var taint= nodeIdToColor(config, parseInt(atom.type_id));
+        var form = idToShape(config, parseInt(atom.type_id));
         var descr= atom.label+markerText(self._displayed, atom);
         var ret  =  {
                 data: {
@@ -126,7 +107,7 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                 label       : tuple.label,
                 source      : tuple.src,
                 target      : tuple.dst,
-                color       : idToColor(parseInt(tuple.type_id)),
+                color       : edgeIdToColor(config, parseInt(tuple.type_id)),
                 // Curvestyle computation lets us make sure that self looping path are displayable
                 curveStyle  : tuple.src === tuple.dst ? 'bezier' : 'unbundled-bezier',
                 controlPoint: (off * 50)+'px'
@@ -154,14 +135,20 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         return id * 41 % 97;
     };
 
-    function idToColor(id){
-        var colors = Viz.prototype.COLORS;
+    function nodeIdToColor(config, id){
+        var colors = config.nodePaletteVal();
+        var idx    = hash(id) % colors.length;
+        return colors[idx];
+    };
+    
+    function edgeIdToColor(config, id){
+        var colors = config.edgePaletteVal();
         var idx    = hash(id) % colors.length;
         return colors[idx];
     };
 
-    function idToShape(id){
-        var shapes = Viz.prototype.SHAPES;
+    function idToShape(config, id){
+        var shapes = conf.Shapes;
         var idx    = hash(id) % shapes.length;
         return shapes[idx];
     };
@@ -201,7 +188,15 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
         };
     };
     
-    function nodestyle(stylesheet){
+    function css(config){
+        return dynamicstyle(
+                edgestyle(config,
+                nodestyle(config,
+                cytoscape.stylesheet()
+                )));
+    };
+    
+    function nodestyle(config, stylesheet){
         stylesheet.selector('node')
                   .css({
                     'content'           : 'data(label)',
@@ -212,12 +207,15 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     'height'            : 'data(height)',
                     'color'             : 'white',
                     'text-outline-width': 2,
-                    'text-outline-color': '#777'
+                    'text-outline-color': '#777',
+                    //
+                    'font-family'       : config.fontFamily(),
+                    'font-size'         : config.fontSize()
                     });
         return stylesheet;
     };
     
-    function edgestyle(stylesheet){
+    function edgestyle(config, stylesheet){
         stylesheet.selector('edge')
                   .css({
                     'content'           : 'data(label)',
@@ -235,14 +233,18 @@ define(['jquery', 'util/_', 'cytoscape'], function($, _, cytoscape){
                     // controlling the curve look 
                     'curve-style'           : 'data(curveStyle)',
                     'control-point-distance': 'data(controlPoint)',
-                    'control-point-weight'  : .5
+                    'control-point-weight'  : .5,
+                    //
+                    'font-family'       : config.fontFamily(),
+                    'font-size'         : config.fontSize()
                     });
         return stylesheet;
     };
     
     function dynamicstyle(stylesheet){
         stylesheet.selector("node.dampened").css({ "opacity" : .4 })
-                  .selector("edge.dampened").css({ "opacity" : .1 });
+                  .selector("edge.dampened").css({ "opacity" : .1 })
+                  ;
         return stylesheet;
     };
     
