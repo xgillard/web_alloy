@@ -1,6 +1,6 @@
 define(
-  ['jquery', 'util/_', 'ui/_', 'config/Configuration', 'config/Layouts', 'config/Palettes', 'config/Fonts', 'bootstrap'], 
-  function($,_, ui, config, layouts, palette, fonts){
+  ['jquery', 'util/_', 'ui/_', 'config/Layouts', 'config/Palettes', 'config/Fonts', 'bootstrap'], 
+  function($,_, ui, layouts, palette, fonts){
       
     function GraphConfig(model){
         var self          = this;
@@ -11,8 +11,6 @@ define(
         
         this.fontFamily   = new ui.Dropdown(fonts.Families, function(value){self.model.fontFamily(value);});
         this.fontSize     = new ui.Dropdown(fonts.Sizes, function(value){self.model.fontSize(value);});
-        
-        this.originalNames= checkbox('atom.orig.name', function(value){self.model.originalAtomNames(value);});
         
         this.tag = mkTag(this);
         setVal(this, model);
@@ -37,12 +35,11 @@ define(
     };
     
     function update(self, value){
-        self.layout.val(value['layout']);
-        self.nodePalette.val(value['node.palette']);
-        self.edgePalette.val(value['edge.palette']);
-        self.fontFamily.val(value['font.family']);
-        self.fontSize.val(value['font.size']);
-        self.originalNames.val(value['orig.names']);
+        self.layout.val(self.model.layout());
+        self.nodePalette.val(self.model.nodePalette());
+        self.edgePalette.val(self.model.edgePalette());
+        self.fontFamily.val(self.model.fontFamily());
+        self.fontSize.val(self.model.fontSize());
     };
     
     function with_my_val(fn, self){
@@ -91,14 +88,6 @@ define(
                 "    <div class='col-sm-10' data-name='font'>"+
                 "    </div>" +
                 "  </div>" +
-                // Oritinal atom names ?
-                "  <div class='form-group'>" +
-                "    <div class='col-sm-offset-2 col-sm-10' data-name='node_palette'>"+
-                "      <div class='checkbox'>"+
-                "        <label data-name='atom.orig.name'>Use atom original name</label>"+
-                "      </div>"+
-                "    </div>" +
-                "  </div>" +
                 
                 "</form>";
         
@@ -108,7 +97,6 @@ define(
         $tag.find("[data-name='edge.palette']").append(self.edgePalette.tag);
         $tag.find("[data-name='font']").append(self.fontFamily.tag);
         $tag.find("[data-name='font']").append(self.fontSize.tag);
-        $tag.find("[data-name='atom.orig.name']").prepend(self.originalNames);
         
         return $tag;
     };
