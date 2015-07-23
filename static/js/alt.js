@@ -20,7 +20,7 @@ require(
     "alloy/Instance",
     'viz/ConfigView',
     'viz/Viz',
-    'config/Config',
+    'config/_',
     'ui/UI',
     'bootstrap'], 
   function($,_,ace, Instance, Conf, Viz, config, ui){
@@ -29,7 +29,7 @@ require(
    tab("config-tab");
    
    var conf      = new config.Config();
-   var graphConf = new config.GraphConfig(conf);
+   var graphConf = new config.ui.GraphConfig(conf);
    
    $(conf).on("config:changed", function(v){console.log("CHANGED = "+JSON.stringify(v));});
    
