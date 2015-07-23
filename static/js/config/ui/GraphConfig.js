@@ -1,5 +1,5 @@
 define(
-  ['jquery', 'util/_', 'ui/UI', 'config/Configuration', 'config/Layouts', 'config/Palettes', 'config/Fonts', 'bootstrap'], 
+  ['jquery', 'util/_', 'ui/_', 'config/Configuration', 'config/Layouts', 'config/Palettes', 'config/Fonts', 'bootstrap'], 
   function($,_, ui, config, layouts, palette, fonts){
       
     function GraphConfig(model){

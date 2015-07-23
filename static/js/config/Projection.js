@@ -16,7 +16,7 @@ define(['jquery', 'util/_'], function($, _){
     };
     
     Projection.prototype.remove = function(K){
-        this.projections[K] = undefined;
+        delete this.projections[K];
         $(this).trigger(CHANGED);
     };
     

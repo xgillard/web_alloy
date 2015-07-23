@@ -20,7 +20,7 @@ require(
     "alloy/Instance",
     'viz/Viz',
     'config/_',
-    'ui/UI',
+    'ui/_',
     'bootstrap'], 
   function($,_,ace, Instance, Viz, config, ui){
    tab("editor-tab");
