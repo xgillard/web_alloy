@@ -27,10 +27,6 @@ require(
    tab("viz-tab");
    tab("config-tab");
    
-   // BGN DUMMY
-   $("#config").prepend(new config.ui.SigConfig(new config.Signature('sig/Dummy')).tag);
-   // END DUMMY
-   
    var please_wait = ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
    //
@@ -46,6 +42,34 @@ require(
          viz.render(conf);
        }
    });
+   
+   // Rebuild the configuration menu when the instance changes
+   $(conf).on(conf.INST_RST, function(){
+       var $cfgmenu = $("#cfg-menu");
+       $cfgmenu.empty();
+       
+       if(!conf.instance()) return;
+       
+       $cfgmenu.append("<li><a href='#graph-config'>Graph</a></li>");
+       $cfgmenu.append("<li class='divider'></li>");
+       $cfgmenu.append("<li class='dropdown-header'>Signatures</li>");
+       _.each(conf.instance().sigs, function(s){
+          var $item = $("<li></li>");
+          var $link = $("<a>"+s.label+"</a>");
+          $item.append($link);
+          $link[0].onclick = _.partial(openSigConfig, s.label);
+          $cfgmenu.append($item); 
+       });
+       $cfgmenu.append("<li class='divider'></li>");
+       $cfgmenu.append("<li class='dropdown-header'>Fields</li>");
+   });
+   
+   function openSigConfig(signame){
+     var view = new config.ui.SigConfig(conf.sigConfigOf(signame));
+     $("#config").empty();
+     $("#config").append(view.tag);
+     window.location.hash = "#config";
+   };
    
    $("#outcome").append(viz.tag);
    $("#outcome").append(viztb.tag);

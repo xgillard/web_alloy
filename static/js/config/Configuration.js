@@ -1,6 +1,6 @@
 define(
-  ['jquery', 'util/_', 'config/Projection','config/Palettes'], 
-  function($,_, Projection, Palettes){
+  ['jquery', 'util/_', 'config/Projection','config/Palettes', 'config/Signature'], 
+  function($,_, Projection, Palettes, Signature){
       /*
        * Allowed configuration events are: 
        * config:changed:general
@@ -25,7 +25,7 @@ define(
           
           this['_projection'      ] = new Projection();
           this['_instance'        ] = null;
-          
+          this['_sig_configs'     ] = {};
           var self = this;
           $(this['_projection']).on("proj:changed", function(){$(self).trigger(PROJ_CHG);});
       };
@@ -76,8 +76,26 @@ define(
       Configuration.prototype.instance = function(){
           var self = this;
           return _.get_or_set(this, '_instance', arguments, INST_RST, function(value){
+              // reset projection
               self.projection(new Projection());
+              
+              // stop listening on old sigs
+              _.each(_.values(self['_sig_configs']), function(sigconf){
+                  $(sigconf).off(sigconf.CHANGED);
+              });
+              // recreate an empty config
+              self['_sig_configs'] = {};
+              // fill the new config with new values
+              _.each(_.pluck(value.sigs, 'label'), function(s){
+                  var cfg = new Signature(s);
+                  self['_sig_configs'][s] = cfg;
+                  $(cfg).on(cfg.CHANGED, function(){$(self).trigger(CHANGED);});
+              });
           });
+      };
+      
+      Configuration.prototype.sigConfigOf = function(sig){
+          return this['_sig_configs'][sig];
       };
       
       return Configuration;
