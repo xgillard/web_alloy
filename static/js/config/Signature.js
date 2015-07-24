@@ -8,7 +8,7 @@ define(
       function SignatureConf(){
           this._label           = 'Default'; // css: label
           
-          this._textcolor       = 'Default'; // css: color
+          this._textcolor       = '#FFFFFF'; // css: color
           this._textoutlinewidth= '2';       // css: text-outline-width
           this._textoutlinecolor= '#777777'; // css: text-outline-color
           
@@ -17,7 +17,7 @@ define(
           this._backgroundcolor = 'Default'; // css: background-color
           
           this._borderstyle     = 'solid';   // css: border-style
-          this._bordercolor     = 'Default'; // css: border-color
+          this._bordercolor     = '#888888'; // css: border-color
           this._borderwidth     = 0;         // css: border-width
           
           this._visible         = true;      // NO CSS PROP associated

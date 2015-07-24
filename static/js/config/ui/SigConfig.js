@@ -11,10 +11,13 @@ define(
          
          this.textOutlineWidth= ui.Number('textoutlinewidth', _.partial(modify, this, 'textOutlineWidth'));
          this.textOutlineColor= ui.Color('textoutlinecolor', _.partial(modify, this, 'textOutlineWidth'));
-          
-         this.shape = ui.Dropdown(def(Shapes), _.partial(modify, this, 'shape'));
+         
+         this.shape = ui.Dropdown(Shapes, _.partial(modify, this, 'shape'));
          this.shapeSize = ui.Number('shapesize', _.partial(modify, this, 'shapeSize'));
          this.backgroundColor = ui.Color('backgroundColor', _.partial(modify, this, 'backgroundColor'));
+         
+         this.automaticShape = ui.FlipFlop('Automatic Shape', 'Manual Shape', _.partial(autoShape, this));
+         this.automaticShapeColor= ui.FlipFlop('Automatic Color', 'Manual Color', _.partial(autoShapeColor, this));
           
          this.borderStyle = ui.Dropdown(Borders, _.partial(modify, this, 'borderStyle'));
          this.borderColor = ui.Color('borderColor', _.partial(modify, this, 'borderColor'));
@@ -25,8 +28,24 @@ define(
          this.tag = mkTag(this);
        };
        
-       function def(options){
-           return ['Default'].concat(options);
+       function autoShape(self){
+           if(self.automaticShape.val()) {
+               self.model.shape('Default');
+               self.shape.button.attr("disabled", true); 
+           } else {
+               self.model.shape(self.shape.val());
+               self.shape.button.attr("disabled", false); 
+           }
+       };
+       
+       function autoShapeColor(self){
+           if(self.automaticShapeColor.val()) {
+               self.model.backgroundColor('Default');
+               self.backgroundColor.attr("disabled", true); 
+           } else {
+               self.model.backgroundColor(self.backgroundColor.val());
+               self.backgroundColor.attr("disabled", false); 
+           }
        };
        
        function modify(self, property){
@@ -51,14 +70,8 @@ define(
                 "  </div>" +
                 "  <div class='form-group' data-name='textcolor'>" +
                 "    <label>Text Color</label>" +
-                //
-                
-                //
                 "  </div>" +
                 "  <div class='form-group' data-name='visible'>" +
-                //"      <div class='checkbox'>"+
-                //"        <label >Visible</label>" +
-                //"      </div>"+
                 "  </div>" +
                 "  </form>" +
                 "</div>"+
@@ -82,6 +95,9 @@ define(
                 "<div class='panel-heading'>Shape</div>"+
                 "<div class='panel-body'>"+
                 "  <form role='form'>" +
+                "  <div class='form-group'>" +
+                "    <div data-name='autoshape' class='btn-group'></div>" +
+                "  </div>" +
                 "  <div class='form-group'>" +
                 "    <label>Shape</label>" +
                 "    <div data-name='shape'></div>" +
@@ -121,6 +137,9 @@ define(
         
         $tag.find("[data-name='textoutlinecolor']").append(self.textOutlineColor);
         $tag.find("[data-name='textoutlinewidth']").append(self.textOutlineWidth);
+        
+        $tag.find("[data-name='autoshape']").append(self.automaticShape.tag);
+        $tag.find("[data-name='autoshape']").append(self.automaticShapeColor.tag);
         
         $tag.find("[data-name='shape']").append(self.shape.tag);
         $tag.find("[data-name='shapeSize']").append(self.shapeSize);
