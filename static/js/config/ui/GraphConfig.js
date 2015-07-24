@@ -5,12 +5,12 @@ define(
     function GraphConfig(model){
         var self          = this;
         this.model        = model;
-        this.layout       = new ui.Dropdown(Layouts, function(value){self.model.layout(value);});
-        this.nodePalette  = new ui.Dropdown(_.keys(palette), function(value){self.model.nodePalette(value);});
-        this.edgePalette  = new ui.Dropdown(_.keys(palette), function(value){self.model.edgePalette(value);});
+        this.layout       = ui.Dropdown(Layouts, function(value){self.model.layout(value);});
+        this.nodePalette  = ui.Dropdown(_.keys(palette), function(value){self.model.nodePalette(value);});
+        this.edgePalette  = ui.Dropdown(_.keys(palette), function(value){self.model.edgePalette(value);});
         
-        this.fontFamily   = new ui.Dropdown(fonts.Families, function(value){self.model.fontFamily(value);});
-        this.fontSize     = new ui.Dropdown(fonts.Sizes, function(value){self.model.fontSize(value);});
+        this.fontFamily   = ui.Dropdown(fonts.Families, function(value){self.model.fontFamily(value);});
+        this.fontSize     = ui.Dropdown(fonts.Sizes, function(value){self.model.fontSize(value);});
         
         this.tag = mkTag(this);
         setVal(this, model);

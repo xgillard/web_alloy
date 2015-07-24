@@ -1,4 +1,4 @@
-define(['jquery', 'util/_', 'ui/Dropdown'], function($,_,Dropdown){
+define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
 
     /*
      * Callback must be of the form function(nav, sig, atom) 
@@ -9,7 +9,7 @@ define(['jquery', 'util/_', 'ui/Dropdown'], function($,_,Dropdown){
       this.updated  = _.partial(fireUpdate, this);
       
       var inst = model.instance();
-      this.dropdown = new Dropdown(_.pluck(inst.atomsOf(inst.signature(sig)), 'label'), this.updated);
+      this.dropdown = ui.Dropdown(_.pluck(inst.atomsOf(inst.signature(sig)), 'label'), this.updated);
       this.left     = new NavButton("<<", this, prev).tag;
       this.right    = new NavButton(">>", this, next).tag;
       this.tag      = $("<span class='btn-group atom_nav' ></span>");

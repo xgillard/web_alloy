@@ -16,10 +16,13 @@ define(
             }, 1500);
         }
     };
+    
+    var createdropdown = _.new(drop);
+    var createwaitpopup= _.new(wait);
         
     return {
         Alert   : _alert,
-        Dropdown: drop,
-        Wait    : wait
+        Dropdown: createdropdown,
+        Wait    : createwaitpopup
     };
 });

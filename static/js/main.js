@@ -28,7 +28,7 @@ require(
    tab("config-tab");
    
    
-   var please_wait = new ui.Wait("The analyzer is processing your model");
+   var please_wait = ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
    //
    var conf        = new config.Config();

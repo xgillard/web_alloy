@@ -1,10 +1,10 @@
 define(
  [  'jquery', 'util/_', 
-    'ui/Dropdown', 
+    'ui/_', 
     'config/Layouts',
     'config/ui/ProjectionSelector'], 
 
- function($,_,Dropdown, Layouts, Projector){
+ function($,_,ui, Layouts, Projector){
    
     function VizToolBar(model){
         this.model      = model;
@@ -12,7 +12,7 @@ define(
         this.container  = $(mkContainer());
         this.tag.append(this.container);
 
-        this.layout     = new Dropdown(Layouts, _.partial(changeLayout, this), "Layout");
+        this.layout     = ui.Dropdown(Layouts, _.partial(changeLayout, this), "Layout");
         this.projection = new Projector(model);
         
         this.layout.tag.addClass('dropup');
