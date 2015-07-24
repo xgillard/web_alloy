@@ -16,7 +16,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
       
       var instance = self.model.instance();
       _.each(_.pluck(instance.rootSignatures(), 'label'), function(sig){
-        self.tag.append(ui.Checkbox(sig, _.partial(doProject, self, instance, sig)));
+        self.tag.append(ui.LabeledCheckbox(sig, _.partial(doProject, self, instance, sig)));
       });
     };
     

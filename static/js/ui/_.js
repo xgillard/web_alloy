@@ -20,7 +20,13 @@ define(
     var createdropdown = _.new(drop);
     var createwaitpopup= _.new(wait);
     
-    function checkbox(name, callback){
+    function simplecheckbox(name, callback){
+        var $chk  = $("<input type='checkbox' name='"+name+"' />");
+        $chk[0].onchange = callback;
+        return $chk;
+    };
+    
+    function labeledcheckbox(name, callback){
         var $span = $("<span />").text(name);
         var $chk  = $("<input type='checkbox' name='"+name+"' />");
         //
@@ -50,13 +56,22 @@ define(
         return $input;
     };
     
+    function color(name, onchange){
+        var $input = $("<input type='color' class='form-control' name='"+name+"'/>");
+        $input.attr("min", 0);
+        $input[0].onchange = onchange;
+        return $input;
+    };
+    
     return {
-        Text    : text, 
-        Number  : number,
-        Button  : button,
-        Checkbox: checkbox,
-        Dropdown: createdropdown,
-        Alert   : _alert,
-        Wait    : createwaitpopup
+        Text           : text, 
+        Number         : number,
+        Color          : color,
+        Button         : button,
+        SimpleCheckbox : simplecheckbox,
+        LabeledCheckbox: labeledcheckbox,
+        Dropdown       : createdropdown,
+        Alert          : _alert,
+        Wait           : createwaitpopup
     };
 });
