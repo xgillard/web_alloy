@@ -20,7 +20,8 @@ define(
          this.borderColor = ui.Color('borderColor', _.partial(modify, this, 'borderColor'));
          this.borderWidth = ui.Number('borderWidth', _.partial(modify, this, 'borderWidth'));
           
-         this.visible = ui.SimpleCheckbox('Visible', _.partial(modify, this, 'visible'));
+         this.visible = ui.FlipFlop('Visible', 'Invisible', _.partial(modify, this, 'visible'));
+         
          this.tag = mkTag(this);
        };
        
@@ -39,56 +40,97 @@ define(
                 "<div class='page-header'>" +
                 "<h1>Signature configuration</h1>"+
                 "</div>" +
-                // Form
-                "<form class='form-horizontal' role='form'>" +
+                
                 // Label
-                "  <div class='form-group'>" +
-                "    <label class='control-label col-sm-2' >Label</label>" +
-                "    <div class='col-sm-10' data-name='label'>"+
-                "    </div>" +
+                "<div class='panel panel-default'>" +
+                "<div class='panel-heading'>General</div>"+
+                "<div class='panel-body'>"+
+                "  <form role='form'>" +
+                "  <div class='form-group' data-name='label'>" +
+                "    <label>Label</label>" +
                 "  </div>" +
+                "  <div class='form-group' data-name='textcolor'>" +
+                "    <label>Text Color</label>" +
+                //
+                
+                //
+                "  </div>" +
+                "  <div class='form-group' data-name='visible'>" +
+                //"      <div class='checkbox'>"+
+                //"        <label >Visible</label>" +
+                //"      </div>"+
+                "  </div>" +
+                "  </form>" +
+                "</div>"+
+                "</div>"+
                 // Text outline
-                "  <div class='form-group'>" +
-                "    <label class='control-label col-sm-2' >Text Outline</label>" +
-                "    <div class='col-sm-10' data-name='textoutline'>"+
-                "    </div>" +
+                "<div class='panel panel-default'>" +
+                "<div class='panel-heading'>Text Outline</div>"+
+                "<div class='panel-body'>"+
+                "  <form role='form'>" +
+                "  <div class='form-group' data-name='textoutlinecolor'>" +
+                "    <label>Color</label>" +
                 "  </div>" +
+                "  <div class='form-group' data-name='textoutlinewidth'>" +
+                "    <label>Width</label>" +
+                "  </div>" +
+                "  </form>"+
+                "</div>"+
+                "</div>"+
                 // Shape
+                "<div class='panel panel-default'>" +
+                "<div class='panel-heading'>Shape</div>"+
+                "<div class='panel-body'>"+
+                "  <form role='form'>" +
                 "  <div class='form-group'>" +
-                "    <label class='control-label col-sm-2' >Shape</label>" +
-                "    <div class='col-sm-10' data-name='shape'>"+
-                "    </div>" +
+                "    <label>Shape</label>" +
+                "    <div data-name='shape'></div>" +
                 "  </div>" +
+                "  <div class='form-group' data-name='shapeColor'>" +
+                "    <label>Color</label>" +
+                "  </div>" +
+                "  <div class='form-group' data-name='shapeSize'>" +
+                "    <label>Size</label>" +
+                "  </div>" +
+                "  </form>"+
+                "</div>"+
+                "</div>"+
                 // Border
+                "<div class='panel panel-default'>" +
+                "<div class='panel-heading'>Border</div>"+
+                "<div class='panel-body'>"+
+                "  <form role='form'>" +
                 "  <div class='form-group'>" +
-                "    <label class='control-label col-sm-2' >Border</label>" +
-                "    <div class='col-sm-10' data-name='border'>"+
-                "    </div>" +
+                "    <label>Style</label>" +
+                "    <div data-name='borderstyle'></div>" +
                 "  </div>" +
-                // Visible
-                "  <div class='form-group'>" +
-                "    <div class='col-sm-offset-2 col-sm-10'>" +
-                "      <div class='checkbox' data-name='visible'></div>"+
-                "    </div>" +
+                "  <div class='form-group' data-name='borderwidth'>" +
+                "    <label>Width</label>" +
                 "  </div>" +
-                "</form>";
+                "  <div class='form-group' data-name='bordercolor'>" +
+                "    <label>Color</label>" +
+                "  </div>" +
+                "  </form>"+
+                "</div>"+
+                "</div>";
         
         var $tag = $(tag);
         $tag.find("[data-name='label']").append(self.label);
-        $tag.find("[data-name='label']").append(self.textcolor);
+        $tag.find("[data-name='textcolor']").append(self.textColor);
+        $tag.find("[data-name='visible']").prepend(self.visible.tag);
         
-        $tag.find("[data-name='textoutline']").append(self.textOutlineColor);
-        $tag.find("[data-name='textoutline']").append(self.textOutlineWidth);
+        $tag.find("[data-name='textoutlinecolor']").append(self.textOutlineColor);
+        $tag.find("[data-name='textoutlinewidth']").append(self.textOutlineWidth);
         
         $tag.find("[data-name='shape']").append(self.shape.tag);
-        $tag.find("[data-name='shape']").append(self.shapeSize);
-        $tag.find("[data-name='shape']").append(self.backgroundColor);
+        $tag.find("[data-name='shapeSize']").append(self.shapeSize);
+        $tag.find("[data-name='shapeColor']").append(self.backgroundColor);
         
-        $tag.find("[data-name='border']").append(self.borderStyle.tag);
-        $tag.find("[data-name='border']").append(self.borderColor);
-        $tag.find("[data-name='border']").append(self.borderWidth);
+        $tag.find("[data-name='borderstyle']").append(self.borderStyle.tag);
+        $tag.find("[data-name='bordercolor']").append(self.borderColor);
+        $tag.find("[data-name='borderwidth']").append(self.borderWidth);
         
-        $tag.find("[data-name='visible']").append(self.visible);
+        
         return $tag;  
        };
        

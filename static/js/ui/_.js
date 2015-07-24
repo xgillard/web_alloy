@@ -1,6 +1,6 @@
 define(
-  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'bootstrap'],
-  function($,_, drop, wait){
+  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/FlipFlop', 'bootstrap'],
+  function($,_, drop, wait, flipflop){
     
     function _alert(type, mesg){
         var pop = 
@@ -19,6 +19,7 @@ define(
     
     var createdropdown = _.new(drop);
     var createwaitpopup= _.new(wait);
+    var createflipflop = _.new(flipflop);  
     
     function simplecheckbox(name, callback){
         var $chk  = $("<input type='checkbox' name='"+name+"' />");
@@ -69,6 +70,7 @@ define(
         Color          : color,
         Button         : button,
         SimpleCheckbox : simplecheckbox,
+        FlipFlop       : createflipflop,
         LabeledCheckbox: labeledcheckbox,
         Dropdown       : createdropdown,
         Alert          : _alert,
