@@ -10,8 +10,8 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       
       var inst = model.instance();
       this.dropdown = ui.Dropdown(_.pluck(inst.atomsOf(inst.signature(sig)), 'label'), this.updated);
-      this.left     = new NavButton("<<", this, prev).tag;
-      this.right    = new NavButton(">>", this, next).tag;
+      this.left     = ui.Button("<<", _.partial(navigate, this, prev));
+      this.right    = ui.Button(">>", _.partial(navigate, this, next));
       this.tag      = $("<span class='btn-group atom_nav' ></span>");
       
       this.dropdown.tag.addClass('dropup');
@@ -43,14 +43,11 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       return atoms[(cur + 1)%sz]; 
     };
     
-    function NavButton(label, nav, strategy){
-        this.tag = $("<button class='btn btn-default'>"+_.escape(label)+"</button>");
-        this.tag[0].onclick = function(){
-          if(nav.dropdown.options().length===0) return;
-          var succ = strategy(nav.dropdown.options(), nav.dropdown.val());
-          nav.dropdown.val(succ);
-          nav.updated(succ);
-        };
+    function navigate(nav, strategy){
+        if(nav.dropdown.options().length===0) return;
+        var succ = strategy(nav.dropdown.options(), nav.dropdown.val());
+        nav.dropdown.val(succ);
+        nav.updated(succ);
     };
     
     return AtomNav;

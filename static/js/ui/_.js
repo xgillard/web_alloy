@@ -19,10 +19,25 @@ define(
     
     var createdropdown = _.new(drop);
     var createwaitpopup= _.new(wait);
-        
+    
+    function checkbox(name, callback){
+        var $chk = $("<input type='checkbox' name='"+name+"' />");
+        $chk.on("changed", function(){callback($chk.prop('changed'));});
+        return $chk;
+    };
+    
+    function button(label, callback, kind){
+        var style= kind || 'default'; 
+        var $btn = $("<button type='button' class='btn btn-"+style+"'>"+label+"</button>");
+        $btn[0].onclick = callback;
+        return $btn;
+    };
+    
     return {
-        Alert   : _alert,
+        Button  : button,
+        Checkbox: checkbox,
         Dropdown: createdropdown,
+        Alert   : _alert,
         Wait    : createwaitpopup
     };
 });

@@ -42,20 +42,6 @@ define(
         self.fontSize.val(self.model.fontSize());
     };
     
-    function with_my_val(fn, self){
-        return fn(getVal(self));
-    };
-    
-    function checkbox(name, callback){
-        var $chk = $("<input type='checkbox' name='"+name+"' />");
-        $chk.on("changed", function(){callback($chk.prop('changed'));});
-        return $chk;
-    };
-    function button(label, callback){
-        var $btn = $("<button type='button' class='btn btn-primary'>"+label+"</button>");
-        $btn[0].onclick = callback;
-        return $btn;
-    };
     function mkTag(self){
         var tag =
                 // Header

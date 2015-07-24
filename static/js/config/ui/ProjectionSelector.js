@@ -1,6 +1,6 @@
 define(
-  ['jquery', 'util/_', 'config/ui/SigSelector', 'config/ui/AtomNav', 'bootstrap'], 
-  function($,_,SigSelector,AtomNav){
+  ['jquery', 'util/_', 'ui/_','config/ui/SigSelector', 'config/ui/AtomNav', 'bootstrap'], 
+  function($,_, ui, SigSelector,AtomNav){
     
     function ProjectionSelector(model){
         var self        = this;
@@ -8,15 +8,11 @@ define(
         
         this.tag        = $(mkTag());
         this.sigSelector= new SigSelector(model);
-        this.projButton = $(mkButton())[0];
+        this.projButton = ui.Button("Projection", _.partial(askProjection, this));
         this.navspan    = $("<div class='btn-group'></div>");
         
         this.tag.append(this.projButton);
         this.tag.append(this.navspan);
-
-        this.projButton.onclick = function(){
-           mkModal('Projection', self.sigSelector.tag).modal();
-        };
        
         var events = model.INST_RST+' '+model.PROJ_CHG+' '+model.PROJ_RST;
         $(model).on(events, _.partial(update, self));
@@ -25,8 +21,9 @@ define(
     function mkTag(){
         return "<div class='projection_selector navbar-left'></div>";
     };
-    function mkButton(){
-        return "<button type='button' class='btn btn-primary navbar-btn'>Projection</button>";
+    
+    function askProjection(self){
+        mkModal('Projection', self.sigSelector.tag).modal();
     };
     
     function mkModal(title, content){
