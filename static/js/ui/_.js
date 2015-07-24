@@ -44,10 +44,11 @@ define(
     };
     
     function number(name, onchange){
-        var $input = Text(name, onchange);
-        $input.attr("type", 'number');
+        var $input = $("<input type='number' class='form-control' pattern='\\d+' name='"+name+"'/>");
+        $input.attr("min", 0);
+        $input[0].onchange = onchange;
         return $input;
-    }
+    };
     
     return {
         Text    : text, 
