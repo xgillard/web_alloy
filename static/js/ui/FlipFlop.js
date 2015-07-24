@@ -6,30 +6,39 @@ define(
         this.active   = on;
         this.inactive = off;
         
-        this.checkbox = $("<input type='checkbox' style='visibility: hidden' />");
-        this.tag      = $("<label class='btn btn-primary active'></label>");
-        this.span     = $("<span style='margin-left: -.75em'></span>");
+        this.checkbox = $("<input type='checkbox' style='visibility: hidden' checked='false' />");
+        this.tag      = $("<label class='btn btn-default'></label>");
+        this.span     = $("<span style='margin-left: -.75em'>"+off+"</span>");
 
         this.tag.append(this.checkbox);
         this.tag.append(this.span);
         
-        this.val(true);
         this.checkbox[0].onchange = _.partial(with_setval, this, callback);
     };
     
     FlipFlop.prototype.val = function(){
       if(arguments.length === 0) {
-          return this.checkbox.prop('checked');
+        return getVal(this);  
       }
       var value = arguments[0];
-      this.checkbox.prop('checked', value);
+      return setVal(this, value);
+    };
+    
+    function getVal(self){
+        return self.checkbox.prop('checked');
+    };
+    
+    function setVal(self, value){
+      self.checkbox.prop('checked', value);
       if(value){
-        this.span.text(this.active);
-        this.tag.addClass("active");
+        self.span.text(self.active);
+        self.tag.removeClass("btn-default");
+        self.tag.addClass("btn-primary");
       } else {
-        this.span.text(this.inactive);
-        this.tag.removeClass("active");  
-      }
+        self.span.text(self.inactive);
+        self.tag.addClass("btn-info");
+        self.tag.removeClass("btn-default");
+      } 
     };
     
     function with_setval(self, fn){

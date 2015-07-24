@@ -12,12 +12,12 @@ define(
          this.textOutlineWidth= ui.Number('textoutlinewidth', _.partial(modify, this, 'textOutlineWidth'));
          this.textOutlineColor= ui.Color('textoutlinecolor', _.partial(modify, this, 'textOutlineWidth'));
          
+         this.automaticShape = ui.FlipFlop('Automatic Shape', 'Manual Shape', _.partial(autoShape, this));
+         this.automaticShapeColor= ui.FlipFlop('Automatic Color', 'Manual Color', _.partial(autoShapeColor, this));
+         
          this.shape = ui.Dropdown(Shapes, _.partial(modify, this, 'shape'));
          this.shapeSize = ui.Number('shapesize', _.partial(modify, this, 'shapeSize'));
          this.backgroundColor = ui.Color('backgroundColor', _.partial(modify, this, 'backgroundColor'));
-         
-         this.automaticShape = ui.FlipFlop('Automatic Shape', 'Manual Shape', _.partial(autoShape, this));
-         this.automaticShapeColor= ui.FlipFlop('Automatic Color', 'Manual Color', _.partial(autoShapeColor, this));
           
          this.borderStyle = ui.Dropdown(Borders, _.partial(modify, this, 'borderStyle'));
          this.borderColor = ui.Color('borderColor', _.partial(modify, this, 'borderColor'));
@@ -25,7 +25,47 @@ define(
           
          this.visible = ui.FlipFlop('Visible', 'Invisible', _.partial(modify, this, 'visible'));
          
+         this.visible.tag.css({width: '9em'});
+         this.automaticShape.tag.css({width: '15em'});
+         this.automaticShapeColor.tag.css({width: '15em'});
+         
          this.tag = mkTag(this);
+         update(this);
+         // Need I react on model change ? Not even sure ...
+         $(model).on(model.CHANGED, _.partial(update, this));
+       };
+       
+       function update(self){
+         var mdl = self.model;
+         
+         self.label.val(mdl.label());
+         self.textColor.val(mdl.textColor());
+         
+         self.textOutlineWidth.val(mdl.textOutlineWidth());
+         self.textOutlineColor.val(mdl.textOutlineColor());
+         
+         if(mdl.shape() === 'Default'){
+             self.automaticShape.val(true);
+             self.shape.button.attr("disabled", true);
+         } else {
+             self.automaticShape.val(false);
+             self.shape.button.attr("disabled", false);
+             self.shape.val(mdl.shape());
+         }
+         if(mdl.backgroundColor() === 'Default'){
+             self.automaticShapeColor.val(true);
+             self.backgroundColor.attr("disabled", true); 
+         } else {
+             self.automaticShapeColor.val(false);
+             self.backgroundColor.attr("disabled", false); 
+             self.backgroundColor.val(mdl.backgroundColor());
+         }
+         
+         self.shapeSize.val(mdl.shapeSize());
+         
+         self.borderStyle.val(mdl.borderStyle());
+         self.borderColor.val(mdl.borderColor());
+         self.borderWidth.val(mdl.borderWidth());
        };
        
        function autoShape(self){
