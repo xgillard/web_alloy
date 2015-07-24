@@ -28,7 +28,7 @@ require(
    tab("config-tab");
    
    // BGN DUMMY
-   $("#config").prepend(new config.ui.SigConfig(new config.Signature()).tag);
+   $("#config").prepend(new config.ui.SigConfig(new config.Signature('sig/Dummy')).tag);
    // END DUMMY
    
    var please_wait = ui.Wait("The analyzer is processing your model");

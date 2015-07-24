@@ -5,7 +5,8 @@ define(
       var CHANGED = 'sig:changed';
       
       // Include font-family and font-size ??
-      function SignatureConf(){
+      function SignatureConf(name){
+          this._signame         = name;
           this._label           = 'Default'; // css: label
           
           this._textcolor       = '#FFFFFF'; // css: color
@@ -26,6 +27,9 @@ define(
       
       SignatureConf.prototype.CHANGED = CHANGED;
       
+      SignatureConf.prototype.sigName = function(){
+        return this._signame;
+      };
       SignatureConf.prototype.label = function(){
         return _.get_or_set(this, '_label', arguments, CHANGED);  
       };

@@ -5,7 +5,6 @@ define(
   
        function SigConfig(model){
          this.model = model;
-         
          this.label = ui.Text('label', _.partial(modify, this, 'label'));
          this.textColor = ui.Color('textcolor', _.partial(modify, this, 'textColor'));
          
@@ -96,10 +95,9 @@ define(
        function mkTag(self){
          var tag =
                 // Header
-                "<div class='page-header'>" +
-                "<h1>Signature configuration</h1>"+
+                "<div class='page-header' data-name='title'>" +
+                "<h1>"+self.model.sigName()+"<small>&nbsp; Configuration</small></h1>"+
                 "</div>" +
-                
                 // Label
                 "<div class='panel panel-default'>" +
                 "<div class='panel-heading'>General</div>"+

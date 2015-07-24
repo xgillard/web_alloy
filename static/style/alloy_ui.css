@@ -2,7 +2,8 @@ body{
     padding-top: 70px;
 }
 
-#text_editor {
+#text_editor, 
+#outcome{
     /* Don't change this absolute value: it is required by ACE editor */
     position: absolute;
     top    : 50px;
@@ -12,13 +13,8 @@ body{
     margin : 0;
 }
 
-#outcome {
-    position: absolute;
-    top    : 50px;
-    left   : 0;
-    width  : 100%;
-    height : calc(100% - 50px);
-    margin : 0;
+#config {
+    padding-top: 50px;
 }
 
 .tab-content{ 
