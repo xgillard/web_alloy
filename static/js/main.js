@@ -27,6 +27,9 @@ require(
    tab("viz-tab");
    tab("config-tab");
    
+   // BGN DUMMY
+   $("#config").prepend(new config.ui.SigConfig(new config.Signature()).tag);
+   // END DUMMY
    
    var please_wait = ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
@@ -113,15 +116,10 @@ require(
       conf.instance(instance);
       
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
-      
-      $("#viz-tab").removeClass('disabled');
-      $("#config-tab").removeClass('disabled');
     };
     
     function failure(xml){
       conf.instance(null);
-      $("#viz-tab").addClass('disabled');
-      $("#config-tab").addClass('disabled');
       ui.Alert('danger', xml.text());
     };
     

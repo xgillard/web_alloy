@@ -37,7 +37,21 @@ define(
         return $btn;
     };
     
+    function text(name, onchange){
+        var $input = $("<input type='text' class='form-control' name='"+name+"'/>");
+        $input[0].onchange = onchange;
+        return $input;
+    };
+    
+    function number(name, onchange){
+        var $input = Text(name, onchange);
+        $input.attr("type", 'number');
+        return $input;
+    }
+    
     return {
+        Text    : text, 
+        Number  : number,
         Button  : button,
         Checkbox: checkbox,
         Dropdown: createdropdown,
