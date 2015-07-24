@@ -40,7 +40,6 @@ require(
    var conf_evts   = conf.CHANGED+" "+conf.PROJ_CHG+" "+conf.PROJ_RST+" "+conf.INST_RST;
    $(conf).on(conf_evts, function(v){
        if(conf.instance()){
-         console.log("Re-render !");
          viz.render(conf);
        }
    });

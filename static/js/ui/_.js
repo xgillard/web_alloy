@@ -21,15 +21,19 @@ define(
     var createwaitpopup= _.new(wait);
     
     function checkbox(name, callback){
-        var $chk = $("<input type='checkbox' name='"+name+"' />");
-        $chk.on("changed", function(){callback($chk.prop('changed'));});
-        return $chk;
+        var $span = $("<span />").text(name);
+        var $chk  = $("<input type='checkbox' name='"+name+"' />");
+        //
+        $chk[0].onchange = callback;
+        //
+        return $("<label />").append($span).append($chk);
     };
     
-    function button(label, callback, kind){
-        var style= kind || 'default'; 
-        var $btn = $("<button type='button' class='btn btn-"+style+"'>"+label+"</button>");
+    function button(label, callback, classes){
+        var styles = _.isEmpty(classes) ? ['btn-default'] : classes; 
+        var $btn   = $("<button type='button' class='btn'>"+_.escape(label)+"</button>");
         $btn[0].onclick = callback;
+        _.each(styles, function(s){$btn.addClass(s);});
         return $btn;
     };
     

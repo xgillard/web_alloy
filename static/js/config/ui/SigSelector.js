@@ -1,4 +1,4 @@
-define(['jquery', 'util/_'], function($,_){
+define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
    
     function SigSelector(model){
         this.model = model;
@@ -16,7 +16,7 @@ define(['jquery', 'util/_'], function($,_){
       
       var instance = self.model.instance();
       _.each(_.pluck(instance.rootSignatures(), 'label'), function(sig){
-        self.tag.append(checkbox(sig, _.partial(doProject, self, instance, sig)));
+        self.tag.append(ui.Checkbox(sig, _.partial(doProject, self, instance, sig)));
       });
     };
     
@@ -40,14 +40,7 @@ define(['jquery', 'util/_'], function($,_){
     
     function defaultAtomName(instance, sig){
         var atoms = instance.atomsOf(instance.signature(sig));
-        return _.isEmpty(atoms) ? '' : atoms[0].label;
-    };
-    
-    function checkbox(sig, callback){
-        var cb    = $("<input type='checkbox' />").attr('name', sig).val(sig);
-        cb[0].onchange = callback;
-        var text  = $("<span />").text(sig);
-        return $("<label />").append(text).append(cb);
+        return _.isEmpty(atoms) ? ' ' : atoms[0].label;
     };
     
     return SigSelector;

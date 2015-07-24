@@ -8,7 +8,7 @@ define(
         
         this.tag        = $(mkTag());
         this.sigSelector= new SigSelector(model);
-        this.projButton = ui.Button("Projection", _.partial(askProjection, this));
+        this.projButton = ui.Button("Projection", _.partial(askProjection, this), ['btn-primary', 'navbar-btn']);
         this.navspan    = $("<div class='btn-group'></div>");
         
         this.tag.append(this.projButton);
