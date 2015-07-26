@@ -1,7 +1,7 @@
 /*
  * This module defines the functionalities that are imho missing in underscore. 
  */
-define(['underscore'], function(_){
+define(['jquery', 'underscore'], function($, _){
     "use strict";
     
     var sliced = function(x, i) {
