@@ -53,7 +53,7 @@ define(
          self.textOutlineWidth.val(mdl.textOutlineWidth());
          self.textOutlineColor.val(mdl.textOutlineColor());
          
-         if(mdl.shape() !== ConfType.Manual){
+         if(mdl.shape() === ConfType.Automatic || mdl.shape() === ConfType.Inherited){
              self.automaticShape.val(mdl.shape());
              self.shape.button.attr("disabled", true);
          } else {
@@ -61,7 +61,7 @@ define(
              self.shape.button.attr("disabled", false);
              self.shape.val(mdl.shape());
          }
-         if(mdl.backgroundColor() !== ConfType.Manual){
+         if(mdl.backgroundColor() === ConfType.Automatic || mdl.backgroundColor() === ConfType.Inherited){
              self.automaticShapeColor.val(mdl.backgroundColor());
              self.backgroundColor.attr("disabled", true); 
          } else {
