@@ -59,7 +59,7 @@ define(
       SignatureConf.prototype.resolvedShape = function(){
         var res = this.shape();
         if (res === Type.Inherited){
-            return this.parentConfig().shape();
+            return this.parentConfig().resolvedShape();
         }
         return res;
       };
@@ -72,7 +72,7 @@ define(
       SignatureConf.prototype.resolvedBackgroundColor = function(){
         var res = _.get_or_set(this, '_backgroundcolor', arguments, CHANGED);  
         if (res === Type.Inherited){
-            return this.parentConfig().backgroundColor();
+            return this.parentConfig().resolvedBackgroundColor();
         }
       };
       SignatureConf.prototype.borderStyle = function(){
