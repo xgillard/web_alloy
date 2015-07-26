@@ -36,7 +36,7 @@ require(
    var graphConf   = new config.ui.GraphConfig(conf);
    var viztb       = new config.ui.VizToolBar(conf);
    
-   var conf_evts   = conf.CHANGED+" "+conf.PROJ_CHG;
+   var conf_evts   = conf.CHANGED+" "+conf.PROJ_CHG+" "+conf.PROJ_RST+" "+conf.INST_RST;
    $(conf).on(conf_evts, function(v){
        if(conf.instance()){
          viz.render(conf);
@@ -62,8 +62,6 @@ require(
        });
        $cfgmenu.append("<li class='divider'></li>");
        $cfgmenu.append("<li class='dropdown-header'>Fields</li>");
-       
-       viz.render(conf);
    });
    
    function openSigConfig(sigid){
