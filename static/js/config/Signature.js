@@ -6,21 +6,23 @@ define(
       
       // Include font-family and font-size ??
       function SignatureConf(config, signature){
+          var isUniv = signature.label === 'univ';
+          
           this._config          = config;  // This is my 'parent' config: it cannot be changed
           this._id              = signature.id;
           this._parendID        = signature.parentID;
           
           this._signame         = signature.label;
           
-          this._label           = Type.Automatic; // css: label
+          this._label           = signature.label; // css: label
           
           this._textcolor       = '#FFFFFF'; // css: color
           this._textoutlinewidth= '2';       // css: text-outline-width
           this._textoutlinecolor= '#777777'; // css: text-outline-color
           
-          this._shape           = Type.Automatic; // css: shape
+          this._shape           = isUniv ? Type.Automatic : Type.Inherited; // css: shape
           this._shapesize       = 50;        // css:
-          this._backgroundcolor = Type.Automatic; // css: background-color
+          this._backgroundcolor = isUniv ? Type.Automatic : Type.Inherited; // css: background-color
           
           this._borderstyle     = 'solid';   // css: border-style
           this._bordercolor     = '#888888'; // css: border-color
