@@ -79,8 +79,10 @@ define(
       Configuration.prototype.instance = function(){
           var self = this;
           return _.get_or_set(this, '_instance', arguments, INST_RST, function(value){
-              // reset projection
+              // reset projection w/o triggering change
+              $(self._projection).off("proj:changed");
               self._projection = new Projection();
+              $(self._projection).on("proj:changed", function(){$(self).trigger(PROJ_CHG);});
               
               // stop listening on old sigs
               _.each(_.values(self['_sig_configs']), function(sigconf){
@@ -94,6 +96,9 @@ define(
                   self['_sig_configs'][s.id] = cfg;
                   $(cfg).on(cfg.CHANGED, function(){$(self).trigger(CHANGED);});
               });
+              
+              // projection was reset
+              $(self).trigger(PROJ_RST);
           });
       };
       
