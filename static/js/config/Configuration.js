@@ -89,6 +89,8 @@ define(
               $(self._projection).on(self._projection.CHANGED, function(){$(self).trigger(PROJ_CHG);});
               $(self._projection).on(self._projection.PROJ_RST, function(){$(self).trigger(PROJ_RST);});
               
+              if(value === null || value === undefined) return;
+              
               // stop listening on old sigs
               _.each(_.values(self['_sig_configs']), function(sigconf){
                   $(sigconf).off(sigconf.CHANGED);
