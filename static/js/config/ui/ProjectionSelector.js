@@ -14,7 +14,7 @@ define(
         this.tag.append(this.projButton);
         this.tag.append(this.navspan);
        
-        var events = model.INST_RST+' '+model.PROJ_CHG;
+        var events = model.INST_RST+' '+model.PROJ_CHG+' '+model.PROJ_RST;
         $(model).on(events, _.partial(update, self));
     };
 

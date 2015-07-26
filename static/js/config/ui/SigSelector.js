@@ -5,7 +5,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
         this.tag   = $("<div class='sig_selector'/>");
         
         $(model).on(model.INST_RST, _.partial(inst_update, this));
-        $(model).on(model.PROJ_CHG, _.partial(proj_update, this));
+        $(model).on(model.PROJ_CHG+' '+model.PROJ_RST, _.partial(proj_update, this));
     };
     
     
