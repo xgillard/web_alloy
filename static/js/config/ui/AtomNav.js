@@ -25,7 +25,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
     };
     
     function fireUpdate(self){
-        self.model.projection().add(self.sig, self.dropdown.val());
+        self.model.projection().navigate(self.sig, self.dropdown.val());
     };
     
     function currentIndex(options, value) {

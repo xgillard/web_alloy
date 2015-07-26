@@ -69,10 +69,11 @@ define(
       Configuration.prototype.projection = function(){
         var self    = this;
         var oldproj = this['_projection'];
-        return _.get_or_set(this, '_projection', arguments, CHANGED, function(value){
-            $(oldproj).off("proj:changed");
-            $(value).on("proj:changed", function(){$(self).trigger(PROJ_CHG);});
-            $(self).trigger(PROJ_RST);
+        return _.get_or_set(this, '_projection', arguments, PROJ_RST, function(value){
+            $(oldproj).off(oldproj.CHANGED);
+            $(oldproj).off(oldproj.PROJ_RST);
+            $(value).on(value.CHANGED,  function(){$(self).trigger(PROJ_CHG);});
+            $(value).on(value.PROJ_RST, function(){$(self).trigger(PROJ_RST);});
         });
       };
       
@@ -80,9 +81,11 @@ define(
           var self = this;
           return _.get_or_set(this, '_instance', arguments, INST_RST, function(value){
               // reset projection w/o triggering change
-              $(self._projection).off("proj:changed");
+              $(self._projection).off(self._projection.CHANGED);
+              $(self._projection).off(self._projection.PROJ_RST);
               self._projection = new Projection();
-              $(self._projection).on("proj:changed", function(){$(self).trigger(PROJ_CHG);});
+              $(self._projection).on(self._projection.CHANGED, function(){$(self).trigger(PROJ_CHG);});
+              $(self._projection).on(self._projection.PROJ_RST, function(){$(self).trigger(PROJ_RST);});
               
               // stop listening on old sigs
               _.each(_.values(self['_sig_configs']), function(sigconf){

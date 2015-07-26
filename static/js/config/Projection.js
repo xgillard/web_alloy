@@ -12,12 +12,17 @@ define(['jquery', 'util/_'], function($, _){
     
     Projection.prototype.add = function(K, V){
         this.projections[K] = V;
+        $(this).trigger(PROJ_RST);
+    };
+    
+    Projection.prototype.navigate = function(K, V){
+        this.projections[K] = V;
         $(this).trigger(CHANGED);
     };
     
     Projection.prototype.remove = function(K){
         delete this.projections[K];
-        $(this).trigger(CHANGED);
+        $(this).trigger(PROJ_RST);
     };
     
     return Projection;

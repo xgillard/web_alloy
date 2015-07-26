@@ -16,8 +16,9 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
       if(this.cy === undefined || this.cy === null) return {};
       return _.indexBy( _.map(nodes(this), nodeToMemo), 'id' );
     };
-    Viz.prototype.render = function(config){
+    Viz.prototype.render = function(config, remembered_pos){
       var self = this;
+      var rem = remembered_pos || {};
       this._lastconf = config || this._lastconf;
       this._displayed= this._lastconf.instance().projected(this._lastconf.projection().projections) || this._displayed;
       // replace the graph zone
@@ -31,7 +32,7 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
                     fit: true,
                     padding: 70
             },
-            elements: mkGraph(self, self._lastconf),
+            elements: mkGraph(self, self._lastconf, rem),
             style: css(self._lastconf),
             ready: function(e){
                     var cy  = this;
@@ -44,11 +45,10 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
         });
     };
 
-    function mkGraph(self, config) {
-        var remembered= config.positions || {};
+    function mkGraph(self, config, remembered) {
         ensureDisplaySthg(self._displayed);
         return {
-            nodes: _.map(self._displayed.atoms,  _.partial(atomToNode, self, config)),
+            nodes: _.map(self._displayed.atoms,  _.partial(atomToNode, self, config, remembered)),
             edges: _.map(self._displayed.tuples, _.partial(tupleToEdge,self, config))
         };
     };
@@ -62,7 +62,7 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
         }
     };
 
-    function atomToNode(self, config, atom) {
+    function atomToNode(self, config, rem, atom) {
         var taint= nodeIdToColor(config, parseInt(atom.type_id));
         var form = idToShape(config, parseInt(atom.type_id));
         var descr= atom.label+markerText(self._displayed, atom);
@@ -78,7 +78,6 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
                 grabbable: true,
                 selectable: true
         };
-        var rem = config.positions || {};
         var old = rem[atom.label];
         if(old !== undefined && old !== null){
             ret.position = old.position;
