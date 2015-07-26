@@ -80,7 +80,7 @@ define(
           var self = this;
           return _.get_or_set(this, '_instance', arguments, INST_RST, function(value){
               // reset projection
-              self.projection(new Projection());
+              self._projection = new Projection();
               
               // stop listening on old sigs
               _.each(_.values(self['_sig_configs']), function(sigconf){
