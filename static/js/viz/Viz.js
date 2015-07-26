@@ -148,6 +148,11 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
     };
 
     function idToShape(config, id){
+        var sigconf = config.sigConfigOf(id);
+        var configuredShape = sigconf.resolvedShape();
+        if(configuredShape !== conf.ConfigType.Automatic){
+            return configuredShape;
+        }
         var shapes = conf.Shapes;
         var idx    = hash(id) % shapes.length;
         return shapes[idx];
