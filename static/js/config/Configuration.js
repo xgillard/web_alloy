@@ -1,6 +1,9 @@
 define(
-  ['jquery', 'util/_', 'config/Projection','config/Palettes', 'config/Signature'], 
-  function($,_, Projection, Palettes, Signature){
+  [
+  'jquery', 'util/_', 
+  'config/ConfigType','config/Projection','config/Palettes', 'config/Signature'
+  ], 
+  function($,_, Type, Projection, Palettes, Signature){
       /*
        * Allowed configuration events are: 
        * config:changed:general

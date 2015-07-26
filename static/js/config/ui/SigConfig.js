@@ -1,7 +1,7 @@
 define(
-  ['jquery', 'util/_', 'ui/_', 'config/Shapes', 'config/Borders'],
+  ['jquery', 'util/_', 'ui/_', 'config/ConfigType','config/Shapes', 'config/Borders'],
   
-  function($,_, ui, Shapes, Borders){
+  function($,_, ui, ConfType, Shapes, Borders){
   
        function SigConfig(model){
          this.model = model;
@@ -43,7 +43,7 @@ define(
          self.textOutlineWidth.val(mdl.textOutlineWidth());
          self.textOutlineColor.val(mdl.textOutlineColor());
          
-         if(mdl.shape() === 'Default'){
+         if(mdl.shape() !== ConfType.Manual){
              self.automaticShape.val(true);
              self.shape.button.attr("disabled", true);
          } else {
@@ -51,7 +51,7 @@ define(
              self.shape.button.attr("disabled", false);
              self.shape.val(mdl.shape());
          }
-         if(mdl.backgroundColor() === 'Default'){
+         if(mdl.backgroundColor() !== ConfType.Manual){
              self.automaticShapeColor.val(true);
              self.backgroundColor.attr("disabled", true); 
          } else {
@@ -69,7 +69,8 @@ define(
        
        function autoShape(self){
            if(self.automaticShape.val()) {
-               self.model.shape('Default');
+               // FIXME
+               self.model.shape(ConfType.Automatic);
                self.shape.button.attr("disabled", true); 
            } else {
                self.model.shape(self.shape.val());
@@ -79,7 +80,8 @@ define(
        
        function autoShapeColor(self){
            if(self.automaticShapeColor.val()) {
-               self.model.backgroundColor('Default');
+               // FIXME
+               self.model.backgroundColor(ConfType.Automatic);
                self.backgroundColor.attr("disabled", true); 
            } else {
                self.model.backgroundColor(self.backgroundColor.val());

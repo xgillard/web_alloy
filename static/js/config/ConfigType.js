@@ -4,5 +4,5 @@
 define({
    Automatic: 'Automatic',
    Inherited: 'Inherited',
-   Default  : 'Default'
+   Manual   : 'Manual'
 });

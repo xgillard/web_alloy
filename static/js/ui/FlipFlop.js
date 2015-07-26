@@ -1,6 +1,6 @@
 define(
-  ['jquery', 'util/_', 'bootstrap'], 
-  function($, _){
+  ['jquery', 'util/_', 'ui/MultiState', 'bootstrap'], 
+  function($, _, MultiState){
     
     function FlipFlop(on, off, callback){
         this.active   = on;
@@ -43,6 +43,6 @@ define(
       self.val(self.checkbox.prop('checked'));
       fn();
     };
-    
+   
     return FlipFlop;
 });

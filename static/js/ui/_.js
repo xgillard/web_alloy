@@ -19,7 +19,7 @@ define(
     
     var createdropdown = _.new(drop);
     var createwaitpopup= _.new(wait);
-    var createflipflop = _.new(flipflop);  
+    var createflipflop = flipflop;  
     
     function simplecheckbox(name, callback){
         var $chk  = $("<input type='checkbox' name='"+name+"' />");

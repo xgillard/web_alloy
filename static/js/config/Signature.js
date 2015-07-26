@@ -1,21 +1,21 @@
 define(
-  ['jquery', 'util/_'],
-  function($, _){
+  ['jquery', 'util/_', 'config/ConfigType'],
+  function($, _, Type){
       
       var CHANGED = 'sig:changed';
       
       // Include font-family and font-size ??
       function SignatureConf(name){
           this._signame         = name;
-          this._label           = 'Default'; // css: label
+          this._label           = Type.Automatic; // css: label
           
           this._textcolor       = '#FFFFFF'; // css: color
           this._textoutlinewidth= '2';       // css: text-outline-width
           this._textoutlinecolor= '#777777'; // css: text-outline-color
           
-          this._shape           = 'Default'; // css: shape
+          this._shape           = Type.Automatic; // css: shape
           this._shapesize       = 50;        // css:
-          this._backgroundcolor = 'Default'; // css: background-color
+          this._backgroundcolor = Type.Automatic; // css: background-color
           
           this._borderstyle     = 'solid';   // css: border-style
           this._bordercolor     = '#888888'; // css: border-color
