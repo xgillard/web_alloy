@@ -57,15 +57,15 @@ require(
           var $item = $("<li></li>");
           var $link = $("<a>"+s.label+"</a>");
           $item.append($link);
-          $link[0].onclick = _.partial(openSigConfig, s.label);
+          $link[0].onclick = _.partial(openSigConfig, s.id);
           $cfgmenu.append($item); 
        });
        $cfgmenu.append("<li class='divider'></li>");
        $cfgmenu.append("<li class='dropdown-header'>Fields</li>");
    });
    
-   function openSigConfig(signame){
-     var view = new config.ui.SigConfig(conf.sigConfigOf(signame));
+   function openSigConfig(sigid){
+     var view = new config.ui.SigConfig(conf.sigConfigOf(sigid));
      $("#config").empty();
      $("#config").append(view.tag);
      window.location.hash = "#config";

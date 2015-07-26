@@ -89,9 +89,9 @@ define(
               // recreate an empty config
               self['_sig_configs'] = {};
               // fill the new config with new values
-              _.each(_.pluck(value.sigs, 'label'), function(s){
-                  var cfg = new Signature(s);
-                  self['_sig_configs'][s] = cfg;
+              _.each(value.sigs, function(s){
+                  var cfg = new Signature(self, s);
+                  self['_sig_configs'][s.id] = cfg;
                   $(cfg).on(cfg.CHANGED, function(){$(self).trigger(CHANGED);});
               });
           });

@@ -5,8 +5,13 @@ define(
       var CHANGED = 'sig:changed';
       
       // Include font-family and font-size ??
-      function SignatureConf(name){
-          this._signame         = name;
+      function SignatureConf(config, signature){
+          this._config          = config;  // This is my 'parent' config: it cannot be changed
+          this._id              = signature.id;
+          this._parendID        = signature.parentID;
+          
+          this._signame         = signature.label;
+          
           this._label           = Type.Automatic; // css: label
           
           this._textcolor       = '#FFFFFF'; // css: color
@@ -27,6 +32,10 @@ define(
       
       SignatureConf.prototype.CHANGED = CHANGED;
       
+      SignatureConf.prototype.parentConfig = function(){
+        return this._config.sigConfigOf(this._parendID);
+      };
+      
       SignatureConf.prototype.sigName = function(){
         return this._signame;
       };
@@ -43,13 +52,19 @@ define(
         return _.get_or_set(this, '_textoutlinecolor', arguments, CHANGED);  
       };
       SignatureConf.prototype.shape = function(){
-        return _.get_or_set(this, '_shape', arguments, CHANGED);  
+        var res = _.get_or_set(this, '_shape', arguments, CHANGED);  
+        if (res === Type.Inherited){
+            return this.parentConfig().shape();
+        }
       };
       SignatureConf.prototype.shapeSize = function(){
         return _.get_or_set(this, '_shapesize', arguments, CHANGED);  
       };
       SignatureConf.prototype.backgroundColor = function(){
-        return _.get_or_set(this, '_backgroundcolor', arguments, CHANGED);  
+        var res = _.get_or_set(this, '_backgroundcolor', arguments, CHANGED);  
+        if (res === Type.Inherited){
+            return this.parentConfig().backgroundColor();
+        }
       };
       SignatureConf.prototype.borderStyle = function(){
         return _.get_or_set(this, '_borderstyle', arguments, CHANGED);  
