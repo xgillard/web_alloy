@@ -11,8 +11,18 @@ define(
          this.textOutlineWidth= ui.Number('textoutlinewidth', _.partial(modify, this, 'textOutlineWidth'));
          this.textOutlineColor= ui.Color('textoutlinecolor', _.partial(modify, this, 'textOutlineWidth'));
          
-         this.automaticShape = ui.FlipFlop('Automatic Shape', 'Manual Shape', _.partial(autoShape, this));
-         this.automaticShapeColor= ui.FlipFlop('Automatic Color', 'Manual Color', _.partial(autoShapeColor, this));
+         var shpDisplay = {
+             'Automatic Shape': ConfType.Automatic, 
+             'Inherited Shape': ConfType.Inherited,
+             'Manual Shape'   : ConfType.Manual
+         };
+         this.automaticShape = ui.TriState(shpDisplay, _.partial(autoShape, this));
+         var shpColDisplay={
+             'Automatic Color': ConfType.Automatic, 
+             'Inherited Color': ConfType.Inherited,
+             'Manual Color'   : ConfType.Manual
+         };
+         this.automaticShapeColor= ui.TriState(shpColDisplay,  _.partial(autoShapeColor, this));
          
          this.shape = ui.Dropdown(Shapes, _.partial(modify, this, 'shape'));
          this.shapeSize = ui.Number('shapesize', _.partial(modify, this, 'shapeSize'));
@@ -44,15 +54,15 @@ define(
          self.textOutlineColor.val(mdl.textOutlineColor());
          
          if(mdl.shape() !== ConfType.Manual){
-             self.automaticShape.val(true);
+             self.automaticShape.val(mdl.shape());
              self.shape.button.attr("disabled", true);
          } else {
-             self.automaticShape.val(false);
+             self.automaticShape.val(ConfType.Manual);
              self.shape.button.attr("disabled", false);
              self.shape.val(mdl.shape());
          }
          if(mdl.backgroundColor() !== ConfType.Manual){
-             self.automaticShapeColor.val(true);
+             self.automaticShapeColor.val(mdl.backgroundColor());
              self.backgroundColor.attr("disabled", true); 
          } else {
              self.automaticShapeColor.val(false);
@@ -65,12 +75,13 @@ define(
          self.borderStyle.val(mdl.borderStyle());
          self.borderColor.val(mdl.borderColor());
          self.borderWidth.val(mdl.borderWidth());
+         
+         self.visible.val(mdl.visible());
        };
        
        function autoShape(self){
-           if(self.automaticShape.val()) {
-               // FIXME
-               self.model.shape(ConfType.Automatic);
+           if(self.automaticShape.val() !== ConfType.Manual) {
+               self.model.shape(self.automaticShape.val());
                self.shape.button.attr("disabled", true); 
            } else {
                self.model.shape(self.shape.val());
@@ -79,9 +90,8 @@ define(
        };
        
        function autoShapeColor(self){
-           if(self.automaticShapeColor.val()) {
-               // FIXME
-               self.model.backgroundColor(ConfType.Automatic);
+           if(self.automaticShapeColor.val() !== ConfType.Manual) {
+               self.model.backgroundColor(self.automaticShapeColor.val());
                self.backgroundColor.attr("disabled", true); 
            } else {
                self.model.backgroundColor(self.backgroundColor.val());

@@ -1,6 +1,6 @@
 define(
-  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/FlipFlop', 'bootstrap'],
-  function($,_, drop, wait, flipflop){
+  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/MultiState', 'bootstrap'],
+  function($,_, drop, wait, multistate){
     
     function _alert(type, mesg){
         var pop = 
@@ -17,9 +17,24 @@ define(
         }
     };
     
-    var createdropdown = _.new(drop);
-    var createwaitpopup= _.new(wait);
-    var createflipflop = flipflop;  
+    var createdropdown  = _.new(drop);
+    var createwaitpopup = _.new(wait);
+    var createmultistate= _.new(multistate);
+    
+    
+    function FlipFlop(on, off, callback){
+      var labels = [on,   off];
+      var values = [true, false];
+      var styles = ['btn-primary', 'btn-default'];
+      return createmultistate(labels, values, styles, callback);  
+    };
+    
+    function TriState(mdl, callback){
+      var labels = _.keys(mdl);
+      var values = _.values(mdl);
+      var styles = ['btn-primary', 'btn-info','btn-default'];
+      return createmultistate(labels, values, styles, callback);  
+    };
     
     function simplecheckbox(name, callback){
         var $chk  = $("<input type='checkbox' name='"+name+"' />");
@@ -70,7 +85,9 @@ define(
         Color          : color,
         Button         : button,
         SimpleCheckbox : simplecheckbox,
-        FlipFlop       : createflipflop,
+        MultiState     : createmultistate,
+        FlipFlop       : FlipFlop,
+        TriState       : TriState,
         LabeledCheckbox: labeledcheckbox,
         Dropdown       : createdropdown,
         Alert          : _alert,
