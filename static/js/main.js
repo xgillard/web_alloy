@@ -43,7 +43,7 @@ require(
        }
    });
    
-   var conf_evts   = conf.PROJ_RST+" "+conf.INST_RST;
+   var conf_evts   = conf.LAYT_CHG+" "+conf.PROJ_RST+" "+conf.INST_RST;
    $(conf).on(conf_evts, function(v){
        if(conf.instance()){
          viz.render(conf, {});

@@ -17,6 +17,7 @@ define(
       var PROJ_CHG= "config:projection:changed";
       var PROJ_RST= "config:projection:reset";
       var INST_RST= "config:instance:reset";
+      var LAYT_CHG= "config:layout:changed";
       
       function Configuration(){
           // Graph related stuff
@@ -37,9 +38,10 @@ define(
       Configuration.prototype.PROJ_CHG = PROJ_CHG;
       Configuration.prototype.PROJ_RST = PROJ_RST;
       Configuration.prototype.INST_RST = INST_RST;
+      Configuration.prototype.LAYT_CHG = LAYT_CHG;
       
       Configuration.prototype.layout = function(){
-        return _.get_or_set(this, '_layout', arguments, CHANGED);
+        return _.get_or_set(this, '_layout', arguments, LAYT_CHG);
       };
       
       Configuration.prototype.nodePalette = function(){
