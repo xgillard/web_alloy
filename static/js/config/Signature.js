@@ -6,7 +6,7 @@ define(
       
       // Include font-family and font-size ??
       function SignatureConf(config, signature){
-          var isUniv = signature.label === 'univ';
+          var isUniv = (signature.label === 'univ');
           
           this._config          = config;  // This is my 'parent' config: it cannot be changed
           this._id              = signature.id;
@@ -54,15 +54,22 @@ define(
         return _.get_or_set(this, '_textoutlinecolor', arguments, CHANGED);  
       };
       SignatureConf.prototype.shape = function(){
-        var res = _.get_or_set(this, '_shape', arguments, CHANGED);  
+        return _.get_or_set(this, '_shape', arguments, CHANGED);  
+      };
+      SignatureConf.prototype.resolvedShape = function(){
+        var res = this.shape();
         if (res === Type.Inherited){
             return this.parentConfig().shape();
         }
+        return res;
       };
       SignatureConf.prototype.shapeSize = function(){
         return _.get_or_set(this, '_shapesize', arguments, CHANGED);  
       };
       SignatureConf.prototype.backgroundColor = function(){
+        return _.get_or_set(this, '_backgroundcolor', arguments, CHANGED);  
+      };
+      SignatureConf.prototype.resolvedBackgroundColor = function(){
         var res = _.get_or_set(this, '_backgroundcolor', arguments, CHANGED);  
         if (res === Type.Inherited){
             return this.parentConfig().backgroundColor();
