@@ -5,6 +5,7 @@ define(
     function NodeRenderer(){};
     
     NodeRenderer.prototype.STYLE = {
+        'opacity'           : 'data(visible)',
         // TEXT
         'content'           : 'data(label)',
         'color'             : 'data(color)',
@@ -43,6 +44,8 @@ define(
         
         return {
           id        : atom.label,
+          // VISIB
+          visible   : sigconf.visible() ? 1 : 0,
           // TEXT
           label     : mkDescription(sigconf, atom, instance),
           color     : sigconf.textColor(),
