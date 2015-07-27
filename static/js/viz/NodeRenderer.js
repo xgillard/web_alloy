@@ -115,7 +115,8 @@ define(
     
     
     function mkLabel(config, atom){
-        return config.label() + atom.label.split("$")[1];
+        var prefix = atom.label.split("$")[0];
+        return atom.label.replace(prefix, config.label());
     };
     
     function hash(id){
