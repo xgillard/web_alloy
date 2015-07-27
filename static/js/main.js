@@ -127,7 +127,10 @@ require(
       please_wait.show();
 
       $.post("/execute", 
-            {content: text}, 
+            {
+                solver : conf.solver(),
+                content: text
+            }, 
             function(rsp_data){
               please_wait.hide();
               
