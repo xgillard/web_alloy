@@ -21,6 +21,8 @@ define(
       var PROJ_RST= "config:projection:reset";
       var INST_RST= "config:instance:reset";
       
+      var ALL_EVTS= SAT_CHG+" "+LAYT_CHG+" "+CHANGED+" "+PROJ_CHG+" "+PROJ_RST+" "+INST_RST;
+      
       function Configuration(){
           // Solution
           this['_solver'          ] = Sat.SAT4J,
@@ -36,6 +38,7 @@ define(
           $(this['_projection']).on("proj:changed", function(){$(self).trigger(PROJ_CHG);});
       };
       
+      Configuration.prototype.ALL_EVTS = ALL_EVTS;
       Configuration.prototype.SAT_CHG  = SAT_CHG;
       Configuration.prototype.LAYT_CHG = LAYT_CHG;
       Configuration.prototype.CHANGED  = CHANGED;

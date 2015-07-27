@@ -4,14 +4,21 @@ require.config({
        'underscore': '_libs/underscore-min',
        'cytoscape' : '_libs/cytoscape/build/cytoscape.min',
        'ace'       : '_libs/ace/ace',
-       'bootstrap' : '_libs/bootstrap/bootstrap.min'
+       'bootstrap' : '_libs/bootstrap/bootstrap.min',
+
+       'rawinflate': '_libs/js-deflate/rawinflate',
+       'rawdeflate': '_libs/js-deflate/rawdeflate',
+       'base64'    : '_libs/js-deflate/base64'
    },
    shim: {
        'jquery'    : {exports: '$' },
        'underscore': {exports: '_'},
        'cytoscape' : {exports: 'cytoscape'},
        'ace'       : {exports: 'ace'},
-       'bootstrap' : {deps: ['jquery']}
+       'bootstrap' : {deps: ['jquery']},
+       'rawinflate': {exports: 'RawInflate'},
+       'rawdeflate': {exports: 'RawDeflate'},
+       'base64'    : {exports: 'Base64'}
    }
 });
 
@@ -21,8 +28,9 @@ require(
     'viz/Viz',
     'config/_',
     'ui/_',
+    'util/compress',
     'bootstrap'], 
-  function($,_,ace, Instance, Viz, config, ui){
+  function($,_,ace, Instance, Viz, config, ui, compress){
    tab("editor-tab");
    tab("viz-tab");
    tab("config-tab");
@@ -35,7 +43,6 @@ require(
    //
    var graphConf   = new config.ui.GeneralConfig(conf);
    var viztb       = new config.ui.VizToolBar(conf);
-   
    
    $(conf).on(conf.CHANGED+" "+conf.PROJ_CHG, function(v){
        if(conf.instance()){
@@ -149,6 +156,8 @@ require(
       var instance = new Instance(rsp);
       conf.instance(instance);
       
+      // partial solution
+      encode_state_in_url(rsp);
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
     };
     
@@ -156,5 +165,20 @@ require(
       conf.instance(null);
       ui.Alert('danger', xml.text());
     };
+    
+    function encode_state_in_url(rsp){
+      var text = JSON.stringify({model: editor.getSession().getValue(), instance: rsp});
+      var compressed = compress.compress(text);  
+      window.location.search = "?state="+compressed;
+    };
+    
+    if(window.location.search != ""){
+        var data = window.location.search.replace("?state=",'');
+        var text = compress.decompress(data);
+        var obj  = JSON.parse(text);
+        
+        editor.getSession().setValue(obj.model);
+        success(obj.instance);
+    }
     
 });
