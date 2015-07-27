@@ -11,7 +11,7 @@ define(
          this.fontSize     = ui.Dropdown(Fonts.Sizes, _.partial(modify, this, 'fontSize'));   
          
          this.textOutlineWidth= ui.Number('textoutlinewidth', _.partial(modify, this, 'textOutlineWidth'));
-         this.textOutlineColor= ui.Color('textoutlinecolor', _.partial(modify, this, 'textOutlineWidth'));
+         this.textOutlineColor= ui.Color('textoutlinecolor', _.partial(modify, this, 'textOutlineColor'));
          
          var shpDisplay = {
              'Automatic Shape': ConfType.Automatic, 

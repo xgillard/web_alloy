@@ -14,7 +14,7 @@ define(
           
           this._signame         = signature.label;
           
-          this._label           = signature.label; // css: label
+          this._label           = signature.label.replace("this/", ""); // css: label
           this._textcolor       = '#FFFFFF';       // css: color
           this._font_family     = 'sans-serif';
           this._font_size       = '12';
