@@ -68,7 +68,7 @@ define(
     };
     
     function enrichWithPosition(node, remembered){
-      var rem  = remembered[node.id];
+      var rem  = remembered[node.data.id];
       if(rem !== undefined && rem !== null){
         node.position = rem.position;
         node.locked   = true;
