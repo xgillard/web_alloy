@@ -33,7 +33,7 @@ require(
    var conf        = new config.Config();
    var viz         = new Viz();
    //
-   var graphConf   = new config.ui.GraphConfig(conf);
+   var graphConf   = new config.ui.GeneralConfig(conf);
    var viztb       = new config.ui.VizToolBar(conf);
    
    
@@ -55,9 +55,9 @@ require(
        var $cfgmenu = $("#cfg-menu");
        $cfgmenu.empty();
        
+       $cfgmenu.append("<li><a href='#graph-config'>General</a></li>");
        if(!conf.instance()) return;
        
-       $cfgmenu.append("<li><a href='#graph-config'>Graph</a></li>");
        $cfgmenu.append("<li class='divider'></li>");
        $cfgmenu.append("<li class='dropdown-header'>Signatures</li>");
        _.each(conf.instance().sigs, function(s){

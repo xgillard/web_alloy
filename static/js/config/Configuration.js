@@ -1,9 +1,10 @@
 define(
   [
   'jquery', 'util/_', 
+  'config/SatSolvers',
   'config/ConfigType','config/Projection','config/Palettes', 'config/Signature'
   ], 
-  function($,_, Type, Projection, Palettes, Signature){
+  function($,_, Sat, Type, Projection, Palettes, Signature){
       /*
        * Allowed configuration events are: 
        * config:changed:general
@@ -20,6 +21,8 @@ define(
       var LAYT_CHG= "config:layout:changed";
       
       function Configuration(){
+          // Solution
+          this['_solver'          ] = Sat.SAT4J,
           // Graph related stuff
           this['_layout'          ] = 'circle';
           this['_node_palette'    ] = 'Default';

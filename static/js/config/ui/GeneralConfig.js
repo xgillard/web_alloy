@@ -2,7 +2,7 @@ define(
   ['jquery', 'util/_', 'ui/_', 'config/Layouts', 'config/Palettes', 'config/Fonts', 'bootstrap'], 
   function($,_, ui, Layouts, palette, fonts){
       
-    function GraphConfig(model){
+    function GeneralConfig(model){
         var self          = this;
         this.model        = model;
         this.layout       = ui.Dropdown(Layouts, function(value){self.model.layout(value);});
@@ -13,7 +13,7 @@ define(
         setVal(this, model);
     };
     
-    GraphConfig.val = function(){
+    GeneralConfig.val = function(){
         if(arguments.length === 0){
             return mkVal(this);
         }
@@ -41,7 +41,7 @@ define(
         var tag =
                 // Header
                 "<div class='page-header'>" +
-                "<h1>Graph configuration</h1>"+
+                "<h1>General configuration</h1>"+
                 "</div>" +
                 // Form
                 "<form class='form-horizontal' role='form'>" +
@@ -74,5 +74,5 @@ define(
         return $tag;
     };
     
-    return GraphConfig;
+    return GeneralConfig;
 });
