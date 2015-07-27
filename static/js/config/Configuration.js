@@ -14,11 +14,12 @@ define(
        * 
        * config:instance:reset
        */
+      var SAT_CHG = "config:solver:changed";
+      var LAYT_CHG= "config:layout:changed";
       var CHANGED = "config:config:changed";
       var PROJ_CHG= "config:projection:changed";
       var PROJ_RST= "config:projection:reset";
       var INST_RST= "config:instance:reset";
-      var LAYT_CHG= "config:layout:changed";
       
       function Configuration(){
           // Solution
@@ -35,11 +36,16 @@ define(
           $(this['_projection']).on("proj:changed", function(){$(self).trigger(PROJ_CHG);});
       };
       
+      Configuration.prototype.SAT_CHG  = SAT_CHG;
+      Configuration.prototype.LAYT_CHG = LAYT_CHG;
       Configuration.prototype.CHANGED  = CHANGED;
       Configuration.prototype.PROJ_CHG = PROJ_CHG;
       Configuration.prototype.PROJ_RST = PROJ_RST;
       Configuration.prototype.INST_RST = INST_RST;
-      Configuration.prototype.LAYT_CHG = LAYT_CHG;
+      
+      Configuration.prototype.solver = function(){
+        return _.get_or_set(this, '_solver', arguments, SAT_CHG);
+      };
       
       Configuration.prototype.layout = function(){
         return _.get_or_set(this, '_layout', arguments, LAYT_CHG);
