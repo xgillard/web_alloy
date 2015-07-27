@@ -1,21 +1,17 @@
-define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytoscape){
+define(
+  ['jquery', 'util/_', 'config/_', 'viz/NodeRenderer','cytoscape'], 
+  function($, _, conf, NodeRenderer, cytoscape){
     
     function Viz(){
       this.style = {position: 'relative', width: '100%', height: '100%', float: 'left'};
       this.tag   = $("<div class='viz' />").css(this.style);
     };
     
-    Viz.prototype.appendTo = function(target){
-      return this.tag.appendTo(target);
-    };
-    
-    Viz.prototype.remove = function(){
-      this.tag.remove();
-    };
     Viz.prototype.positions = function(){
       if(this.cy === undefined || this.cy === null) return {};
       return _.indexBy( _.map(nodes(this), nodeToMemo), 'id' );
     };
+    
     Viz.prototype.render = function(config, remembered_pos){
       var self = this;
       var rem = remembered_pos || {};
@@ -52,6 +48,10 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
             edges: _.map(self._displayed.tuples, _.partial(tupleToEdge,self, config))
         };
     };
+    
+    function atomToNode(self, config, remembered, atom){
+      return NodeRenderer.atomToNode(config, atom, self._displayed, remembered);  
+    };
 
     function ensureDisplaySthg(instance){
         if(_.isEmpty(instance.atoms)){
@@ -61,32 +61,7 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
             });
         }
     };
-
-    function atomToNode(self, config, rem, atom) {
-        var taint= nodeIdToColor(config, parseInt(atom.type_id));
-        var form = idToShape(config, parseInt(atom.type_id));
-        var descr= atom.label+markerText(self._displayed, atom);
-        var ret  =  {
-                data: {
-                    id   : atom.label,
-                    label: descr,
-                    color: taint,
-                    shape: form,
-                    width: 50,
-                    height:50
-                },
-                grabbable: true,
-                selectable: true
-        };
-        var old = rem[atom.label];
-        if(old !== undefined && old !== null){
-            ret.position = old.position;
-            ret.locked   = true;
-        } 
-
-        return ret;
-    };
-  
+    
     function tupleToEdge(self, config, tuple) {
         // Computing the codirected edges and control points helps to avoid codirected/parrallel
         // edges to be rendered on top of one another. (In that case only one of the edges would
@@ -116,45 +91,14 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
         };
     };
 
-    function markerText(instance, atom){
-        var mark   = "";
-        var markers= instance.markersOf(atom);
-        if(markers.length>0){
-            mark += ': (';
-            for(var i = 0; i<markers.length; i++){
-                mark += markers[i];
-                if(i+1<markers.length) mark += ", ";
-            }
-            mark += ')';
-        }
-        return mark;
-    };
-
     function hash(id){
         return id * 41 % 97;
     };
 
-    function nodeIdToColor(config, id){
-        var colors = config.nodePaletteVal();
-        var idx    = hash(id) % colors.length;
-        return colors[idx];
-    };
-    
     function edgeIdToColor(config, id){
         var colors = config.edgePaletteVal();
         var idx    = hash(id) % colors.length;
         return colors[idx];
-    };
-
-    function idToShape(config, id){
-        var sigconf = config.sigConfigOf(id);
-        var configuredShape = sigconf.resolvedShape();
-        if(configuredShape !== conf.ConfigType.Automatic){
-            return configuredShape;
-        }
-        var shapes = conf.Shapes;
-        var idx    = hash(id) % shapes.length;
-        return shapes[idx];
     };
 
     function highlightEdge(cy, evt){
@@ -193,63 +137,35 @@ define(['jquery', 'util/_', 'config/_','cytoscape'], function($, _, conf, cytosc
     };
     
     function css(config){
-        return dynamicstyle(
-                edgestyle(config,
-                nodestyle(config,
-                cytoscape.stylesheet()
-                )));
+        return cytoscape.stylesheet()
+                .selector('node').css(NodeRenderer.STYLE)
+                .selector('edge').css(edgestyle())
+                .selector("node.dampened").css({ "opacity" : .4 })
+                .selector("edge.dampened").css({ "opacity" : .1 });
     };
     
-    function nodestyle(config, stylesheet){
-        stylesheet.selector('node')
-                  .css({
-                    'content'           : 'data(label)',
-                    'text-valign'       : 'center',
-                    'shape'             : 'data(shape)',
-                    'background-color'  : 'data(color)',
-                    'width'             : 'data(width)',
-                    'height'            : 'data(height)',
-                    'color'             : 'white',
-                    'text-outline-width': 2,
-                    'text-outline-color': '#777',
-                    //
-                    'font-family'       : config.fontFamily(),
-                    'font-size'         : config.fontSize()
-                    });
-        return stylesheet;
-    };
-    
-    function edgestyle(config, stylesheet){
-        stylesheet.selector('edge')
-                  .css({
-                    'content'           : 'data(label)',
-                    'color'             : 'white',	
-                    'width'             : 2,
-                    'line-color'        : 'data(color)',
-                    'target-arrow-shape': 'triangle-backcurve',
-                    'target-arrow-fill' : 'filled',
-                    'target-arrow-color': 'data(color)',
-                    'edge-text-rotation': 'autorotate',
-                    'text-halign'       : 'center',
-                    'text-valign'       : 'center',
-                    'text-outline-width': 2,
-                    'text-outline-color': 'data(color)',
-                    // controlling the curve look 
-                    'curve-style'           : 'data(curveStyle)',
-                    'control-point-distance': 'data(controlPoint)',
-                    'control-point-weight'  : .5,
-                    //
-                    'font-family'       : config.fontFamily(),
-                    'font-size'         : config.fontSize()
-                    });
-        return stylesheet;
-    };
-    
-    function dynamicstyle(stylesheet){
-        stylesheet.selector("node.dampened").css({ "opacity" : .4 })
-                  .selector("edge.dampened").css({ "opacity" : .1 })
-                  ;
-        return stylesheet;
+    function edgestyle(){
+        return {
+            'content'           : 'data(label)',
+            'color'             : 'white',	
+            'width'             : 2,
+            'line-color'        : 'data(color)',
+            'target-arrow-shape': 'triangle-backcurve',
+            'target-arrow-fill' : 'filled',
+            'target-arrow-color': 'data(color)',
+            'edge-text-rotation': 'autorotate',
+            'text-halign'       : 'center',
+            'text-valign'       : 'center',
+            'text-outline-width': 2,
+            'text-outline-color': 'data(color)',
+            // controlling the curve look 
+            'curve-style'           : 'data(curveStyle)',
+            'control-point-distance': 'data(controlPoint)',
+            'control-point-weight'  : .5,
+            //
+            //'font-family'       : 'data(fontFamily)',
+            //'font-size'         : 'data(fontSize)'
+        };
     };
     
     return Viz;

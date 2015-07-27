@@ -9,9 +9,6 @@ define(
         this.nodePalette  = ui.Dropdown(_.keys(palette), function(value){self.model.nodePalette(value);});
         this.edgePalette  = ui.Dropdown(_.keys(palette), function(value){self.model.edgePalette(value);});
         
-        this.fontFamily   = ui.Dropdown(fonts.Families, function(value){self.model.fontFamily(value);});
-        this.fontSize     = ui.Dropdown(fonts.Sizes, function(value){self.model.fontSize(value);});
-        
         this.tag = mkTag(this);
         setVal(this, model);
     };
@@ -38,8 +35,6 @@ define(
         self.layout.val(self.model.layout());
         self.nodePalette.val(self.model.nodePalette());
         self.edgePalette.val(self.model.edgePalette());
-        self.fontFamily.val(self.model.fontFamily());
-        self.fontSize.val(self.model.fontSize());
     };
     
     function mkTag(self){
@@ -68,12 +63,6 @@ define(
                 "    <div class='col-sm-10' data-name='edge.palette'>"+
                 "    </div>" +
                 "  </div>" +
-                // Font
-                "  <div class='form-group'>" +
-                "    <label class='control-label col-sm-2' >Font</label>" +
-                "    <div class='col-sm-10' data-name='font'>"+
-                "    </div>" +
-                "  </div>" +
                 
                 "</form>";
         
@@ -81,8 +70,6 @@ define(
         $tag.find("[data-name='layout']").append(self.layout.tag);
         $tag.find("[data-name='node.palette']").append(self.nodePalette.tag);
         $tag.find("[data-name='edge.palette']").append(self.edgePalette.tag);
-        $tag.find("[data-name='font']").append(self.fontFamily.tag);
-        $tag.find("[data-name='font']").append(self.fontSize.tag);
         
         return $tag;
     };

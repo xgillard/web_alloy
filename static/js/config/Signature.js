@@ -15,8 +15,10 @@ define(
           this._signame         = signature.label;
           
           this._label           = signature.label; // css: label
+          this._textcolor       = '#FFFFFF';       // css: color
+          this._font_family     = 'sans-serif';
+          this._font_size       = '12';
           
-          this._textcolor       = '#FFFFFF'; // css: color
           this._textoutlinewidth= '2';       // css: text-outline-width
           this._textoutlinecolor= '#777777'; // css: text-outline-color
           
@@ -47,6 +49,12 @@ define(
       SignatureConf.prototype.textColor = function(){
         return _.get_or_set(this, '_textcolor', arguments, CHANGED);  
       };
+      SignatureConf.prototype.fontFamily = function(){
+        return _.get_or_set(this, '_font_family', arguments, CHANGED);
+      };
+      SignatureConf.prototype.fontSize = function(){
+        return _.get_or_set(this, '_font_size', arguments, CHANGED);
+      };
       SignatureConf.prototype.textOutlineWidth = function(){
         return _.get_or_set(this, '_textoutlinewidth', arguments, CHANGED);  
       };
@@ -74,6 +82,7 @@ define(
         if (res === Type.Inherited){
             return this.parentConfig().resolvedBackgroundColor();
         }
+        return res;
       };
       SignatureConf.prototype.borderStyle = function(){
         return _.get_or_set(this, '_borderstyle', arguments, CHANGED);  

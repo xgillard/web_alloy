@@ -24,8 +24,6 @@ define(
           this['_layout'          ] = 'circle';
           this['_node_palette'    ] = 'Default';
           this['_edge_palette'    ] = 'Default';
-          this['_font_family'     ] = 'sans-serif';
-          this['_font_size'       ] = '12';
           
           this['_projection'      ] = new Projection();
           this['_instance'        ] = null;
@@ -58,14 +56,6 @@ define(
       
       Configuration.prototype.edgePaletteVal = function(){
           return Palettes[this.edgePalette()];
-      };
-      
-      Configuration.prototype.fontFamily = function(){
-        return _.get_or_set(this, '_font_family', arguments, CHANGED);
-      };
-      
-      Configuration.prototype.fontSize = function(){
-        return _.get_or_set(this, '_font_size', arguments, CHANGED);
       };
       
       Configuration.prototype.projection = function(){

@@ -1,12 +1,14 @@
 define(
-  ['jquery', 'util/_', 'ui/_', 'config/ConfigType','config/Shapes', 'config/Borders'],
+  ['jquery', 'util/_', 'ui/_', 'config/ConfigType', 'config/Fonts', 'config/Shapes', 'config/Borders'],
   
-  function($,_, ui, ConfType, Shapes, Borders){
+  function($,_, ui, ConfType, Fonts,Shapes, Borders){
   
        function SigConfig(model){
          this.model = model;
          this.label = ui.Text('label', _.partial(modify, this, 'label'));
-         this.textColor = ui.Color('textcolor', _.partial(modify, this, 'textColor'));
+         this.textColor = ui.Color('textcolor', _.partial(modify, this, 'textColor')); 
+         this.fontFamily   = ui.Dropdown(Fonts.Families, _.partial(modify, this, 'fontFamily'));
+         this.fontSize     = ui.Dropdown(Fonts.Sizes, _.partial(modify, this, 'fontSize'));   
          
          this.textOutlineWidth= ui.Number('textoutlinewidth', _.partial(modify, this, 'textOutlineWidth'));
          this.textOutlineColor= ui.Color('textoutlinecolor', _.partial(modify, this, 'textOutlineWidth'));
@@ -49,6 +51,8 @@ define(
          
          self.label.val(mdl.label());
          self.textColor.val(mdl.textColor());
+         self.fontFamily.val(self.model.fontFamily());
+         self.fontSize.val(self.model.fontSize());
          
          self.textOutlineWidth.val(mdl.textOutlineWidth());
          self.textOutlineColor.val(mdl.textOutlineColor());
@@ -121,6 +125,9 @@ define(
                 "  <div class='form-group' data-name='textcolor'>" +
                 "    <label>Text Color</label>" +
                 "  </div>" +
+                "  <div class='form-group' data-name='font'>" +
+                "    <label>Font</label>" +
+                "  </div>" +
                 "  <div class='form-group' data-name='visible'>" +
                 "  </div>" +
                 "  </form>" +
@@ -183,6 +190,8 @@ define(
         var $tag = $(tag);
         $tag.find("[data-name='label']").append(self.label);
         $tag.find("[data-name='textcolor']").append(self.textColor);
+        $tag.find("[data-name='font']").append(self.fontFamily.tag);
+        $tag.find("[data-name='font']").append(self.fontSize.tag);
         $tag.find("[data-name='visible']").prepend(self.visible.tag);
         
         $tag.find("[data-name='textoutlinecolor']").append(self.textOutlineColor);
