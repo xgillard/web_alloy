@@ -5,7 +5,7 @@ define(
     function GeneralConfig(model){
         var self          = this;
         this.model        = model;
-        this.solver       = ui.Dropdown(_.keys(Sat), function(value){self.model.solver(Sat[value])});
+        this.solver       = ui.Dropdown(_.keys(Sat), function(value){self.model.solver(Sat[value]);});
         this.layout       = ui.Dropdown(Layouts, function(value){self.model.layout(value);});
         this.nodePalette  = ui.Dropdown(_.keys(palette), function(value){self.model.nodePalette(value);});
         this.edgePalette  = ui.Dropdown(_.keys(palette), function(value){self.model.edgePalette(value);});
