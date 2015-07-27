@@ -39,6 +39,9 @@ define(
          this.visible.tag.css({width: '9em'});
          this.automaticShape.tag.css({width: '15em'});
          this.automaticShapeColor.tag.css({width: '15em'});
+
+         this.fontFamily.tag.css({width: '100%'});
+         this.fontSize.tag.css({width: '100%'});
          
          this.tag = mkTag(this);
          update(this);
@@ -69,7 +72,7 @@ define(
              self.automaticShapeColor.val(mdl.backgroundColor());
              self.backgroundColor.attr("disabled", true); 
          } else {
-             self.automaticShapeColor.val(false);
+             self.automaticShapeColor.val(ConfType.Manual);
              self.backgroundColor.attr("disabled", false); 
              self.backgroundColor.val(mdl.backgroundColor());
          }
@@ -125,8 +128,11 @@ define(
                 "  <div class='form-group' data-name='textcolor'>" +
                 "    <label>Text Color</label>" +
                 "  </div>" +
-                "  <div class='form-group' data-name='font'>" +
-                "    <label>Font</label>" +
+                "  <div class='form-group' data-name='font-family'>" +
+                "    <label>Font Family</label>" +
+                "  </div>" +
+                "  <div class='form-group' data-name='font-size'>" +
+                "    <label>Font Size</label>" +
                 "  </div>" +
                 "  <div class='form-group' data-name='visible'>" +
                 "  </div>" +
@@ -190,8 +196,8 @@ define(
         var $tag = $(tag);
         $tag.find("[data-name='label']").append(self.label);
         $tag.find("[data-name='textcolor']").append(self.textColor);
-        $tag.find("[data-name='font']").append(self.fontFamily.tag);
-        $tag.find("[data-name='font']").append(self.fontSize.tag);
+        $tag.find("[data-name='font-family']").append(self.fontFamily.tag);
+        $tag.find("[data-name='font-size']").append(self.fontSize.tag);
         $tag.find("[data-name='visible']").prepend(self.visible.tag);
         
         $tag.find("[data-name='textoutlinecolor']").append(self.textOutlineColor);
