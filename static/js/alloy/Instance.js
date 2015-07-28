@@ -188,7 +188,7 @@ function($,_, Sig, Atom, Tuple){
           
           ret.push(new Tuple(type_id, label, src, dst));
 
-          label = src.label +"."+label;
+          label = src +"."+label;
         }
         return ret;
     };

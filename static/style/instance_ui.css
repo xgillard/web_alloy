@@ -1,14 +1,6 @@
-text {
-	font-size: 10pt;
-	text-anchor: middle;
-	alignment-baseline: middle;
-}
 .link {
   cursor: move
 }
 .node{
   cursor: move;
-}
-.node > text {
-  fill: white;
 }

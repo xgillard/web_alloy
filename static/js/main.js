@@ -2,10 +2,13 @@ require.config({
    paths:{
        'jquery'    : '_libs/jquery',
        'underscore': '_libs/underscore-min',
-       'cytoscape' : '_libs/cytoscape/build/cytoscape.min',
        'ace'       : '_libs/ace/ace',
        'bootstrap' : '_libs/bootstrap/bootstrap.min',
-
+       // Further info about this lib to be found here:
+       // https://github.com/mdaines/viz.js#usage
+       'viz'       : '_libs/viz-js/viz',
+       // Further info about these libs to be found here:
+       // https://github.com/dankogai/js-deflate
        'rawinflate': '_libs/js-deflate/rawinflate',
        'rawdeflate': '_libs/js-deflate/rawdeflate',
        'base64'    : '_libs/js-deflate/base64'
@@ -13,9 +16,10 @@ require.config({
    shim: {
        'jquery'    : {exports: '$' },
        'underscore': {exports: '_'},
-       'cytoscape' : {exports: 'cytoscape'},
        'ace'       : {exports: 'ace'},
        'bootstrap' : {deps: ['jquery']},
+       //
+       'viz'       : {exports: 'Viz'},
        'rawinflate': {exports: 'RawInflate'},
        'rawdeflate': {exports: 'RawDeflate'},
        'base64'    : {exports: 'Base64'}
@@ -25,12 +29,12 @@ require.config({
 require(
   ['jquery', 'util/_', 'ace',
     "alloy/Instance",
-    'viz/Viz',
+    'rendering/Renderer',
     'config/_',
     'ui/_',
     'util/compress',
     'bootstrap'], 
-  function($,_,ace, Instance, Viz, config, ui, compress){
+  function($,_,ace, Instance, Renderer, config, ui, compress){
    tab("editor-tab");
    tab("viz-tab");
    tab("config-tab");
@@ -39,21 +43,21 @@ require(
    var editor      = mkEdit();
    //
    var conf        = new config.Config();
-   var viz         = new Viz();
+   var renderer    = new Renderer();
    //
    var graphConf   = new config.ui.GeneralConfig(conf);
    var viztb       = new config.ui.VizToolBar(conf);
    
    $(conf).on(conf.CHANGED+" "+conf.PROJ_CHG, function(v){
        if(conf.instance()){
-         viz.render(conf, viz.positions());
+         renderer.render(conf, renderer.positions());
        }
    });
    
    var conf_evts   = conf.LAYT_CHG+" "+conf.PROJ_RST+" "+conf.INST_RST;
    $(conf).on(conf_evts, function(v){
        if(conf.instance()){
-         viz.render(conf, {});
+         renderer.render(conf, {});
        }
    });
    
@@ -85,7 +89,7 @@ require(
      window.location.hash = "#config";
    };
    
-   $("#outcome").append(viz.tag);
+   $("#outcome").append(renderer.tag);
    $("#outcome").append(viztb.tag);
       
    $("#graph-config").append(graphConf.tag);
@@ -105,7 +109,7 @@ require(
    
    function show_viz(){
        activate("viz-tab");
-       viz.render(conf);
+       renderer.render(conf);
    }
    
    function tab(id){
