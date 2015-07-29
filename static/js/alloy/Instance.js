@@ -3,14 +3,14 @@ function($,_, Sig, Atom, Tuple){
     
     function Tuple(type_id, label, src, dst){
         this.type_id = type_id;
-        this.label   = label;
-        this.src     = src;
-        this.dst     = dst;
+        this.label   = label.replace(/\$/g,'');
+        this.src     = src.replace(/\$/g,'');
+        this.dst     = dst.replace(/\$/g,'');
     };
     
     function Atom(type_id, label){
         this.type_id = type_id;
-        this.label   = label;
+        this.label   = label.replace(/\$/g,'');
     };
     
     /**
@@ -21,7 +21,7 @@ function($,_, Sig, Atom, Tuple){
         var xml      = $(snippet);
         this.id      = xml.attr("ID");
         this.parentID= xml.attr("parentID");
-        this.label   = xml.attr("label");
+        this.label   = xml.attr("label").replace(/\$/g,'');
         this.builtin = xml.attr("builtin") === "yes";
         this.private = xml.attr("private") === "yes";
         this.one     = xml.attr("one")     === "yes";

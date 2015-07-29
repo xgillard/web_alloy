@@ -4,6 +4,8 @@ require.config({
        'underscore': '_libs/underscore-min',
        'ace'       : '_libs/ace/ace',
        'bootstrap' : '_libs/bootstrap/bootstrap.min',
+       //
+       'd3'        : '_libs/d3/d3.min',
        // Further info about this lib to be found here:
        // https://github.com/mdaines/viz.js#usage
        'viz'       : '_libs/viz-js/viz',
@@ -18,6 +20,8 @@ require.config({
        'underscore': {exports: '_'},
        'ace'       : {exports: 'ace'},
        'bootstrap' : {deps: ['jquery']},
+       //
+       'd3'        : {exports: 'd3'},
        //
        'viz'       : {exports: 'Viz'},
        'rawinflate': {exports: 'RawInflate'},

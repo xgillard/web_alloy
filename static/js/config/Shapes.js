@@ -1,10 +1,12 @@
 define(function(){
     
    var SHAPES = [
-        'roundrectangle', 'rhomboid'    , 'ellipse', 
-        'triangle'      , 'pentagon'    , 'hexagon',
-        'heptagon'      , 'octagon'     , 'star'   ,
-        'diamond'       , 'vee' 
+        'box'  ,  /*'polygon',*/ 'ellipse' , 'circle',
+        /*'point',*/  'egg',     'triangle', //'plaintext',
+        'diamond','trapezium','parallelogram','house',
+        'hexagon','octagon','doublecircle','doubleoctagon',
+        'tripleoctagon','invtriangle','invtrapezium','invhouse',
+        'Mdiamond','Msquare','Mcircle','none'
    ];
     
    return SHAPES;

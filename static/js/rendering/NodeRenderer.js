@@ -3,87 +3,23 @@ define(
   function($,_, Config){
       
     function NodeRenderer(){};
-    
-    NodeRenderer.prototype.STYLE = {
-        'opacity'           : 'data(visible)',
-        // TEXT
-        'content'           : 'data(label)',
-        'color'             : 'data(color)',
-        'font-family'       : 'data(fontFamily)',
-        'font-size'         : 'data(fontSize)',
-        'text-valign'       : 'center',
-        // OUTLINE
-        'text-outline-width': 'data(textOutlineWidth)',
-        'text-outline-color': 'data(textOutlineColor)',
-        // SHAPE
-        'shape'             : 'data(shape)',
-        'background-color'  : 'data(shapeColor)',
-        'width'             : 'data(width)',
-        'height'            : 'data(height)',
-        // BORDER
-        'border-style'      : 'data(borderStyle)',
-        'border-color'      : 'data(borderColor)',
-        'border-width'      : 'data(borderWidth)'
+
+    NodeRenderer.prototype.render = function(atom, instance, config){
+      var sigconf = sigConfig(config, atom);
+      var node    = dropDollar(atom.label);
+      node+='[label="'+mkDescription(sigconf, atom, instance)+'",shape="'+mkShape(sigconf, atom)+'",style="filled",fillcolor="'+mkColor(config, sigconf,atom)+'"];';
+      return node;
     };
-    
-    NodeRenderer.prototype.atomToNode = function(config, atom, instance, positions){
-      var node = mkNode(config, atom, instance);
-      return enrichWithPosition(node, positions);
-    };
-    
-    function mkNode(config, atom, instance) {
-        return {
-          data      : mkData(config, atom, instance),
-          grabbable : true,
-          selectable: true
-        };
-    };
-    
-    function mkData(config, atom, instance){
-        var sigconf = sigConfig(config, atom);
-        
-        return {
-          id        : atom.label,
-          // VISIB
-          visible   : sigconf.visible() ? 1 : 0,
-          // TEXT
-          label     : mkDescription(sigconf, atom, instance),
-          color     : sigconf.textColor(),
-          fontFamily: sigconf.fontFamily(),
-          fontSize  : sigconf.fontSize(),
-          // OUTLINE
-          textOutlineWidth: sigconf.textOutlineWidth(),
-          textOutlineColor: sigconf.textOutlineColor(),
-          // SHAPE
-          shape     : mkShape(sigconf, atom),
-          shapeColor: mkColor(config, sigconf, atom),
-          width     : sigconf.shapeSize(),
-          height    : sigconf.shapeSize(),
-          // BORDER
-          borderStyle: sigconf.borderStyle(),
-          borderColor: sigconf.borderColor(),
-          borderWidth: sigconf.borderWidth() 
-        };
-    };
-    
+
     function sigConfig(config, atom){
       return config.sigConfigOf(parseInt(atom.type_id));
-    };
-    
-    function enrichWithPosition(node, remembered){
-      var rem  = remembered[node.data.id];
-      if(rem !== undefined && rem !== null){
-        node.position = rem.position;
-        node.locked   = true;
-      }
-      return node;
     };
     
     function mkDescription(config, atom, instance){
         var mark   = mkLabel(config, atom);
         var markers= instance.markersOf(atom);
         if(markers.length>0){
-            mark += ': (';
+            mark += '\n(';
             for(var i = 0; i<markers.length; i++){
                 mark += markers[i];
                 if(i+1<markers.length) mark += ", ";
@@ -112,11 +48,16 @@ define(
         var idx    = hash(parseInt(atom.type_id)) % colors.length;
         return colors[idx];
     };
-    
-    
+        
     function mkLabel(config, atom){
         var prefix = atom.label.split("$")[0];
-        return atom.label.replace(prefix, config.label());
+        var label  =  atom.label.replace(prefix, config.label());
+        return dropDollar(label);
+    };
+    
+    
+    function dropDollar(s){
+        return s.replace(/\$/g, '');
     };
     
     function hash(id){
