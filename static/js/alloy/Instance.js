@@ -32,11 +32,12 @@ define(
       
       Instance.prototype.sig  = function(signame){
           return _.findWhere(this.signatures, {signame: signame});
-      }
+      };
+      
       Instance.prototype.atom = function(atomname){
           return _.findWhere(this.atoms, {atomname: atomname});
-      }
-      
+      };
+
       return Instance;
   }
 );
