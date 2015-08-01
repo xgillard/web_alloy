@@ -1,6 +1,9 @@
 define(
-  ['jquery', 'underscore', 'alloy/Instance'],
-  function($,_, Instance){
+  [
+  'jquery', 'underscore', 
+  'alloy/Instance', 'alloy/TypeSystem'
+  ],
+  function($,_, Instance, TypeSystem){
       
       /**
        * This method parses an xml document to produced the 
@@ -9,7 +12,8 @@ define(
        * @returns {Instance} the Instance represented by the document
        */
       function read_xml(str){
-        return new Instance(str);  
+        var instance = new Instance(str);
+        return TypeSystem.fix_types(instance);
       };
       
       /**
@@ -19,8 +23,7 @@ define(
        */
       function read_json(str){
          var instance = JSON.parse(str);
-         Instance.prototype.fix_types(instance, []);
-         return instance;
+         return TypeSystem.fix_types(instance);
       };
       
       return {
