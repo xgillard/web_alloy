@@ -1,9 +1,9 @@
 define(
   [
   'jquery', 'util/_', 
-  'alloy/Signature', 'alloy/Field', 'alloy/Atom', 'alloy/Tuple'
+  'alloy/Signature', 'alloy/Field', 'alloy/Atom', 'alloy/Tuple', 'alloy/SkolemConstant'
   ],
-  function($,_, Signature, Field, Atom, Tuple){
+  function($,_, Signature, Field, Atom, Tuple, SkolemConstant){
       
       /**
        * This is the constructor of the Instance class. 
@@ -11,8 +11,6 @@ define(
        */
       function Instance(xinstance) {
           var $xml = $(xinstance);
-          // TODO !!
-          this._skolems    = [];
           
           this.signatures = _.map($xml.find("sig"),          _.new(Signature));
           this.fields     = _.map($xml.find("field"),        _.new(Field));
@@ -20,6 +18,8 @@ define(
           this.atoms      = _.map($xml.find("sig > atom"),   _.new(Atom));
           this.tuples     = _.map($xml.find("field > tuple"),_.new(Tuple));
           
+          // Skolem constants
+          this.skolems    = _.map($xml.find("skolem"),       _.new(SkolemConstant));
           this.fix_types();
       };
       
@@ -61,6 +61,9 @@ define(
         });
         _.each(this.tuples, function(tuple){
           Object.setPrototypeOf(tuple, Tuple.prototype);
+        });
+        _.each(this.skolems, function(skol){
+          Object.setPrototypeOf(skol, SkolemConstant.prototype);
         });
         
         // Rebuild type hierarchy
