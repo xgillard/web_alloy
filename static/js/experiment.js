@@ -44,6 +44,10 @@ require(
         var str = JSON.stringify(mdl);
         console.log(str);
         
+        mdl.univ().machin = "coucou";
+        
+        console.log(mdl.signatures[3].signame+" "+mdl.signatures[3].machin);
+        
         var md2 = model.deserialize(str);
         console.log(md2.univ());
     });

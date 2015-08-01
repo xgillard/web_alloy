@@ -24,32 +24,40 @@ define(
       Instance.prototype.fix_types = function(){
         var sig_byid = _.indexBy(this.signatures, "id");
         var fld_byid = _.indexBy(this.fields, "id");
-        Object.setPrototypeOf(this, Instance.prototype);
-        Object.setPrototypeOf(this.univ(), Signature.prototype);
-        //
+        Object.setPrototypeOf(this,        Instance.prototype);
+
+        // Reset basic types
+        _.each(this.signatures, function(sig){
+            Object.setPrototypeOf(sig, Signature.prototype);
+        });
+        _.each(this.fields, function(fld){
+            Object.setPrototypeOf(fld, Field.prototype);
+        });
+        _.each(this.atoms, function(atom){
+          Object.setPrototypeOf(atom, Atom.prototype);
+        });
+        _.each(this.tuples, function(tuple){
+          Object.setPrototypeOf(tuple, Tuple.prototype);
+        });
+        
+        // Rebuild type hierarchy
         _.each(this.signatures, function(sig){
            var parent = sig_byid[sig.parentID];
            if(parent){
-             Object.setPrototypeOf(sig, parent);
+             sig.setParent(parent);
            }
         });
-        
-        //
         _.each(this.fields, function(fld){
            var parent = fld_byid[fld.parentID];
            if(parent){
-             Object.setPrototypeOf(fld, parent);
+             fld.setParent(parent);
            }
         });
-        
-        // 
         _.each(this.atoms, function(atom){
-          Object.setPrototypeOf(atom, sig_byid[atom.sigid]);
+          atom.setParent(sig_byid[atom.sigid]);
         });
-        
-        //
         _.each(this.tuples, function(tuple){
-          Object.setPrototypeOf(tuple, fld_byid[tuple.fieldid]);  
+          tuple.setParent(fld_byid[tuple.fieldid]);  
         });
         
         return this;
