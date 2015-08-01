@@ -39,7 +39,7 @@ require(
     posted.done(function(xml){
         var $xml = $( $.parseXML(xml) );
         
-        var mdl  = new model.Instance($xml);
+        var mdl  = model.read_xml($xml);
         
         var str = JSON.stringify(mdl);
         console.log(str);
@@ -48,7 +48,7 @@ require(
         
         console.log(mdl.signatures[3].signame+" "+mdl.signatures[3].machin);
         
-        var md2 = model.deserialize(str);
+        var md2 = model.read_json(str);
         console.log(md2.univ());
     });
     

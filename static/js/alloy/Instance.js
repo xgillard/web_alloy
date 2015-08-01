@@ -11,7 +11,7 @@ define(
        */
       function Instance(xinstance) {
           var $xml = $(xinstance);
-          
+          this.command    = $xml.attr("command");
           this.signatures = _.map($xml.find("sig"),          _.new(Signature));
           this.fields     = _.map($xml.find("field"),        _.new(Field));
           

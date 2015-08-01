@@ -12,7 +12,8 @@ define(
        * @returns {Instance} the Instance represented by the document
        */
       function read_xml(str){
-        var instance = new Instance(str);
+        var $xinstance= $(str).find("instance");
+        var instance  = new Instance($xinstance);
         return TypeSystem.fix_types(instance);
       };
       
