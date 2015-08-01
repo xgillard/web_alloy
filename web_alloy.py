@@ -21,6 +21,10 @@ def index():
     """
     return send_from_directory("static/", "static.html")
 
+@app.route('/experiment')
+def experiment():
+    return send_from_directory("static/", "experiment.html")
+
 @app.route('/js/<path:path>', methods=["GET","POST"])
 def javascript(path):
     return send_from_directory("static/js/", path)
@@ -33,7 +37,7 @@ def style(path):
 def image(path):
     return send_from_directory("static/image/", path)
 
-@app.route("/execute", methods=["GET","POST"])
+@app.route("/execute_off", methods=["GET","POST"])
 def reaction():
     """
     This page provokes the analysis of the input written in the
@@ -51,7 +55,7 @@ def reaction():
     return wrap_success(data) if err == '' else wrap_error(err)
 
 ## This method only serves the purpose of serving a mock page while developing the frontend
-@app.route("/execute_off", methods=["GET", "POST"])
+@app.route("/execute", methods=["GET", "POST"])
 def mock():
     with open("examples/instance.xml", "r") as f:
         return wrap_success(f.read())

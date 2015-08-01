@@ -7,7 +7,7 @@ define(
     NodeRenderer.prototype.render = function(atom, instance, config){
       var sigconf = sigConfig(config, atom);
       var node    = dropDollar(atom.label);
-      node+='[label="'+mkDescription(sigconf, atom, instance)+'",shape="'+mkShape(sigconf, atom)+'",style="filled",fillcolor="'+mkColor(config, sigconf,atom)+'"];';
+      node+='[label="'+mkDescription(sigconf, atom, instance)+'"]';
       return node;
     };
 
