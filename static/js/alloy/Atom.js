@@ -14,6 +14,22 @@ define(
       };
       
       /**
+       * Returns the atom number, that is to say, its name w/o the signame
+       * @returns {String} return the atom number
+       */
+      Atom.prototype.atom_num = function(){
+        return _.last(this.atomname.split("$"));
+      };
+      
+      /**
+       * returns the simple atom name (that is to say simple name + number)
+       * @returns {String} the simple atom name (that is to say simple name + number)
+       */
+      Atom.prototype.simple_atomname = function(){
+        return this.simple_signame()+this.atom_num();
+      };
+      
+      /**
        * This method allows you to set the parent signature of this
        * atom. After you have done this, the given parent will be part
        * of this atom's prototype chain. This means the atom will extend

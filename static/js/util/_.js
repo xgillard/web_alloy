@@ -1,7 +1,11 @@
 /*
  * This module defines the functionalities that are imho missing in underscore. 
  */
-define(['jquery', 'underscore'], function($, _){
+define(
+  [
+  'jquery', 'underscore',
+  'util/StringBuilder'
+  ], function($, _, SB){
     "use strict";
     
     var sliced = function(x, i) {
@@ -29,6 +33,8 @@ define(['jquery', 'underscore'], function($, _){
           $(self).trigger(event);
           return self;
       };
+    
+    _.StringBuilder = SB;
     
     return _;
 });

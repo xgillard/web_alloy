@@ -27,8 +27,15 @@ define(
        * @returns {Signature} the sig representing 'univ'.
        */
       Instance.prototype.univ = function(){
-          return _.findWhere(this.signatures, {"signame":"univ"});
+          return this.sig("univ");
       };
+      
+      Instance.prototype.sig  = function(signame){
+          return _.findWhere(this.signatures, {signame: signame});
+      }
+      Instance.prototype.atom = function(atomname){
+          return _.findWhere(this.atoms, {atomname: atomname});
+      }
       
       return Instance;
   }

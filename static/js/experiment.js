@@ -31,8 +31,8 @@ require.config({
 });
 
 require(
-  ['jquery', 'underscore', 'alloy/Model'], 
-  function($,_, model){
+  ['jquery', 'underscore', 'alloy/Model', 'rendering/Grapher'], 
+  function($,_, model, grapher){
     
     var posted = $.post("http://localhost:5000/execute");
     
@@ -40,16 +40,9 @@ require(
         var $xml = $( $.parseXML(xml) );
         
         var mdl  = model.read_xml($xml);
+        var graph= grapher(mdl);
         
-        var str = JSON.stringify(mdl);
-        console.log(str);
-        
-        mdl.univ().machin = "coucou";
-        
-        console.log(mdl.signatures[3].signame+" "+mdl.signatures[3].machin);
-        
-        var md2 = model.read_json(str);
-        console.log(md2.univ());
+        console.log(graph);
     });
     
 });

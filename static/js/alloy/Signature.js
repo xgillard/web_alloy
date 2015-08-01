@@ -16,6 +16,11 @@ define(
          this.abstract = $sig.attr("abstract") === "yes";
          this.signame  = $sig.attr("label"); 
       }
+      
+      Signature.prototype.simple_signame = function(){
+        return _.last(this.signame.split("/"));  
+      };
+      
       /**
        * This method allows you to set the parent Signature of this
        * sig. After you have done this, the given parent will be part
