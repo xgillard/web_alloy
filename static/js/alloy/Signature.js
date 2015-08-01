@@ -17,6 +17,11 @@ define(
          this.signame  = $sig.attr("label"); 
       }
       
+      /**
+       * Returns the simple name of this signature (that is to say, w/o the
+       * module path).
+       * @returns {String} the simple name of this signature
+       */
       Signature.prototype.simple_signame = function(){
         return _.last(this.signame.split("/"));  
       };
