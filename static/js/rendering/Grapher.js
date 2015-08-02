@@ -49,7 +49,7 @@ define(
         var filtered= _.filter(tuples, function(t){
            return removed.indexOf(t.src) < 0 && 
                   removed.indexOf(t.dst) < 0 &&
-                  t.shown_as_attribute !== true;         // if configured to be shown as attr: hide
+                  t.show_as_attribute !== true;         // if configured to be shown as attr: hide
         });
         return filtered;
     };
@@ -77,10 +77,9 @@ define(
     
     function add_rel_shown_as_attr(out, instance){
         _.each(instance.tuples, function(t){
-           if(! t.shown_as_attribute)                return; 
-           if(! out.edge(t.src, t.dst, t.fieldname)) return;
+           if(! t.show_as_attribute)                 return; 
            var dst = instance.atom(t.dst);
-           out.add_marker(t.src, t.fieldname+':'+dst.simple_atom_name()); 
+           out.add_marker(t.src, t.fieldname+':'+dst.simple_atomname()); 
         });
     };
     
