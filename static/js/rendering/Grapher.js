@@ -91,7 +91,10 @@ define(
         
         _.each(t_of_f, function(t){
             if(! submarks[t.atoms[0]]) submarks[t.atoms[0]] = [];
-            submarks[t.atoms[0]].push(t.atoms.slice(1).join("->"));
+            var atoms = _.map(t.atoms.slice(1), function(a){
+                return instance.atom(a).simple_atomname();
+            });
+            submarks[t.atoms[0]].push(atoms.join("->"));
         });
         
         _.each(_.keys(submarks), function(k){
