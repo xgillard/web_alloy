@@ -29,6 +29,11 @@ define(
       
       Graph.prototype.add_marker=function(id, label){
         var nid = node_id(id);
+        
+        var m_len = this.nodes[nid].markers.length;
+        if(m_len > 0 && m_len % 3 === 0) {
+           label = "\n"+label; 
+        }
         this.nodes[nid].markers.push(label);
       };
       

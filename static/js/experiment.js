@@ -44,9 +44,10 @@ require(
         var saa = _.findWhere(mdl.fields, {id: "15"});
         
         saa.show_as_attribute = true;
+        saa.show_as_arc       = false;
         
         var config= {hide_private: false};
-        var projec= {};//{'this/State': 'State$5'};
+        var projec= {'this/State': 'State$5'};
         var graph = grapher(mdl, config, projec);
         
         var gtv   = graph.to_viz();

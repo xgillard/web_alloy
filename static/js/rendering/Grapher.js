@@ -49,7 +49,7 @@ define(
         var filtered= _.filter(tuples, function(t){
            return removed.indexOf(t.src) < 0 && 
                   removed.indexOf(t.dst) < 0 &&
-                  t.show_as_attribute !== true;         // if configured to be shown as attr: hide
+                  t.show_as_arc === true;
         });
         return filtered;
     };
@@ -76,11 +76,29 @@ define(
     };
     
     function add_rel_shown_as_attr(out, instance){
-        _.each(instance.tuples, function(t){
-           if(! t.show_as_attribute)                 return; 
-           var dst = instance.atom(t.dst);
-           out.add_marker(t.src, t.fieldname+':'+dst.simple_atomname()); 
+        var f_as_attr = _.where(instance.fields, {show_as_attribute: true});
+        _.each(f_as_attr, function(f){
+           var marker = field_marker(instance, f);
+           _.each(_.keys(marker), function(k){
+               out.add_marker(k, marker[k]);
+           });
         });
+    };
+    
+    function field_marker(instance, field){
+        var t_of_f   = _.filter(instance.tuples, _.partial(is_prototype_of,field));
+        var submarks = {};
+        
+        _.each(t_of_f, function(t){
+            if(! submarks[t.atoms[0]]) submarks[t.atoms[0]] = [];
+            submarks[t.atoms[0]].push(t.atoms.slice(1).join("->"));
+        });
+        
+        _.each(_.keys(submarks), function(k){
+           submarks[k] = field.fieldname+":"+submarks[k].join(","); 
+        });
+        
+        return submarks;
     };
     
     function is_private(atom){
