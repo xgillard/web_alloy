@@ -60,7 +60,7 @@ define(
         _.each(instance.skolems, function(s){
            _.each(s.witnesses, function(w){
                _.each(w.atoms, function(a){
-                 out.add_marker(a, s.label);  
+                 out.add_skolem_marker(a, s.label);  
                });
            });
         });
@@ -70,7 +70,7 @@ define(
         _.each(_.values(projection), function(p){
           var p_rel = _.where(instance.tuples, {src: p});
           _.each(p_rel, function(t){
-             out.add_marker(t.dst, t.fieldname); 
+             out.add_project_marker(t.dst, t.fieldname); 
           });
         });
     };
@@ -80,7 +80,7 @@ define(
         _.each(f_as_attr, function(f){
            var marker = field_marker(instance, f);
            _.each(_.keys(marker), function(k){
-               out.add_marker(k, marker[k]);
+               out.add_rel_marker(k, marker[k]);
            });
         });
     };
