@@ -41,19 +41,23 @@ require(
         
         var mdl   = model.read_xml($xml);
         
-        var saa = _.findWhere(mdl.fields, {id: "15"});
+        //var saa = _.findWhere(mdl.fields, {id: "15"});
+        //saa.show_as_attribute = true;
+        //saa.show_as_arc       = false;
         
+        var saa = _.findWhere(mdl.fields, {id: "12"});
+        saa.show_as_attribute = true;
+        saa.show_as_arc       = false;
+        saa = _.findWhere(mdl.fields, {id: "11"});
         saa.show_as_attribute = true;
         saa.show_as_arc       = false;
         
-        saa = _.findWhere(mdl.fields, {id: "9"});
-        saa.show_as_attribute = true;
-        
         var config= {hide_private: false};
-        var projec= {'this/State': 'State$5'};
+        var projec= {};//{'this/State': 'State$5'};
         var graph = grapher(mdl, config, projec);
         
         var gtv   = graph.to_viz();
+        //var svg   = viz(gtv, 'svg', 'circo');
         var svg   = viz(gtv, 'svg', 'dot');
         $("#out").append(svg);
         $("#out > svg").attr("width", $(window).innerWidth())
