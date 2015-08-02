@@ -40,9 +40,9 @@ require(
         var $xml = $( $.parseXML(xml) );
         
         var mdl  = model.read_xml($xml);
-        var graph= grapher(mdl);
+        var graph= grapher(mdl, null, {'this/State': 'State$7'});
         
-        console.log(graph);
+        console.log(graph.to_viz());
     });
     
 });

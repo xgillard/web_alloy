@@ -14,6 +14,7 @@ define(
          this.builtin  = $sig.attr("builtin")  === "yes";
          this.one      = $sig.attr("one")      === "yes";
          this.abstract = $sig.attr("abstract") === "yes";
+         this.private  = $sig.attr("private")  === "yes";
          this.signame  = $sig.attr("label"); 
       }
       
