@@ -39,7 +39,8 @@ define(
       };
       
       function g_to_viz(out, g){
-          out.append("digraph ").append(this.name).append(" {");
+          out.append("digraph Instance {");
+          out.append('label="').append(g.name).append('";');
           out.append("ratio=fill;");
           // TODO: rankdir ?
           _.each(g.nodes, _.partial(n_to_viz, out));
@@ -67,7 +68,7 @@ define(
       };
       
       function node_id(x){
-        return x.replace('$','');
+        return x.replace('$','').replace('/','_');
       };
       function edge_id(src, dst, label){
         var nsrc = node_id(src);

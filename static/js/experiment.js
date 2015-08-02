@@ -31,8 +31,8 @@ require.config({
 });
 
 require(
-  ['jquery', 'underscore', 'alloy/Model', 'rendering/Grapher'], 
-  function($,_, model, grapher){
+  ['jquery', 'underscore', 'alloy/Model', 'rendering/Grapher', 'viz'], 
+  function($,_, model, grapher, viz){
     
     var posted = $.post("http://localhost:5000/execute");
     
@@ -40,9 +40,15 @@ require(
         var $xml = $( $.parseXML(xml) );
         
         var mdl  = model.read_xml($xml);
-        var graph= grapher(mdl, null, {'this/State': 'State$7'});
+        var config= {hide_private: false};
+        var projec= {};//{'this/State': 'State$0'};
+        var graph = grapher(mdl, config, projec);
         
-        console.log(graph.to_viz());
+        var gtv   = graph.to_viz();
+        var svg   = viz(gtv, 'svg', 'dot');
+        $("#out").append(svg);
+        $("#out > svg").attr("width", $(window).innerWidth())
+                       .attr("height",$(window).innerHeight());
     });
     
 });

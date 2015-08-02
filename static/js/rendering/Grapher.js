@@ -17,11 +17,12 @@ define(
         _.each(edges, function(e){
            out.add_edge(e.src, e.dst, e.fieldname); 
         });
-        // markers
+        // node markers
         add_skolems(out, instance, conf);
         add_projection_marks(out, instance, proj);
         add_rel_shown_as_attr(out, instance);
         
+        // TODO: edge markers
         return out;
     };
     
