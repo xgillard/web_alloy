@@ -18,6 +18,7 @@ define(
         var update_me = _.partial(update, self);
         $(instance  ).on("changed",       update_me);
         $(projection).on("changed reset", update_me);
+        update_me(); // make sure I display everything what's needed
     };
 
     function mkTag(){
