@@ -22,7 +22,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       this.tag.append(this.dropdown.tag);
       this.tag.append(this.right);
       
-      this.dropdown.val(proj.projections[sig]);
+      this.dropdown.val(proj.projections[sig.id]);
     };
     
     function fireUpdate(self){

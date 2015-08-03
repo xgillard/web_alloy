@@ -51,10 +51,10 @@ define(
     
     function update(self){
       self.navspan.empty();
-      
+      var signatures  = _.indexBy(self.instance.signatures, 'id');
       var projections = self.projection.projections;
       _.each(_.keys(projections), function(sig){
-          self.navspan.append(new AtomNav(self.instance, self.projection, sig).tag);
+          self.navspan.append(new AtomNav(self.instance, self.projection, signatures[sig]).tag);
       });
     };
 
