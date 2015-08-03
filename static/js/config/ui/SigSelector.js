@@ -7,6 +7,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
         this.tag   = $("<div class='sig_selector'/>");
         
         add_checkboxes(this);
+        proj_update(this);   // make sure I display everything what's needed
         $(projection).on("changed reset", _.partial(proj_update, this));        
     };
     
