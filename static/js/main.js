@@ -130,26 +130,41 @@ require(
       middle_hash(to);
     };
     
+    function register_ctx(ctx){
+       $(app.instance  ).off("changed"); 
+       $(app.projection).off("changed reset");
+       //
+       $(ctx.instance  ).on("changed", encode_state_in_url);
+       $(ctx.projection).on("changed reset", encode_state_in_url);
+       
+       app = ctx;
+    };
+    
+    function restore_ctx(compressed){
+        var decompressed  = compress.decompress(tail_hash());
+        var parsed        = JSON.parse(decompressed);
+        
+        var text          = parsed.text;
+        var instance      = model.read_json(parsed.instance);
+        var projection    = Projection.read_json(parsed.projection);
+        register_ctx({text: text, instance: instance, projection: projection});
+        
+        editor.getSession().setValue(text);
+        $("#graph").html(new InstanceView(instance, projection).tag);
+    };
+    
     // Reset state if needed
     if(window.location.hash === ""){
        navigate_to("#editor");
     } else {
-       navigate_to(middle_hash());
-        
-       try { 
-          var text  = compress.decompress(tail_hash());
-          var state = JSON.parse(text);
-
-          $(app).off("change");
-          var instance   = model.read_json(state.instance);
-          var projection = Projection.read_json(state.projection);
-          app = {text: state.text, instance: instance, projection: projection};
-          $(app).on("change", encode_state_in_url);
-
-          editor.getSession().setValue(app.text);
-          $("#graph").html(new InstanceView(app.instance, app.projection).tag);
+       try {
+            navigate_to(middle_hash());   
+            restore_ctx(tail_hash());
        } catch (e) {
           // nothing encoded ?
+          navigate_to("#editor");
+          ui.Alert('danger', 'Sorry: I could not restor the previous state.');
+          console.log(e);
        }
     }
 });
