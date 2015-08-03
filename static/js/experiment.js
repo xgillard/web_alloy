@@ -52,9 +52,8 @@ require(
         saa.show_as_attribute = true;
         saa.show_as_arc       = false;
         
-        var config= {hide_private: false};
         var projec= {};//{'this/State': 'State$5'};
-        var graph = grapher(mdl, config, projec);
+        var graph = grapher(mdl, projec);
         
         var gtv   = graph.to_viz();
         //var svg   = viz(gtv, 'svg', 'circo');

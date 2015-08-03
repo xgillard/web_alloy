@@ -2,13 +2,12 @@ define(
   ['jquery', 'util/_', 'rendering/Graph'],
   function($,_, Graph){
    
-    function Grapher(instance, config, projection){
+    function Grapher(instance, projection){
         var out  = new Graph(instance.command);
-        var conf = config     || {hide_private: true, show_skolems:true};
         var proj = projection || {};
         
-        var atoms= visible_atoms(instance, conf, proj);
-        var edges= visible_edges(instance, conf, _.difference(instance.atoms, atoms));
+        var atoms= visible_atoms(instance, proj);
+        var edges= visible_edges(instance, _.difference(instance.atoms, atoms));
         
         // nodes + edges
         _.each(atoms, function(a){
@@ -18,7 +17,7 @@ define(
            out.add_edge(e.src, e.dst, e.fieldname); 
         });
         // node markers
-        add_skolems(out, instance, conf);
+        add_skolems(out, instance);
         add_projection_marks(out, instance, proj);
         add_rel_shown_as_attr(out, instance);
         
@@ -26,11 +25,11 @@ define(
         return out;
     };
     
-    function visible_atoms(instance, config, projection){
+    function visible_atoms(instance, projection){
         var atoms    = instance.atoms;
         
         // atoms -= private (IFF configured)
-        if(config.hide_private){
+        if(instance.hide_private){
             atoms = _.difference(atoms, _.filter(atoms, is_private));
         }
         
@@ -43,7 +42,7 @@ define(
         return atoms;
     };
     
-    function visible_edges(instance, config, removed_nodes){
+    function visible_edges(instance, removed_nodes){
         var tuples  = instance.tuples;
         var removed = _.pluck(removed_nodes, 'atomname');
         var filtered= _.filter(tuples, function(t){
@@ -54,8 +53,8 @@ define(
         return filtered;
     };
     
-    function add_skolems(out, instance, config){
-        if(!config.show_skolems) return;
+    function add_skolems(out, instance){
+        if(!instance.show_skolems) return;
         // maybe configure this
         _.each(instance.skolems, function(s){
            _.each(s.witnesses, function(w){

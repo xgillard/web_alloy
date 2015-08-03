@@ -11,15 +11,17 @@ define(
        */
       function Instance(xinstance) {
           var $xml = $(xinstance);
-          this.command    = $xml.attr("command");
-          this.signatures = _.map($xml.find("sig"),          _.new(Signature));
-          this.fields     = _.map($xml.find("field"),        _.new(Field));
+          this.command      = $xml.attr("command");
+          this.signatures   = _.map($xml.find("sig"),          _.new(Signature));
+          this.fields       = _.map($xml.find("field"),        _.new(Field));
           
-          this.atoms      = _.map($xml.find("sig > atom"),   _.new(Atom));
-          this.tuples     = _.map($xml.find("field > tuple"),_.new(Tuple));
+          this.atoms        = _.map($xml.find("sig > atom"),   _.new(Atom));
+          this.tuples       = _.map($xml.find("field > tuple"),_.new(Tuple));
+          this.skolems      = _.map($xml.find("skolem"),       _.new(SkolemConstant));
           
-          // Skolem constants
-          this.skolems    = _.map($xml.find("skolem"),       _.new(SkolemConstant));
+          // config
+          this.hide_private = true;
+          this.show_skolems = true;
       };
       
       /**
