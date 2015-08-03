@@ -8,6 +8,13 @@ define(
   ], function($, _, SB){
     "use strict";
     
+    // FIX for Safari 
+    // https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Object/setPrototypeOf
+    Object.setPrototypeOf = Object.setPrototypeOf || function (obj, proto) {
+      obj.__proto__ = proto;
+      return obj; 
+    };
+    
     var sliced = function(x, i) {
         return Array.prototype.slice.call(x, i);
     };

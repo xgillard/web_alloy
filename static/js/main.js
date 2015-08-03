@@ -132,7 +132,8 @@ require(
             var state = JSON.parse(text);
 
             $(app).off("change");
-            app = {text: state.text, instance: model.read_json(state.instance), projection: state.projection};
+            var instance = model.read_json(state.instance);
+            app = {text: state.text, instance: instance, projection: state.projection};
             $(app).on("change", encode_state_in_url);
 
             editor.getSession().setValue(app.text);
