@@ -10,7 +10,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       this.sig        = sig;
       this.updated    = _.partial(fireUpdate, this);
       
-      this.dropdown = ui.Dropdown(_.pluck(inst.atomsOf(sig), 'atomname'), this.updated);
+      this.dropdown = ui.Dropdown(_.map(inst.atomsOf(sig), atom_to_sname), this.updated);
       this.left     = ui.Button("<<", _.partial(navigate, this, prev), ['btn-default', 'navbar-btn']);
       this.right    = ui.Button(">>", _.partial(navigate, this, next), ['btn-default', 'navbar-btn']);
       this.tag      = $("<span class='btn-group atom_nav' ></span>");
@@ -22,11 +22,14 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       this.tag.append(this.dropdown.tag);
       this.tag.append(this.right);
       
-      this.dropdown.val(proj.projections[sig.id]);
+      var initial_atom = inst.atom(proj.projections[sig.id]);
+      var initial_value= initial_atom.simple_atomname();
+      this.dropdown.val(initial_value);
     };
     
     function fireUpdate(self){
-        self.projection.navigate(self.sig.id, self.dropdown.val());
+        var atoms_bysname = _.indexBy(self.instance.atoms, atom_to_sname);
+        self.projection.navigate(self.sig.id, atoms_bysname[self.dropdown.val()].atomname);
     };
     
     function currentIndex(options, value) {
@@ -50,6 +53,10 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
         var succ = strategy(nav.dropdown.options(), nav.dropdown.val());
         nav.dropdown.val(succ);
         nav.updated(succ);
+    };
+    
+    function atom_to_sname(a){
+        return a.simple_atomname();
     };
     
     return AtomNav;
