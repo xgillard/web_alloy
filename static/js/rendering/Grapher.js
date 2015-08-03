@@ -14,7 +14,11 @@ define(
            out.add_node(a.atomname, a.simple_atomname());
         });
         _.each(edges, function(e){
-           out.add_edge(e.src, e.dst, e.fieldname); 
+           var e_atoms = e.atoms.slice(1, e.atoms.length-1);
+           e_atoms = _.map(e_atoms, function(a){
+               return instance.atom(a).simple_atomname();
+           });
+           out.add_edge(e.src, e.dst, e.fieldname, e_atoms); 
         });
         // node markers
         add_skolems(out, instance);

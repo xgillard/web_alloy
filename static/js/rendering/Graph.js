@@ -22,9 +22,9 @@ define(
         this.nodes[nid] = {id: nid, label: lbl, skolem: [], project: [], rels: []};
       };
       
-      Graph.prototype.add_edge = function(src, dst, label){
+      Graph.prototype.add_edge = function(src, dst, label, intermed){
         var eid = edge_id(src, dst, label);
-        this.edges[eid] = {id: eid, src: node_id(src), dst: node_id(dst), label: label||''};
+        this.edges[eid] = {id: eid, src: node_id(src), dst: node_id(dst), intermed: intermed, label: label||''};
       };
       
       Graph.prototype.add_skolem_marker=function(id, label){
@@ -65,6 +65,9 @@ define(
       
       function g_to_viz(out, g){
           out.append("digraph Instance {");
+          // TODO: useful ? mandatory ?
+          // out.append("ordering=out;"); // force left to right
+          // out.append("rankdir=LR;");   // graph orientation
           out.append('label="').append(g.name).append('";');
           out.append("ratio=fill;");
           // TODO: rankdir ?
@@ -94,8 +97,13 @@ define(
       };
       
       function e_to_viz(out, e){
+          var label = e.label;
+          if(! _.isEmpty(e.intermed)){
+              label+="\n";
+              label+="["+e.intermed.join(", ")+"]";
+          }
           out.append(e.src).append("->").append(e.dst)
-             .append('[label="').append(e.label).append('"')
+             .append('[label="').append(label).append('"')
              // TODO: config
              .append('];');
       };
