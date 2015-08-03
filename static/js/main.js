@@ -42,8 +42,11 @@ require(
    var please_wait = ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
    
-   var instance    = null;
-   var projection  = null;
+   var app         = {text: "", instance: {}, projection: {}};
+   $(app).on("change", encode_state_in_url);
+   
+   tab("editor");
+   tab("visualizer");
    
    $("#execute").on("click", _.partial(execute, editor));
    
@@ -60,7 +63,7 @@ require(
     // execution (analysis) of some page
     function execute(editor){
       var text   = editor.getSession().getValue();
-
+      app.text   = text;
       please_wait.show();
       var execution = $.post("/execute", { solver : 'sat4j', content: text }, function(rsp_data){
         please_wait.hide();
@@ -75,8 +78,11 @@ require(
     };
 
     function success($rsp){
-      instance = model.read_xml($rsp);
-      $("#graph").html(ui.InstanceView(instance, projection).tag);
+      app.instance   = model.read_xml($rsp);
+      app.projection = {};
+      
+      $("#graph").html(ui.InstanceView(app.instance, app.projection).tag);
+      encode_state_in_url();
       // partial solution
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
     };
@@ -85,20 +91,54 @@ require(
       ui.Alert('danger', xml.text());
     };
     
-    /*
-    function encode_state_in_url(rsp){
-      var text = JSON.stringify({model: editor.getSession().getValue(), instance: rsp});
+    function encode_state_in_url(){
+      var state= {text: app.text, instance: JSON.stringify(app.instance), projection: app.projection};
+      var text = JSON.stringify(state);
       var compressed = compress.compress(text);  
-      window.location.search = "?state="+compressed;
+      tail_hash(compressed);
     };
     
-    if(window.location.search != ""){
-        var data = window.location.search.replace("?state=",'');
-        var text = compress.decompress(data);
-        var obj  = JSON.parse(text);
+    function tab(id){
+      $("#"+id+"-tab").on("click", function(){
+        $(".tab-content").css({'display':'none'});  
+        $("#"+id).css({'display':'block'});
+        middle_hash(id);
+      });
+    };
+    
+    function middle_hash(h){
+      var mid = window.location.hash.split('!')[0];
+      if(!h) return mid;
+      window.location.hash = h +'!'+ tail_hash();
+    };
+    
+    function tail_hash(t){
+      var splt = window.location.hash.split('!');
+      var tail = splt.length > 1 ? splt[1] : '';
+      if(!t) return tail;
+      window.location.hash = splt[0]+"!"+t;
+    };
+    
+    // Reset state if needed
+    if(window.location.hash === ""){
+        middle_hash("#editor");
+        $("#editor").css({'display':'block'});
+    } else {
+        var screen= middle_hash();
+        $(screen).css({'display':'block'});
         
-        editor.getSession().setValue(obj.model);
-        success(obj.instance);
+        try { 
+            var text  = compress.decompress(tail_hash());
+            var state = JSON.parse(text);
+
+            $(app).off("change");
+            app = {text: state.text, instance: model.read_json(state.instance), projection: state.projection};
+            $(app).on("change", encode_state_in_url);
+
+            editor.getSession().setValue(app.text);
+            $("#graph").html(ui.InstanceView(app.instance, app.projection).tag);
+        } catch (e) {
+            // nothing encoded ?
+        }
     }
-    */
 });

@@ -11,9 +11,9 @@ define(
         var $tuple = $(xtuple);
         this.fieldid = $tuple.parent("field").attr("ID");
         this.atoms   = $pluck($tuple.find("atom"), "label");
-        // transient properties
-        Object.defineProperty(this, "src", {value: this.atoms[0]});
-        Object.defineProperty(this, "dst", {value: this.atoms[this.atoms.length-1]});
+        
+        this.src = this.atoms[0];
+        this.dst = this.atoms[this.atoms.length-1];
       };
       /**
        * This method allows you to set the parent field of this
