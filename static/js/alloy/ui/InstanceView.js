@@ -13,8 +13,8 @@ define(
           this.tag        = $("<div class='instance_view' style='width:100%;height:100%'></div>");
           
           draw(this);
-          $(instance  ).on("changed", _.partial(draw, this));
-          $(projection).on("changed", _.partial(draw, this));
+          $(instance  ).on("changed",       _.partial(draw, this));
+          $(projection).on("changed reset", _.partial(draw, this));
       };
       
       

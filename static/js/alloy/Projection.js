@@ -25,5 +25,9 @@ define(['jquery', 'util/_'], function($, _){
         $(this).trigger(PROJ_RST);
     };
     
+    Projection.read_json = function(json){
+      return $.extend(new Projection(), JSON.parse(json));  
+    };
+    
     return Projection;
 });

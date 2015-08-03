@@ -47,8 +47,12 @@ define(
       
       Instance.prototype.atomsOf = function(signature){
           return _.filter(this.atoms, function(a){
-            signature.isPrototypeOf(a);  
+            return signature.isPrototypeOf(a);  
           });
+      };
+
+      Instance.prototype.setChanged = function(){
+        $(this).trigger("changed");  
       };
 
       return Instance;

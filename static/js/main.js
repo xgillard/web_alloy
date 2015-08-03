@@ -81,7 +81,7 @@ require(
 
     function success($rsp){
       app.instance   = model.read_xml($rsp);
-      app.projection = {};
+      app.projection = new Projection();
       
       $("#graph").html(new InstanceView(app.instance, app.projection).tag);
       encode_state_in_url();
@@ -94,7 +94,10 @@ require(
     };
     
     function encode_state_in_url(){
-      var state= {text: app.text, instance: JSON.stringify(app.instance), projection: app.projection};
+      var inst_text = JSON.stringify(app.instance);
+      var proj_text = JSON.stringify(app.projection);
+      
+      var state= {text: app.text, instance: inst_text, projection: proj_text};
       var text = JSON.stringify(state);
       var compressed = compress.compress(text);  
       tail_hash(compressed);
@@ -138,12 +141,13 @@ require(
           var state = JSON.parse(text);
 
           $(app).off("change");
-          var instance = model.read_json(state.instance);
-          app = {text: state.text, instance: instance, projection: state.projection};
+          var instance   = model.read_json(state.instance);
+          var projection = Projection.read_json(state.projection);
+          app = {text: state.text, instance: instance, projection: projection};
           $(app).on("change", encode_state_in_url);
 
           editor.getSession().setValue(app.text);
-          $("#graph").html(ui.InstanceView(app.instance, app.projection).tag);
+          $("#graph").html(new InstanceView(app.instance, app.projection).tag);
        } catch (e) {
           // nothing encoded ?
        }

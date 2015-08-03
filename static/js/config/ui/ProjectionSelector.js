@@ -54,7 +54,7 @@ define(
       
       var projections = self.projection.projections;
       _.each(_.keys(projections), function(sig){
-          self.navspan.append(new AtomNav(self.instance, sig).tag);
+          self.navspan.append(new AtomNav(self.instance, self.projection, sig).tag);
       });
     };
 

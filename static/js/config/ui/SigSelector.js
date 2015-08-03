@@ -32,7 +32,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
         if(chk.prop('checked')){
             self.projection.add(sig.id, default_atom(instance, sig));
         } else {
-            self.projection.remove(sig);
+            self.projection.remove(sig.id);
         }
     };
     

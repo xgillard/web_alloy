@@ -36,8 +36,9 @@ define(
             atoms = _.difference(atoms, _.filter(atoms, is_private));
         }
         
+        var sig_byid = _.indexBy(instance.signatures, 'id');
         var projected= _.flatten(_.map(_.keys(projection), function(s){
-           return _.filter(atoms, _.partial(is_prototype_of, instance.sig(s))); 
+           return _.filter(atoms, _.partial(is_prototype_of, sig_byid[s])); 
         }));
         // atoms -= projected away
         atoms = _.difference(atoms, projected);

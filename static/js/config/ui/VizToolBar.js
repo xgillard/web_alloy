@@ -39,7 +39,8 @@ define(
     }
     
     function changeLayout(self, layout){
-        self.model.layout(layout);
+        self.instance.layout = layout;
+        self.instance.setChanged();
     };
 
     return VizToolBar;
