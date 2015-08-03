@@ -14,10 +14,9 @@ define(
            out.add_node(a.atomname, a.simple_atomname());
         });
         _.each(edges, function(e){
+           // chop head and tail
            var e_atoms = e.atoms.slice(1, e.atoms.length-1);
-           e_atoms = _.map(e_atoms, function(a){
-               return instance.atom(a).simple_atomname();
-           });
+           e_atoms = _.map(e_atoms, _.partial(atomid_to_simplename, instance));
            out.add_edge(e.src, e.dst, e.fieldname, e_atoms); 
         });
         // node markers
@@ -94,9 +93,7 @@ define(
         
         _.each(t_of_f, function(t){
             if(! submarks[t.atoms[0]]) submarks[t.atoms[0]] = [];
-            var atoms = _.map(t.atoms.slice(1), function(a){
-                return instance.atom(a).simple_atomname();
-            });
+            var atoms = _.map(t.atoms.slice(1), _.partial(atomid_to_simplename, instance));
             submarks[t.atoms[0]].push(atoms.join("->"));
         });
         
@@ -106,6 +103,10 @@ define(
         
         return submarks;
     };
+    
+    function atomid_to_simplename(instance, a){
+        return instance.atom(a).simple_atomname();
+    }
     
     function is_private(atom){
         return atom.private;
