@@ -3,13 +3,14 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
     /*
      * Callback must be of the form function(nav, sig, atom) 
      */
-    function AtomNav(model, sig){
-      this.model    = model;
-      this.sig      = sig;
-      this.updated  = _.partial(fireUpdate, this);
+    function AtomNav(inst, proj, sig){
+      this.instance   = inst;
+      this.projection = proj;
       
-      var inst = model.instance();
-      this.dropdown = ui.Dropdown(_.pluck(inst.atomsOf(inst.signature(sig)), 'label'), this.updated);
+      this.sig        = sig;
+      this.updated    = _.partial(fireUpdate, this);
+      
+      this.dropdown = ui.Dropdown(_.pluck(inst.atomsOf(sig), 'atomname'), this.updated);
       this.left     = ui.Button("<<", _.partial(navigate, this, prev), ['btn-default', 'navbar-btn']);
       this.right    = ui.Button(">>", _.partial(navigate, this, next), ['btn-default', 'navbar-btn']);
       this.tag      = $("<span class='btn-group atom_nav' ></span>");
@@ -21,11 +22,11 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       this.tag.append(this.dropdown.tag);
       this.tag.append(this.right);
       
-      this.dropdown.val(model.projection().projections[sig]);
+      this.dropdown.val(proj.projections[sig]);
     };
     
     function fireUpdate(self){
-        self.model.projection().navigate(self.sig, self.dropdown.val());
+        self.projection.navigate(self.sig.id, self.dropdown.val());
     };
     
     function currentIndex(options, value) {

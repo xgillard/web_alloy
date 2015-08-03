@@ -4,7 +4,7 @@ define(
    
     function Grapher(instance, projection){
         var out  = new Graph(instance.command);
-        var proj = projection || {};
+        var proj = projection.projections || {};
         
         var atoms= visible_atoms(instance, proj);
         var edges= visible_edges(instance, _.difference(instance.atoms, atoms));

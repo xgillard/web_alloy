@@ -1,7 +1,7 @@
 define(['jquery', 'util/_'], function($, _){
     
-    var CHANGED  = "proj:changed";
-    var PROJ_RST = "proj:reset";
+    var CHANGED  = "changed";
+    var PROJ_RST = "reset";
    
     function Projection(){
         this.projections = {};

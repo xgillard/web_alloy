@@ -1,6 +1,6 @@
 define(
-  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/MultiState', 'ui/InstanceView','bootstrap'],
-  function($,_, drop, wait, multistate, instanceview){
+  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/MultiState','bootstrap'],
+  function($,_, drop, wait, multistate){
     
     function _alert(type, mesg){
         var pop = 
@@ -20,7 +20,6 @@ define(
     var createdropdown    = _.new(drop);
     var createwaitpopup   = _.new(wait);
     var createmultistate  = _.new(multistate);
-    var createinstanceview= _.new(instanceview);
     
     function FlipFlop(on, off, callback){
       var labels = [on,   off];
@@ -91,7 +90,6 @@ define(
         LabeledCheckbox: labeledcheckbox,
         Dropdown       : createdropdown,
         Alert          : _alert,
-        Wait           : createwaitpopup,
-        InstanceView   : createinstanceview
+        Wait           : createwaitpopup
     };
 });

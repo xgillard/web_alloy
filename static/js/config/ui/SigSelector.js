@@ -1,46 +1,44 @@
 define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
    
-    function SigSelector(model){
-        this.model = model;
+    function SigSelector(instance, projection){
+        this.instance   = instance;
+        this.projection = projection;
+        
         this.tag   = $("<div class='sig_selector'/>");
         
-        $(model).on(model.INST_RST, _.partial(inst_update, this));
-        $(model).on(model.PROJ_CHG+' '+model.PROJ_RST, _.partial(proj_update, this));
+        add_checkboxes(this);
+        $(projection).on("changed reset", _.partial(proj_update, this));        
     };
     
-    
-    function inst_update(self){
+    function add_checkboxes(self){
       self.tag.empty();
-      
-      if(self.model.instance() === null) return;
-      
-      var instance = self.model.instance();
-      _.each(_.pluck(instance.rootSignatures(), 'label'), function(sig){
-        self.tag.append(ui.LabeledCheckbox(sig, _.partial(doProject, self, instance, sig)));
+      var instance = self.instance;
+      _.each(instance.root_signatures(), function(sig){
+        self.tag.append(ui.LabeledCheckbox(sig.simple_signame(), _.partial(project, self, instance, sig)));
       });
     };
-    
+
     function proj_update(self){
-      if(self.model.instance() === null) return;
-      
-      var value = self.model.projection().projections;
-      _.each(_.pluck(self.model.instance().sigs, 'label'), function(sig){
-         self.tag.find("input[type='checkbox'][name='"+sig+"']").prop("checked",value[sig]);
+      var value = self.projection.projections;
+      _.each(self.instance.signatures, function(sig){
+         var sid   = sig.id;
+         var sname = sig.simple_signame();
+         self.tag.find("input[type='checkbox'][name='"+sname+"']").prop("checked",value[sid]);
       });
     };
     
-    function doProject(self, instance, sig){
+    function project(self, instance, sig){
         var chk = $(this);
         if(chk.prop('checked')){
-            self.model.projection().add(sig, defaultAtomName(instance, sig));
+            self.projection.add(sig.id, default_atom(instance, sig));
         } else {
-            self.model.projection().remove(sig);
+            self.projection.remove(sig);
         }
     };
     
-    function defaultAtomName(instance, sig){
-        var atoms = instance.atomsOf(instance.signature(sig));
-        return _.isEmpty(atoms) ? ' ' : atoms[0].label;
+    function default_atom(instance, sig){
+        var atoms = instance.atomsOf(sig);
+        return _.isEmpty(atoms) ? ' ' : atoms[0].atomname;
     };
     
     return SigSelector;

@@ -1,18 +1,19 @@
 define(
   [
   'jquery', 'util/_', 'viz', 
-  'rendering/Grapher'
+  'rendering/Grapher', 'config/ui/VizToolBar'
   ],
-  function($, _, viz, grapher){
+  function($, _, viz, grapher, VizToolBar){
       
       
       function InstanceView(instance, projection){
           this.instance   = instance;
           this.projection = projection;
+          this.viztoolbar = new VizToolBar(instance, projection);
           this.tag        = $("<div class='instance_view' style='width:100%;height:100%'></div>");
           
           draw(this);
-          $(instance).on("changed", _.partial(draw, this));
+          $(instance  ).on("changed", _.partial(draw, this));
           $(projection).on("changed", _.partial(draw, this));
       };
       
@@ -26,6 +27,7 @@ define(
         self.tag.find("svg")
                 .attr("width", "100%")
                 .attr("height","100%");
+        self.tag.append(self.viztoolbar.tag);
       };
       
       return InstanceView;

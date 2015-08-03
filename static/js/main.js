@@ -34,15 +34,17 @@ require(
   ['jquery', 'util/_', 'ace',
     'ui/_',
     'alloy/model',
+    'alloy/ui/InstanceView',
+    'alloy/Projection',
     //
     'util/compress',
     'bootstrap'], 
-  function($,_,ace, ui, model, compress){
+  function($,_,ace, ui, model, InstanceView, Projection, compress){
    
    var please_wait = ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
    
-   var app         = {text: "", instance: {}, projection: {}};
+   var app         = {text: "", instance: {}, projection: new Projection()};
    $(app).on("change", encode_state_in_url);
    
    tab("editor");
@@ -81,7 +83,7 @@ require(
       app.instance   = model.read_xml($rsp);
       app.projection = {};
       
-      $("#graph").html(ui.InstanceView(app.instance, app.projection).tag);
+      $("#graph").html(new InstanceView(app.instance, app.projection).tag);
       encode_state_in_url();
       // partial solution
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');

@@ -40,6 +40,16 @@ define(
       Instance.prototype.atom = function(atomname){
           return _.findWhere(this.atoms, {atomname: atomname});
       };
+      
+      Instance.prototype.root_signatures = function(){
+          return _.where(this.signatures, {parentID: this.univ().id});  
+      };
+      
+      Instance.prototype.atomsOf = function(signature){
+          return _.filter(this.atoms, function(a){
+            signature.isPrototypeOf(a);  
+          });
+      };
 
       return Instance;
   }

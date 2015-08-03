@@ -2,20 +2,22 @@ define(
   ['jquery', 'util/_', 'ui/_','config/ui/SigSelector', 'config/ui/AtomNav', 'bootstrap'], 
   function($,_, ui, SigSelector,AtomNav){
     
-    function ProjectionSelector(model){
+    function ProjectionSelector(instance, projection){
         var self        = this;
-        this.model      = model;
+        this.instance   = instance;
+        this.projection = projection;
         
         this.tag        = $(mkTag());
-        this.sigSelector= new SigSelector(model);
+        this.sigSelector= new SigSelector(instance, projection);
         this.projButton = ui.Button("Projection", _.partial(askProjection, this), ['btn-primary', 'navbar-btn']);
         this.navspan    = $("<div class='btn-group'></div>");
         
         this.tag.append(this.projButton);
         this.tag.append(this.navspan);
        
-        var events = model.INST_RST+' '+model.PROJ_CHG+' '+model.PROJ_RST;
-        $(model).on(events, _.partial(update, self));
+        var update_me = _.partial(update, self);
+        $(instance  ).on("changed",       update_me);
+        $(projection).on("changed reset", update_me);
     };
 
     function mkTag(){
@@ -50,9 +52,9 @@ define(
     function update(self){
       self.navspan.empty();
       
-      var projections = self.model.projection().projections;
+      var projections = self.projection.projections;
       _.each(_.keys(projections), function(sig){
-          self.navspan.append(new AtomNav(self.model, sig).tag);
+          self.navspan.append(new AtomNav(self.instance, sig).tag);
       });
     };
 
