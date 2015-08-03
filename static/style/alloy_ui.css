@@ -2,6 +2,11 @@ body{
     padding-top: 70px;
 }
 
+#editor-tab, 
+#visualizer-tab {
+    cursor: pointer;
+}
+
 #text_editor, 
 #graph{
     /* Don't change this absolute value: it is required by ACE editor */

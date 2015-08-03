@@ -119,27 +119,31 @@ require(
       window.location.hash = splt[0]+"!"+t;
     };
     
+    function navigate_to(to){
+      $(".tab-content").css({'display':'none'});  
+      $(to).css({'display':'block'});
+      middle_hash(to);
+    };
+    
     // Reset state if needed
     if(window.location.hash === ""){
-        middle_hash("#editor");
-        $("#editor").css({'display':'block'});
+       navigate_to("#editor");
     } else {
-        var screen= middle_hash();
-        $(screen).css({'display':'block'});
+       navigate_to(middle_hash());
         
-        try { 
-            var text  = compress.decompress(tail_hash());
-            var state = JSON.parse(text);
+       try { 
+          var text  = compress.decompress(tail_hash());
+          var state = JSON.parse(text);
 
-            $(app).off("change");
-            var instance = model.read_json(state.instance);
-            app = {text: state.text, instance: instance, projection: state.projection};
-            $(app).on("change", encode_state_in_url);
+          $(app).off("change");
+          var instance = model.read_json(state.instance);
+          app = {text: state.text, instance: instance, projection: state.projection};
+          $(app).on("change", encode_state_in_url);
 
-            editor.getSession().setValue(app.text);
-            $("#graph").html(ui.InstanceView(app.instance, app.projection).tag);
-        } catch (e) {
-            // nothing encoded ?
-        }
+          editor.getSession().setValue(app.text);
+          $("#graph").html(ui.InstanceView(app.instance, app.projection).tag);
+       } catch (e) {
+          // nothing encoded ?
+       }
     }
 });
