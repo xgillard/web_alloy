@@ -20,6 +20,7 @@ define(
           this.skolems      = _.map($xml.find("skolem"),       _.new(SkolemConstant));
           
           // config
+          this.layout       = 'dot';
           this.hide_private = true;
           this.show_skolems = true;
       };

@@ -5,12 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         <title>Alloy Editor</title>
-        <link rel="stylesheet" href="style/graph.css"         />
         
         <link rel="stylesheet" href="style/bootstrap.min.css" />
         <link rel="stylesheet" href="style/alloy_ui.css"      />
         <link rel="stylesheet" href="style/please_wait.css"   />
-        <link rel="stylesheet" href="style/instance_ui.css"   />
 
         <script src="js/require.js" data-main="js/main.js"></script>
     </head>
@@ -28,18 +26,8 @@
                         
                         <div class='btn-group'>
                         <ul class="nav navbar-nav">
-                            <li><a id="editor-tab" href="#editor">Editor</a></li>
-                            <li><a id="viz-tab"    href="#viz">Visualizer</a></li>
-                            <li class='dropdown'>
-                                <a id="config-tab" class='btn dropdown-toggle' data-toggle="dropdown">
-                                    Configuration
-                                    <span class='caret' style='margin-left: 1em'></span>
-                                </a>
-                                <ul id="cfg-menu" class="dropdown-menu">
-                                    <!-- This one is always possible -->
-                                    <li><a href='#graph-config'>General</a></li>
-                                </ul>
-                            </li>
+                            <li><a id="editor-tab"     href="#editor"    >Editor</a></li>
+                            <li><a id="visualizer-tab" href="#visualizer">Visualizer</a></li>
                         </ul>
                         </div>
                     </div>
@@ -58,17 +46,9 @@
                 </nav>
             </section>
             
-            <section id="viz" class="tab-content">
-                <div id="outcome"></div> 
+            <section id="visualizer" class="tab-content">
+                <div id="graph"></div>
             </section>
-            
-            <section id="graph-config" class="tab-content">
-            </section>
-            
-            <section id="config" class="tab-content">
-            BUILD IN PROGRESS    
-            </section>
-            
         </div>
     </body>
 </html>

@@ -3,7 +3,7 @@ body{
 }
 
 #text_editor, 
-#outcome{
+#graph{
     /* Don't change this absolute value: it is required by ACE editor */
     position: absolute;
     top    : 50px;
@@ -11,10 +11,6 @@ body{
     width  : 100%;
     height : calc(100% - 50px);
     margin : 0;
-}
-
-#config {
-    padding-top: 50px;
 }
 
 .tab-content{ 
@@ -34,6 +30,8 @@ body{
     width: 75%;
 }
 
+
+//
 .sig_selector {
     display: table;
     width: 100%;
