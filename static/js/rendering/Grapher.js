@@ -7,28 +7,17 @@ define(
         var proj = projection.projections || {};
         
         var atoms= visible_atoms(instance, proj);
+        var edges= visible_edges(instance, _.difference(instance.atoms, atoms));
         // nodes + edges
         _.each(atoms, function(a){
            out.add_node(a.atomname, a.simple_atomname());
         });
         
-        var tuples= visible_tuples(instance);
-        _.each(tuples, function(t){
-            var steps  = _.map(t.atoms,  function(a){return out.node(a);});
-            var visible= _.filter(steps, function(s){return s!== undefined;});
-
-            if(visible.length > 1){
-                var ids    = _.pluck(visible, 'id');
-                var middle = ids.slice(1, ids.length-1);
-                out.add_edge(_.first(ids), _.last(ids), t.fieldname, middle); 
-            } else if(visible.length === 1){
-                out.add_project_marker(t.dst, t.fieldname); 
-            }
-         });
+        _.each(edges, _.partial(draw_tuple, out));
         
         // node markers
         add_skolems(out, instance);
-        //add_projection_marks(out, instance, proj);
+        add_projection_marks(out, instance, proj);
         add_rel_shown_as_attr(out, instance);
         
         // TODO: edge markers
@@ -53,11 +42,17 @@ define(
         return atoms;
     };
     
-    function visible_tuples(instance){
-      return _.filter(instance.tuples, function(t){
-        return t.show_as_arc === true;  
-      });
-    };
+    function visible_edges(instance, removed_nodes){
+        var tuples  = instance.tuples;
+        var removed = _.pluck(removed_nodes, 'atomname');
+        var filtered= _.filter(tuples, function(t){
+           return removed.indexOf(t.src) < 0 && 
+                  removed.indexOf(t.dst) < 0 &&
+                  t.show_as_arc === true     &&
+                  (! (t.private && instance.hide_private ));
+        });
+        return filtered;
+    }
     
     function add_skolems(out, instance){
         if(!instance.show_skolems) return;
@@ -98,6 +93,27 @@ define(
         return submarks;
     };
     
+    function add_projection_marks(out, instance, projection){
+        var draw = _.partial(draw_tuple, out);
+        _.each(_.values(projection), function(p){
+          var p_rel = _.where(instance.tuples, {src: p});
+          _.each(p_rel, draw);
+        });
+    };
+    
+    function draw_tuple(out, t){
+        var steps  = _.map(t.atoms,  function(a){return out.node(a);});
+        var visible= _.filter(steps, function(s){return s!== undefined;});
+
+        if(visible.length > 1){
+            var ids    = _.pluck(visible, 'id');
+            var middle = ids.slice(1, ids.length-1);
+            out.add_edge(_.first(ids), _.last(ids), t.fieldname, middle); 
+        } else if(visible.length === 1){
+            out.add_project_marker(t.dst, t.fieldname); 
+        }
+    };
+
     function atomid_to_simplename(instance, a){
         return instance.atom(a).simple_atomname();
     }
