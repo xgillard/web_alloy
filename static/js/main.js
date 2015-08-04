@@ -45,7 +45,7 @@ require(
    var editor      = mkEdit();
    
    var app         = {text: "", instance: {}, projection: new Projection()};
-   $(app).on("change", encode_state_in_url);
+   register_ctx(app);
    
    tab("editor");
    tab("visualizer");
@@ -158,8 +158,8 @@ require(
        navigate_to("#editor");
     } else {
        try {
-            navigate_to(middle_hash());   
-            restore_ctx(tail_hash());
+          navigate_to(middle_hash());   
+          restore_ctx(tail_hash());
        } catch (e) {
           // nothing encoded ?
           navigate_to("#editor");
