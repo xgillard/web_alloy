@@ -33,8 +33,10 @@ define(
         
         
         var svg  = d3.select(self.tag[0]).select("svg");
-        var g    = svg.select("g").attr("transform", 'scale(1)');
-        var zoom = d3.behavior.zoom().on("zoom", _.partial(zoomed, g));
+        var g    = svg.select("g");
+        var zoom = d3.behavior.zoom()
+                    .translate(d3.transform(g.attr("transform")).translate)
+                    .on("zoom", _.partial(zoomed, g));
         svg.call(zoom);
       };
       
