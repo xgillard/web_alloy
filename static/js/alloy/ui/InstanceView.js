@@ -31,7 +31,7 @@ define(
         
         self.tag.append(self.viztoolbar.tag);
         enable_zoom(self);
-        enable_highlighting(self);
+        enable_highlighting(self, graph);
       };
       
       // ZOOMING
@@ -48,18 +48,10 @@ define(
       };
       
       // HIGHLIGHTING
-      function enable_highlighting(self){
-        var a_bysname = _.indexBy(self.instance.atoms, function(a){
-           return a.simple_atomname(); 
-        });
-        var a_byname  = _.indexBy(self.instance.atoms, function(a){
-           return a.atomname; 
-        });
-        
+      function enable_highlighting(self, graph){
         // whenever you're over a node
         self.tag.find("svg g.node").on("mouseover", function(e){
-            var title = $(this).find("title").text(); // simple_atomname
-            var atom  = a_bysname[title];
+            var node = $(this).find("title").text(); // simple_atomname
             
             // start by disabling everything
             self.tag.find("svg g.node").css({'opacity':'.1'});
@@ -68,25 +60,25 @@ define(
             // reinstate myself
             $(this).css({'opacity':'1'});
             // reinstate all outgoing edges + nodes
-            var iam_src = _.where(self.instance.tuples, {src: atom.atomname});
-            _.each(iam_src, function(t){
-                var other_end = a_byname[t.dst].simple_atomname();
+            var iam_src = _.where(graph.edges, {src: node});
+            _.each(iam_src, function(e){
+                var other_end = e.dst;
                 $("svg .node").filter(function(i, n){
                     return $(n).find("title").text() === other_end;
                 }).css({'opacity':'1'});
                 $("svg .edge").filter(function(i, n){
-                    return $(n).find("title").text() === title+"->"+other_end;
+                    return $(n).find("title").text() === node+"->"+other_end;
                 }).css({'opacity':'1'});
             });
             // reinstate all incoming edges + nodes
-            var iam_dst = _.where(self.instance.tuples, {dst: atom.atomname});
-            _.each(iam_dst, function(t){
-                var other_end = a_byname[t.src].simple_atomname();
+            var iam_dst = _.where(graph.edges, {dst: node});
+            _.each(iam_dst, function(e){
+                var other_end = e.src;
                 $("svg .node").filter(function(i, n){
                     return $(n).find("title").text() === other_end;
                 }).css({'opacity':'1'});
                 $("svg .edge").filter(function(i, n){
-                    return $(n).find("title").text() === other_end+"->"+title;
+                    return $(n).find("title").text() === other_end+"->"+node;
                 }).css({'opacity':'1'});
             });
         });
