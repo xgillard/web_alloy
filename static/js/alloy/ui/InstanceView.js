@@ -54,8 +54,8 @@ define(
             var node = $(this).find("title").text(); // simple_atomname
             
             // start by disabling everything
-            self.tag.find("svg g.node").css({'opacity':'.1'});
-            self.tag.find("svg g.edge").css({'opacity':'.1'});
+            self.tag.find("svg g.node").css({'opacity':'0'});
+            self.tag.find("svg g.edge").css({'opacity':'0'});
             
             // reinstate myself
             $(this).css({'opacity':'1'});
