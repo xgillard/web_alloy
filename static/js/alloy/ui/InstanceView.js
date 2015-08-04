@@ -1,9 +1,9 @@
 define(
   [
-  'jquery', 'util/_', 'viz', 
+  'jquery', 'util/_', 'viz', 'd3',
   'rendering/Grapher', 'config/ui/VizToolBar'
   ],
-  function($, _, viz, grapher, VizToolBar){
+  function($, _, viz, d3, grapher, VizToolBar){
       
       
       function InstanceView(instance, projection){
@@ -25,10 +25,22 @@ define(
         
         self.tag.html(svg);
         self.tag.find("svg")
+                .css({'position':'absolute'})
                 .attr("width", "100%")
                 .attr("height","100%");
+        
         self.tag.append(self.viztoolbar.tag);
+        
+        
+        var svg  = d3.select(self.tag[0]).select("svg");
+        var g    = svg.select("g").attr("transform", 'scale(1)');
+        var zoom = d3.behavior.zoom().on("zoom", _.partial(zoomed, g));
+        svg.call(zoom);
       };
+      
+      function zoomed(g){
+          g.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+      }
       
       return InstanceView;
   }
