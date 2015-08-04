@@ -15,7 +15,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
       self.tag.empty();
       var instance = self.instance;
       _.each(instance.root_signatures(), function(sig){
-        self.tag.append(ui.LabeledCheckbox(sig.simple_signame(), _.partial(project, self, instance, sig)));
+        self.tag.append(ui.LabeledCheckbox(sig.signame, _.partial(project, self, instance, sig)));
       });
     };
 
@@ -23,7 +23,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
       var value = self.projection.projections;
       _.each(self.instance.signatures, function(sig){
          var sid   = sig.id;
-         var sname = sig.simple_signame();
+         var sname = sig.signame;
          self.tag.find("input[type='checkbox'][name='"+sname+"']").prop("checked",value[sid]);
       });
     };
