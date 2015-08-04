@@ -33,7 +33,7 @@ require.config({
 require(
   ['jquery', 'util/_', 'ace',
     'ui/_',
-    'alloy/model',
+    'alloy/Model',
     'alloy/ui/InstanceView',
     'alloy/Projection',
     //
