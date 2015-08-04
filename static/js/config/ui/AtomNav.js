@@ -23,7 +23,7 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       this.tag.append(this.right);
       
       var initial_atom = inst.atom(proj.projections[sig.id]);
-      var initial_value= initial_atom.simple_atomname();
+      var initial_value= !initial_atom ? ' ' : initial_atom.simple_atomname();
       this.dropdown.val(initial_value);
     };
     

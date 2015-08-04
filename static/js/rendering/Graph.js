@@ -29,8 +29,9 @@ define(
       
       Graph.prototype.add_skolem_marker=function(id, label){
         var nid = node_id(id);
-        
-        var m_len = this.nodes[nid].skolem.length;
+        var node= this.nodes[nid];
+        if(!node) return; // it is not visible
+        var m_len = node.skolem.length;
         if(m_len > 0 && m_len % 3 === 0) {
            label = "\n"+label; 
         }
@@ -39,8 +40,9 @@ define(
       
       Graph.prototype.add_project_marker=function(id, label){
         var nid = node_id(id);
-        
-        var m_len = this.nodes[nid].project.length;
+        var node= this.nodes[nid];
+        if(!node) return; // it is not visible
+        var m_len = node.project.length;
         if(m_len > 0 && m_len % 3 === 0) {
            label = "\n"+label; 
         }
@@ -49,8 +51,9 @@ define(
       
       Graph.prototype.add_rel_marker=function(id, label){
         var nid = node_id(id);
-        
-        var m_len = this.nodes[nid].rels.length;
+        var node= this.nodes[nid];
+        if(!node) return; // it is not visible
+        var m_len = node.rels.length;
         if(m_len > 0 && m_len % 3 === 0) {
            label = "\n"+label; 
         }
