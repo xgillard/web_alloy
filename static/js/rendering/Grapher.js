@@ -70,10 +70,21 @@ define(
     };
     
     function add_projection_marks(out, instance, projection){
+        
         _.each(_.values(projection), function(p){
           var p_rel = _.where(instance.tuples, {src: p});
           _.each(p_rel, function(t){
-             out.add_project_marker(t.dst, t.fieldname); 
+             var steps  = _.map(t.atoms,  function(a){return out.node(a);});
+             var visible= _.filter(steps, function(s){return s!== undefined;});
+             
+             if(visible.length > 1){
+                 var ids    = _.pluck(visible, 'id');
+                 var middle = ids.slice(1, ids.length-1);
+                 out.add_edge(_.first(ids), _.last(ids), t.fieldname, middle); 
+             } else if(visible.length === 1){
+                 out.add_project_marker(t.dst, t.fieldname); 
+             }
+             
           });
         });
     };
