@@ -37,14 +37,16 @@ require(
     'alloy/ui/InstanceView',
     'alloy/Projection',
     //
+    'config/Theme',
+    //
     'util/compress',
     'bootstrap'], 
-  function($,_,ace, ui, model, InstanceView, Projection, compress){
+  function($,_,ace, ui, model, InstanceView, Projection, Theme, compress){
    
    var please_wait = ui.Wait("The analyzer is processing your model");
    var editor      = mkEdit();
    
-   var app         = {text: "", instance: {}, projection: new Projection()};
+   var app         = {text: "", theme: new Theme(), instance: {}, projection: new Projection()};
    register_ctx(app);
    
    tab("editor");
@@ -83,7 +85,7 @@ require(
       app.instance   = model.read_xml($rsp);
       app.projection = new Projection();
       
-      $("#graph").html(new InstanceView(app.instance, app.projection).tag);
+      $("#graph").html(new InstanceView(app.theme, app.instance, app.projection).tag);
       encode_state_in_url();
       // partial solution
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
@@ -95,9 +97,10 @@ require(
     
     function encode_state_in_url(){
       var inst_text = JSON.stringify(app.instance);
+      var theme_text= JSON.stringify(app.theme);
       var proj_text = JSON.stringify(app.projection);
       
-      var state= {text: app.text, instance: inst_text, projection: proj_text};
+      var state= {text: app.text, theme: theme_text, instance: inst_text, projection: proj_text};
       var text = JSON.stringify(state);
       var compressed = compress.compress(text);  
       tail_hash(compressed);
@@ -131,9 +134,11 @@ require(
     };
     
     function register_ctx(ctx){
+       $(app.theme     ).off("changed");
        $(app.instance  ).off("changed"); 
        $(app.projection).off("changed reset");
        //
+       $(ctx.theme     ).on("changed", encode_state_in_url);
        $(ctx.instance  ).on("changed", encode_state_in_url);
        $(ctx.projection).on("changed reset", encode_state_in_url);
        
@@ -147,10 +152,11 @@ require(
         var text          = parsed.text;
         var instance      = model.read_json(parsed.instance);
         var projection    = Projection.read_json(parsed.projection);
-        register_ctx({text: text, instance: instance, projection: projection});
+        var theme         = Theme.read_json(parsed.theme);
+        register_ctx({text: text, theme: theme,instance: instance, projection: projection});
         
         editor.getSession().setValue(text);
-        $("#graph").html(new InstanceView(instance, projection).tag);
+        $("#graph").html(new InstanceView(theme, instance, projection).tag);
     };
     
     // Reset state if needed

@@ -2,12 +2,12 @@ define(
   ['jquery', 'util/_', 'rendering/Graph'],
   function($,_, Graph){
    
-    function Grapher(instance, projection){
-        var out  = new Graph(instance.command);
+    function Grapher(theme, instance, projection){
+        var out  = new Graph(theme, instance);
         var proj = projection.projections || {};
         
-        var atoms= visible_atoms(instance, proj);
-        var edges= visible_edges(instance, _.difference(instance.atoms, atoms));
+        var atoms= visible_atoms(theme, instance, proj);
+        var edges= visible_edges(theme, instance, _.difference(instance.atoms, atoms));
         // nodes + edges
         _.each(atoms, function(a){
            out.add_node(a.atomname, a.simple_atomname());
@@ -18,17 +18,17 @@ define(
         // node markers
         add_skolems(out, instance);
         add_projection_marks(out, instance, proj);
-        add_rel_shown_as_attr(out, instance);
+        add_rel_shown_as_attr(out, theme, instance);
         
         // TODO: edge markers
         return out;
     };
     
-    function visible_atoms(instance, projection){
+    function visible_atoms(theme, instance, projection){
         var atoms    = instance.atoms;
         
         // atoms -= private (IFF configured)
-        if(instance.hide_private){
+        if(theme.hide_private_sigs){
             atoms = _.difference(atoms, _.filter(atoms, is_private));
         }
         
@@ -42,14 +42,15 @@ define(
         return atoms;
     };
     
-    function visible_edges(instance, removed_nodes){
+    function visible_edges(theme, instance, removed_nodes){
         var tuples  = instance.tuples;
         var removed = _.pluck(removed_nodes, 'atomname');
         var filtered= _.filter(tuples, function(t){
-           return removed.indexOf(t.src) < 0 && 
-                  removed.indexOf(t.dst) < 0 &&
-                  t.show_as_arc === true     &&
-                  (! (t.private && instance.hide_private ));
+           var tconf= theme.get_rel_config(t, instance);
+           return removed.indexOf(t.src) < 0  && 
+                  removed.indexOf(t.dst) < 0  &&
+                  tconf.show_as_arc !== false && // !== false because it should default to true
+                  (! (t.private && theme.hide_private_rels ));
         });
         return filtered;
     }
@@ -66,8 +67,11 @@ define(
         });
     };
     
-    function add_rel_shown_as_attr(out, instance){
-        var f_as_attr = _.where(instance.fields, {show_as_attribute: true});
+    function add_rel_shown_as_attr(out, theme, instance){
+        var f_as_attr = _.filter(instance.fields, function(f){
+            var fconf = theme.get_rel_config(f, instance);
+            return fconf.show_as_attr === true; // === true because it should default to false
+        });
         _.each(f_as_attr, function(f){
            var marker = field_marker(instance, f);
            _.each(_.keys(marker), function(k){

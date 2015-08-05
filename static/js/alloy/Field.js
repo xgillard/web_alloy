@@ -14,10 +14,6 @@ define(
         this.fieldname = $field.attr("label");
         this.type      = $pluck($field.find("type"), "ID");
         this.private   = $field.attr("private")  === "yes";
-        
-        // config
-        this.show_as_arc       = true;
-        this.show_as_attribute = false;
       };
       /**
        * This method allows you to set the parent Field of this

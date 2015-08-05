@@ -2,10 +2,11 @@ define(
   ['jquery', 'util/_', 'util/StringBuilder'],
   function($, _, SB){
       
-      function Graph(name){
-          this.name  = name;
-          this.nodes = {};
-          this.edges = {};
+      function Graph(theme, instance){
+          this.theme    = theme;
+          this.instance = instance;
+          this.nodes    = {};
+          this.edges    = {};
       };
       
       Graph.prototype.node = function(id){
@@ -71,7 +72,7 @@ define(
           // TODO: useful ? mandatory ?
           // out.append("ordering=out;"); // force left to right
           // out.append("rankdir=LR;");   // graph orientation
-          out.append('label="').append(g.name).append('";');
+          out.append('label="').append(g.instance.name).append('";');
           out.append("ratio=fill;");
           // TODO: rankdir ?
           _.each(g.nodes, _.partial(n_to_viz, out));

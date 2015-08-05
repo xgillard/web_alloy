@@ -6,22 +6,24 @@ define(
   function($, _, viz, d3, grapher, VizToolBar){
       
       
-      function InstanceView(instance, projection){
+      function InstanceView(theme, instance, projection){
+          this.theme      = theme;
           this.instance   = instance;
           this.projection = projection;
           this.viztoolbar = new VizToolBar(instance, projection);
           this.tag        = $("<div class='instance_view' style='width:100%;height:100%'></div>");
           
           draw(this);
+          $(theme     ).on("changed",       _.partial(draw, this));
           $(instance  ).on("changed",       _.partial(draw, this));
           $(projection).on("changed reset", _.partial(draw, this));
       };
       
       
       function draw(self){
-        var graph = grapher(self.instance, self.projection);
+        var graph = grapher(self.theme, self.instance, self.projection);
         var gtv   = graph.to_viz();
-        var svg   = viz(gtv, 'svg', self.instance.layout);
+        var svg   = viz(gtv, 'svg', self.theme.layout);
         
         self.tag.html(svg);
         self.tag.find("svg")

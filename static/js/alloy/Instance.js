@@ -18,11 +18,6 @@ define(
           this.atoms        = _.map($xml.find("sig > atom"),   _.new(Atom));
           this.tuples       = _.map($xml.find("field > tuple"),_.new(Tuple));
           this.skolems      = _.map($xml.find("skolem"),       _.new(SkolemConstant));
-          
-          // config
-          this.layout       = 'dot';
-          this.hide_private = true;
-          this.show_skolems = true;
       };
       
       /**

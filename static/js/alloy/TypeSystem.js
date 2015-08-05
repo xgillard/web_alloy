@@ -47,12 +47,14 @@ define(
            if(parent){
              sig.setParent(parent);
            }
+           sig.typename = sig.signame;
         });
         _.each(instance.fields, function(fld){
            var parent = fld_byid[fld.parentID];
            if(parent){
              fld.setParent(parent);
            }
+           fld.typename = fld.fieldname+":"+_.map(fld.type, function(t){return sig_byid[t].typename;}).join("->");
         });
         _.each(instance.atoms, function(atom){
           atom.setParent(sig_byid[atom.sigid]);
