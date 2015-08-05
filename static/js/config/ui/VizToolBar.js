@@ -5,7 +5,8 @@ define(
 
  function($,_,ui, Layouts, Projector){
    
-    function VizToolBar(instance, projection){
+    function VizToolBar(theme, instance, projection){
+        this.theme      = theme;
         this.instance   = instance;
         this.projection = projection;
         
@@ -39,8 +40,8 @@ define(
     }
     
     function changeLayout(self, layout){
-        self.instance.layout = layout;
-        self.instance.setChanged();
+        self.theme.layout = layout;
+        self.theme.setChanged();
     };
 
     return VizToolBar;

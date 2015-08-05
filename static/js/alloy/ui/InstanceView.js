@@ -10,7 +10,7 @@ define(
           this.theme      = theme;
           this.instance   = instance;
           this.projection = projection;
-          this.viztoolbar = new VizToolBar(instance, projection);
+          this.viztoolbar = new VizToolBar(theme, instance, projection);
           this.tag        = $("<div class='instance_view' style='width:100%;height:100%'></div>");
           
           draw(this);
