@@ -20,14 +20,14 @@ define(
       Graph.prototype.add_node = function(atom){
         var nid     = node_id(atom.atomname);
         var lbl     = atom.simple_atomname();
-        var node    = {id: nid, label: lbl, skolem: [], project: [], rels: []};
+        var node    = {nid: nid, label: lbl, skolem: [], project: [], rels: []};
         var memo    = $.extend({}, atom);
         this.nodes[nid] = $.extend(memo, node);
       };
       
       Graph.prototype.add_edge = function(src, dst, label, intermed){
         var eid = edge_id(src, dst, label);
-        this.edges[eid] = {id: eid, src: node_id(src), dst: node_id(dst), intermed: intermed, label: label||''};
+        this.edges[eid] = {eid: eid, src: node_id(src), dst: node_id(dst), intermed: intermed, label: label||''};
       };
       
       Graph.prototype.add_skolem_marker=function(id, label){
@@ -89,6 +89,8 @@ define(
           _.each(g.nodes, _.partial(n_to_viz, t, i, out));
           _.each(g.edges, _.partial(e_to_viz, t, i, out));
           out.append("}");
+          
+          console.log(out.toString());
       };
       
       function n_to_viz(theme, instance, out, n){
@@ -106,7 +108,7 @@ define(
               label+="\n";
               label+=n.rels.join(", ");
           }
-          out.append(n.id)
+          out.append(n.nid)
              .append('[label="').append(label).append('"')
              .append(', fillcolor="').append(conf.color).append('"')
              .append(', shape=').append(conf.shape)

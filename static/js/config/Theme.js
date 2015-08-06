@@ -76,15 +76,18 @@ define(
           var parent= _.indexBy(instance.signatures, 'id')[sig.parentID];
           this_conf = $.extend(this.get_sig_config(parent, instance), this_conf);
         }
-        // set automatic values
-        if(this.automatic_shapes && !this_conf._shape_was_set_manually){
-            this_conf.shape =  automatic_shape(sig.id);
-        }
-        if(this.automatic_colors && !this_conf._color_was_set_manually){
-            this_conf.color =  automatic_node_color(sig.id);
-        }
+        
         // set default values (DONE this way to avoid overriding inherited props)
         this_conf = $.extend(default_sig_theme(sig), this_conf);
+        
+        // set automatic values
+        if(this.automatic_shapes && !this_conf._shape_was_set_manually){
+            this_conf.shape =  automatic_shape(this, sig.id);
+        }
+        if(this.automatic_colors && !this_conf._color_was_set_manually){
+            this_conf.color =  automatic_node_color(this, sig.id);
+        }
+        
         return this_conf;
       };
       
@@ -97,17 +100,17 @@ define(
             visible: true,
             //
             _shape_was_set_manually: false,
-            _color_was_set_manually: false,
-        }
+            _color_was_set_manually: false
+        };
       };
       
-      function automatic_shape(id){
+      function automatic_shape(self, id){
         var idx = (hash(id) + shape.length) % shape.length;  
         return shape[idx];
       };
-      function automatic_node_color(id){
-        var palette=this.node_palette;
-        var idx = (hash(id) + palette) % palette.length;
+      function automatic_node_color(self, id){
+        var palette=self.node_palette;
+        var idx = (hash(id) + palette.length) % palette.length;
         return palette[idx];
       };
       
@@ -154,15 +157,15 @@ define(
             show_as_attr: false
         };
       };
-      function automatic_edge_color(id){
-        var palette=this.edge_palette;
-        var idx = (hash(id) + palette) % palette.length;
+      function automatic_edge_color(self, id){
+        var palette=self.edge_palette;
+        var idx = (hash(id) + palette.length) % palette.length;
         return palette[idx];
       };
       
       // Utils
       function hash(id){
-        return (id*41 % 97);  
+        return (parseInt(id)*41 % 97);  
       };
       
       Theme.read_json = function(text){
