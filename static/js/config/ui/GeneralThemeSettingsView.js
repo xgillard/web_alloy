@@ -17,6 +17,8 @@ define(
         this.hide_private_sigs = mkCheckbox(true);
         this.hide_private_rels = mkCheckbox(true);
         this.automatic_shape   = mkCheckbox(false);
+        this.automatic_color   = mkCheckbox(false);
+        this.show_skolem_const = mkCheckbox(false);
         this.apply_btn         = mkApplyButton("Apply");
         this.tag               = mkTag(this);
         
@@ -35,9 +37,9 @@ define(
         self.alphabetical.prop("checked", self.theme.force_alphabetical);
         self.hide_private_sigs.prop("checked", self.theme.hide_private_sigs);
         self.hide_private_rels.prop("checked", self.theme.hide_private_rels);
-        // TODO: skolem constants ?  (theme show_skolem_const)
+        self.show_skolem_const.prop("checked", self.theme.show_skolem_const);
         self.automatic_shape.prop("checked", self.theme.automatic_shapes);
-        // TODO: automatic colors ? (theme  automatic_colors)
+        self.automatic_color.prop("checked", self.theme.automatic_colors);
     };
     
     function commit(self){
@@ -49,8 +51,10 @@ define(
         self.theme.force_alphabetical = self.alphabetical.prop("checked");
         self.theme.hide_private_sigs = self.hide_private_sigs.prop("checked");
         self.theme.hide_private_rels = self.hide_private_rels.prop("checked");
-        self.theme.automatic_shape = self.automatic_shape.prop("checked");
-        // not superclean but makes sure this popover doesnt last for ever
+        self.theme.automatic_shapes = self.automatic_shape.prop("checked");
+        self.theme.automatic_colors = self.automatic_color.prop("checked");
+        self.theme.show_skolem_const= self.show_skolem_const.prop("checked");
+        
         $(self).trigger("done");
         self.theme.setChanged();
     };
@@ -96,8 +100,8 @@ define(
     };
     
     function mkTag(self){
-        var $html = $('<table class="small" width="300px">'+
-        '<tr><td>Layout     </td><td data-name="layout"       class="fill"></td></tr>' +
+        var $html = $('<table class="small" width="310px">'+
+        '<tr><td width="65%">Layout     </td><td data-name="layout"       class="fill"></td></tr>' +
         '<tr><td>Orientation</td><td data-name="orientation"  class="fill"></td></tr>' +
         '<tr><td>Node Colors</td><td data-name="node_palette" class="fill"></td></tr>' +
         '<tr><td>Edge Colors</td><td data-name="edge_palette" class="fill"></td></tr>' +
@@ -109,7 +113,9 @@ define(
         '    <td data-name="private_sigs" class="fill"></td>'                          +
         '</tr>'                                                                        +
         '<tr><td>Show/Hide private rel</td><td data-name="private_rels" class="fill"></td></tr>' +
-        '<tr><td>Automatically chose shape</td><td data-name="auto_shape" class="fill"></td></tr>'+
+        '<tr><td>Show Skolem constants</td><td data-name="skolems" class="fill"></td></tr>' +
+        '<tr><td>Automatically choose shape</td><td data-name="auto_shape" class="fill"></td></tr>'+
+        '<tr><td>Automatically choose color</td><td data-name="auto_color" class="fill"></td></tr>'+
         '<tr><td></td><td data-name="apply" style="padding-top: 1em"></td></tr>'+
         '</table>');
 
@@ -121,7 +127,9 @@ define(
         $html.find("[data-name='alphabetical']").append(self.alphabetical);
         $html.find("[data-name='private_sigs']").append(self.hide_private_sigs);
         $html.find("[data-name='private_rels']").append(self.hide_private_rels);
+        $html.find("[data-name='skolems']").append(self.show_skolem_const);
         $html.find("[data-name='auto_shape']").append(self.automatic_shape);
+        $html.find("[data-name='auto_color']").append(self.automatic_color);
         $html.find("[data-name='apply']").append(self.apply_btn);
         
         return $html;
