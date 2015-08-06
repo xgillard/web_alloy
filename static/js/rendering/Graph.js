@@ -114,8 +114,6 @@ define(
              .append(', shape=').append(conf.shape)
              // TODO STROKE ?? what attribute ?
              //.append(', fillcolor="').append(conf.stroke).append('"')
-             // TODO INVISIBLE ?? Here or in the grapher ?
-             //.append(', visible=').append(conf.shape)
              .append('];');
       };
       

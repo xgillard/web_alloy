@@ -32,6 +32,9 @@ define(
             atoms = _.difference(atoms, _.filter(atoms, is_private));
         }
         
+        // atoms -= hidden per user decision
+        atoms = _.filter(atoms, function(a){return theme.get_sig_config(a, instance).visible;});
+        
         var sig_byid = _.indexBy(instance.signatures, 'id');
         var projected= _.flatten(_.map(_.keys(projection), function(s){
            return _.filter(atoms, _.partial(is_prototype_of, sig_byid[s])); 
