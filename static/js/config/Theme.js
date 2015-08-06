@@ -130,6 +130,7 @@ define(
       };
       Theme.prototype.set_rel_color =function(id, value){
         get_rel_conf(this, id).color = value;  
+        get_rel_conf(this, id)._color_was_set_manually = true;
       };
       Theme.prototype.set_rel_stroke =function(id, value){
         get_rel_conf(this, id).stroke = value;  
@@ -144,7 +145,12 @@ define(
         get_rel_conf(this, id).show_as_attr = value;  
       };
       Theme.prototype.get_rel_config = function(rel, instance){
-        return $.extend(default_rel_theme(rel), get_rel_conf(this, rel));
+        var this_conf = $.extend(default_rel_theme(rel), get_rel_conf(this, rel));
+        // automatic stuff
+        if(this.automatic_colors && !this_conf._color_was_set_manually){
+            this_conf.color =  automatic_edge_color(this, rel.id);
+        }
+        return this_conf;
       };
       
       function default_rel_theme(rel){

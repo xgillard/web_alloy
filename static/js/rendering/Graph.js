@@ -25,9 +25,9 @@ define(
         this.nodes[nid] = $.extend(memo, node);
       };
       
-      Graph.prototype.add_edge = function(src, dst, label, intermed){
+      Graph.prototype.add_edge = function(id, src, dst, label, intermed){
         var eid = edge_id(src, dst, label);
-        this.edges[eid] = {eid: eid, src: node_id(src), dst: node_id(dst), intermed: intermed, label: label||''};
+        this.edges[eid] = {id: id, eid: eid, src: node_id(src), dst: node_id(dst), intermed: intermed, label: label||''};
       };
       
       Graph.prototype.add_skolem_marker=function(id, label){
