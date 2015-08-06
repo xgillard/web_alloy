@@ -17,10 +17,12 @@ define(
           return this.edges[edge_id(src, dst, label)];
       };
       
-      Graph.prototype.add_node = function(id,label){
-        var nid = node_id(id);
-        var lbl = label || nid;
-        this.nodes[nid] = {id: nid, label: lbl, skolem: [], project: [], rels: []};
+      Graph.prototype.add_node = function(atom){
+        var nid     = node_id(atom.atomname);
+        var lbl     = atom.simple_atomname();
+        var node    = {id: nid, label: lbl, skolem: [], project: [], rels: []};
+        var memo    = $.extend({}, atom);
+        this.nodes[nid] = $.extend(memo, node);
       };
       
       Graph.prototype.add_edge = function(src, dst, label, intermed){
@@ -68,20 +70,30 @@ define(
       };
       
       function g_to_viz(out, g){
+          var t = g.theme;
+          var i = g.instance;
           out.append("digraph Instance {");
-          // TODO: useful ? mandatory ?
-          // out.append("ordering=out;"); // force left to right
-          // out.append("rankdir=LR;");   // graph orientation
-          out.append('label="').append(g.instance.name).append('";');
+          
+          // graph config
+          out.append("rankdir=").append(t.orientation).append(";");
           out.append("ratio=fill;");
-          // TODO: rankdir ?
-          _.each(g.nodes, _.partial(n_to_viz, out));
-          _.each(g.edges, _.partial(e_to_viz, out));
+          out.append('label="').append(g.instance.name).append('";');
+          if(t.force_alphabetical){
+            out.append("ordering=out;");
+          }
+          
+          // set default font
+          out.append('node[style=filled, fontname="').append(t.font).append('"]');
+          out.append('edge[fontname="').append(t.font).append('"]');
+          
+          _.each(g.nodes, _.partial(n_to_viz, t, i, out));
+          _.each(g.edges, _.partial(e_to_viz, t, i, out));
           out.append("}");
       };
       
-      function n_to_viz(out, n){
-          var label = n.label;
+      function n_to_viz(theme, instance, out, n){
+          var conf  = theme.get_sig_config(n, instance);
+          var label = n.label; // FIXME: use the real label
           if(! _.isEmpty(n.skolem)){
               label+="\n";
               label+=n.skolem.join(", ");
@@ -96,19 +108,27 @@ define(
           }
           out.append(n.id)
              .append('[label="').append(label).append('"')
-             // TODO: config
+             .append(', fillcolor="').append(conf.color).append('"')
+             .append(', shape=').append(conf.shape)
+             // TODO STROKE ?? what attribute ?
+             //.append(', fillcolor="').append(conf.stroke).append('"')
+             // TODO INVISIBLE ?? Here or in the grapher ?
+             //.append(', visible=').append(conf.shape)
              .append('];');
       };
       
-      function e_to_viz(out, e){
-          var label = e.label;
+      function e_to_viz(theme, instance, out, e){
+          var conf  = theme.get_rel_config(e, instance);
+          var label = e.label; // FIXME use real label
           if(! _.isEmpty(e.intermed)){
               label+="\n";
               label+="["+e.intermed.join(", ")+"]";
           }
           out.append(e.src).append("->").append(e.dst)
              .append('[label="').append(label).append('"')
-             // TODO: config
+             .append(', color="').append(conf.color).append('"')
+             .append(', style=').append(conf.stroke)
+             .append(', weight=').append(conf.weight)
              .append('];');
       };
       

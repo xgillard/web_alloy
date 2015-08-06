@@ -10,7 +10,7 @@ define(
         var edges= visible_edges(theme, instance, _.difference(instance.atoms, atoms));
         // nodes + edges
         _.each(atoms, function(a){
-           out.add_node(a.atomname, a.simple_atomname());
+           out.add_node(a);
         });
         
         _.each(edges, _.partial(draw_tuple, out));

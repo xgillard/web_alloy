@@ -17,6 +17,7 @@ define(
           this.hide_private_rels  = true;
           this.show_skolem_const  = true;
           this.automatic_shapes   = false;  
+          this.automatic_colors   = false;  
           
           // technically it would be possible to store all confs in one
           // single map indexed on sig.typename and rel.typename but
@@ -50,29 +51,66 @@ define(
           return ret;
       };
       Theme.prototype.set_sig_label =function(id, value){
-        get_sig_conf(this, id).label = value;  
+        get_sig_conf(this, id).label= value;  
       };
       Theme.prototype.set_sig_color =function(id, value){
-        get_sig_conf(this, id).color = value;  
+        get_sig_conf(this, id).color= value;  
+        get_sig_conf(this, id)._color_was_set_manually= true;  
       };
       Theme.prototype.set_sig_stroke =function(id, value){
-        get_sig_conf(this, id).stroke = value;  
+        get_sig_conf(this, id).stroke= value;  
       };
       Theme.prototype.set_sig_shape =function(id, value){
-        get_sig_conf(this, id).shape  = value;  
+        get_sig_conf(this, id).shape= value;  
+        get_sig_conf(this, id)._shape_was_set_manually= true;  
       };
-      Theme.prototype.set_sig_visibility =function(id, value){
+      Theme.prototype.set_sig_visibility= function(id, value){
         get_sig_conf(this, id).visible  = value;  
       };
       
       Theme.prototype.get_sig_config = function(sig, instance){
-        var this_conf = get_sig_conf(this, sig);
+        // extends an empty object = copy
+        var this_conf = $.extend({}, get_sig_conf(this, sig));
+        // inherit parent config
         if(sig.parentID){
-            var parent= _.indexBy(instance.signatures, 'id')[sig.parentID];
-            this_conf = $.extend(this.get_sig_config(parent, instance));
+          var parent= _.indexBy(instance.signatures, 'id')[sig.parentID];
+          this_conf = $.extend(this.get_sig_config(parent, instance), this_conf);
         }
+        // set automatic values
+        if(this.automatic_shapes && !this_conf._shape_was_set_manually){
+            this_conf.shape =  automatic_shape(sig.id);
+        }
+        if(this.automatic_colors && !this_conf._color_was_set_manually){
+            this_conf.color =  automatic_node_color(sig.id);
+        }
+        // set default values (DONE this way to avoid overriding inherited props)
+        this_conf = $.extend(default_sig_theme(sig), this_conf);
         return this_conf;
       };
+      
+      function default_sig_theme(sig){
+        return {
+            label  : sig.simple_signame(),
+            color  : 'white',
+            stroke : 'solid',
+            shape  : _.first(shape),
+            visible: true,
+            //
+            _shape_was_set_manually: false,
+            _color_was_set_manually: false,
+        }
+      };
+      
+      function automatic_shape(id){
+        var idx = (hash(id) + shape.length) % shape.length;  
+        return shape[idx];
+      };
+      function automatic_node_color(id){
+        var palette=this.node_palette;
+        var idx = (hash(id) + palette) % palette.length;
+        return palette[idx];
+      };
+      
       
       // Rel configuration 
       function get_rel_conf(self, rel){
@@ -83,6 +121,7 @@ define(
           }
           return ret;
       };
+      
       Theme.prototype.set_rel_label =function(id, value){
         get_rel_conf(this, id).label = value;  
       };
@@ -102,7 +141,23 @@ define(
         get_rel_conf(this, id).show_as_attr = value;  
       };
       Theme.prototype.get_rel_config = function(rel, instance){
-        return get_rel_conf(this, rel);
+        return $.extend(default_rel_theme(rel), get_rel_conf(this, rel));
+      };
+      
+      function default_rel_theme(rel){
+        return {
+            label       : rel.fieldname,
+            color       : 'black',
+            stroke      : 'solid',
+            weight      : 0,
+            show_as_arc : true,
+            show_as_attr: false
+        };
+      };
+      function automatic_edge_color(id){
+        var palette=this.edge_palette;
+        var idx = (hash(id) + palette) % palette.length;
+        return palette[idx];
       };
       
       // Utils
