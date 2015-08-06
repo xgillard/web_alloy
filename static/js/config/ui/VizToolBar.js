@@ -1,11 +1,14 @@
 define(
  [  'jquery', 'util/_', 'ui/_', 
     'config/Layouts',
-    'config/ui/ProjectionSelector'], 
+    'config/ui/ProjectionSelector', 
+    'config/ui/GeneralThemeSettingsView'
+], 
 
- function($,_,ui, Layouts, Projector){
+ function($,_,ui, Layouts, Projector, GeneralThemeSettings){
    
     function VizToolBar(theme, instance, projection){
+        var self        = this;
         this.theme      = theme;
         this.instance   = instance;
         this.projection = projection;
@@ -14,17 +17,27 @@ define(
         this.container  = $(mkContainer());
         this.tag.append(this.container);
 
-        this.layout     = ui.Dropdown(Layouts, _.partial(changeLayout, this), "Layout");
+        this.general_settings_pop = new GeneralThemeSettings(theme);
+        this.general_settings = mkButton("General Settings");
         this.projection = new Projector(instance, projection);
         
-        this.layout.tag.addClass('dropup');
-        this.layout.tag.find('.btn')
-                       .removeClass('btn-default')
-                       .addClass('btn-info')
-                       .addClass('navbar-btn');
-               
+        this.general_settings[0].onclick =  function(){
+            $(self.general_settings).popover({
+                html     : true, 
+                trigger  : 'manual',
+                placement: 'top',
+                container: $(document.body),
+                content  : self.general_settings_pop.tag
+            });
+            $(self.general_settings).popover('toggle');
+        };
+        
+        $(this.general_settings_pop).on("done", function(){
+           $(self.general_settings).popover("destroy"); 
+        });
+
         this.container.append(this.projection.tag);
-        this.container.append(mkRight(this.layout.tag));
+        this.container.append(mkRight(this.general_settings));
     };
     
     function mkTag(){
@@ -37,11 +50,9 @@ define(
         var cont = $("<div class='navbar-right'></div>");
         cont.append(btn);
         return cont;
-    }
-    
-    function changeLayout(self, layout){
-        self.theme.layout = layout;
-        self.theme.setChanged();
+    };
+    function mkButton(text){
+        return $("<button type='button' class='btn navbar-btn btn-info'>"+text+"</button>");
     };
 
     return VizToolBar;

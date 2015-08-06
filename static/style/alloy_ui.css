@@ -32,6 +32,17 @@ body{
     width: 75%;
 }
 
+.fill > * {
+    display: inline-block;
+    width: 100%;
+}
+.small {
+    font-size: 10pt;
+}
+.popover {
+    max-width: 100%;
+}
+
 .sig_selector {
     display: table;
     width: 100%;

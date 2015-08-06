@@ -90,7 +90,7 @@ define(
           _.each(g.edges, _.partial(e_to_viz, t, i, out));
           out.append("}");
           
-          console.log(out.toString());
+          //console.log(out.toString());
       };
       
       function n_to_viz(theme, instance, out, n){
