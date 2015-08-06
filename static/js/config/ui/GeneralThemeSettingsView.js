@@ -109,10 +109,10 @@ define(
         '<tr><td>Nodes in alphabetical order</td>'                                     +
         '    <td data-name="alphabetical" class="fill"></td>'                          +
         '</tr>'                                                                        +
-        '<tr><td>Show/Hide private sigs</td>'                                          +
+        '<tr><td>Hide private sigs</td>'                                          +
         '    <td data-name="private_sigs" class="fill"></td>'                          +
         '</tr>'                                                                        +
-        '<tr><td>Show/Hide private rel</td><td data-name="private_rels" class="fill"></td></tr>' +
+        '<tr><td>Hide private rel</td><td data-name="private_rels" class="fill"></td></tr>' +
         '<tr><td>Show Skolem constants</td><td data-name="skolems" class="fill"></td></tr>' +
         '<tr><td>Automatically choose shape</td><td data-name="auto_shape" class="fill"></td></tr>'+
         '<tr><td>Automatically choose color</td><td data-name="auto_color" class="fill"></td></tr>'+
