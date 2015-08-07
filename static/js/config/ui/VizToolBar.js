@@ -17,38 +17,45 @@ define(
         this.container  = $(mkContainer());
         this.tag.append(this.container);
 
-        this.general_settings_pop = new GeneralThemeSettings(theme);
-        this.general_settings = mkButton("General Settings");
+        
         this.projection = new Projector(instance, projection);
+        this.general_settings_btn = mkGeneralSettings(theme);
         
-        this.general_settings[0].onclick =  function(){
-            $(self.general_settings).popover({
-                html     : true, 
-                trigger  : 'manual',
-                placement: 'top',
-                container: $(document.body),
-                content  : self.general_settings_pop.tag
-            });
-            $(self.general_settings).popover('toggle');
-        };
-        
-        $(this.general_settings_pop).on("done", function(){
-           $(self.general_settings).popover("destroy"); 
-        });
-
         this.container.append(this.projection.tag);
-        this.container.append(mkRight(this.general_settings));
+        this.container.append(mkRight(this.general_settings_btn));
     };
     
     function mkTag(){
         return "<div class='config_view navbar navbar-default navbar-fixed-bottom'></div>";
     };
+    
+    function mkGeneralSettings(theme){
+        var setting_btn = mkButton("General Settings");
+        setting_btn[0].onclick =  function(){
+            var popup_content = new GeneralThemeSettings(theme);
+            $(setting_btn).popover({
+                html     : true, 
+                trigger  : 'manual',
+                placement: 'top',
+                container: $(document.body),
+                content  : popup_content.tag
+            });
+            $(setting_btn).popover('toggle');
+            $(popup_content).on("done", function(){
+               $(setting_btn).popover("destroy"); 
+            });
+        };
+        return setting_btn;
+    };
+    
     function mkContainer(){
         return "<div class='container'></div>";
     };
-    function mkRight(btn){
+    function mkRight(){
         var cont = $("<div class='navbar-right'></div>");
-        cont.append(btn);
+        _.each(arguments, function(item){
+            cont.append(item);
+        });
         return cont;
     };
     function mkButton(text){
