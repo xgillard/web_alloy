@@ -22,7 +22,7 @@ define(
         this.projection = new Projector(instance, projection);
         this.general_settings_btn = mkGeneralSettings(self);
         
-        this.sig_visibility= new VisibilitySelector("Hidden sigs", "Select to make visible", theme);
+        this.sig_visibility= new VisibilitySelector("Hidden sigs", "Select to make visible", theme, theme.sig_configs);
         
         this.container.append(this.projection.tag);
         this.container.append(mkRight( this.sig_visibility.tag, this.general_settings_btn));
@@ -38,6 +38,7 @@ define(
             var popup_content = new GeneralThemeSettings(self.theme);
             $(setting_btn).popover({
                 html     : true, 
+                title    : 'General settings',
                 trigger  : 'manual',
                 placement: 'top',
                 container: $(self.tag),

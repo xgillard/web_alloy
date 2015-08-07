@@ -52,6 +52,7 @@ define(
               // attach popover behavior
               $gnode.popover({
                 html     : true, 
+                title    : sig.signame+' signature configuration',
                 trigger  : 'manual',
                 container: $(self.tag),
                 content  : settings.tag

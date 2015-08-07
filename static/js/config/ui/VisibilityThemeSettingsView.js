@@ -14,9 +14,9 @@ define(
       };
       
       function commit(self){
-        _.each(self.hidden, function(h){
-           var checkbox = self.tag.find('[data-name="'+h.id+'"] > input[type="checkbox"]');
-           h.visible = checkbox.prop("checked");
+        _.each(_.keys(self.hidden), function(k){
+           var checkbox = self.tag.find('[data-name="'+k+'"] > input[type="checkbox"]');
+           self.hidden[k].visible = checkbox.prop("checked");
         });
         
         $(self).trigger("done");
@@ -36,8 +36,9 @@ define(
              '<table class="small" width="200px"></table>'
         );
 
-        _.each(self.hidden, function(h){
-           $html.append("<tr><td>"+h.label+"</td><td><input type='checkbox' data-name='"+h.id+"' /></td></tr>"); 
+        _.each(_.keys(self.hidden), function(k){
+           var h = self.hidden[k];
+           $html.append("<tr><td>"+h.label+"</td><td><input type='checkbox' data-name='"+k+"' /></td></tr>"); 
         });
         
         $html.append("<tr><td width='75%'></td><td style='padding-top: 1em' data-fname='apply_btn'></td></tr>");
