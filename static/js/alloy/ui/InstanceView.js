@@ -53,7 +53,7 @@ define(
               $gnode.popover({
                 html     : true, 
                 trigger  : 'manual',
-                container: $(document.body),
+                container: $(self.tag),
                 content  : settings.tag
               });
               // turn it on
