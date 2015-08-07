@@ -159,7 +159,7 @@ define(
             label       : rel.fieldname,
             color       : 'black',
             stroke      : 'solid',
-            weight      : 0,
+            weight      : 1,
             show_as_arc : true,
             show_as_attr: false
         };

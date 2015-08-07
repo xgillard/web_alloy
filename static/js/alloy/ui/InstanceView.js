@@ -2,9 +2,10 @@ define(
   [
   'jquery', 'util/_', 'viz', 'd3',
   'rendering/Grapher', 'config/ui/VizToolBar',
-  'config/ui/SignatureThemeSettingsView'
+  'config/ui/SignatureThemeSettingsView',
+  'config/ui/FieldThemeSettingsView'
   ],
-  function($, _, viz, d3, grapher, VizToolBar, SigThemeSettingsView){
+  function($, _, viz, d3, grapher, VizToolBar, SigThemeSettingsView, FieldThemeSettingsView){
       
       
       function InstanceView(theme, instance, projection){
@@ -37,6 +38,7 @@ define(
         enable_highlighting(self, graph);
         //
         enable_node_configuration(self, graph);
+        enable_edge_configuration(self, graph);
       };
       
       function enable_node_configuration(self, graph){
@@ -53,6 +55,35 @@ define(
               $gnode.popover({
                 html     : true, 
                 title    : sig.signame+' signature configuration',
+                trigger  : 'manual',
+                container: $(self.tag),
+                content  : settings.tag
+              });
+              // turn it on
+              $gnode.popover('toggle');  
+              // destroy it when no longer needed
+              $(settings).on("done", function(){
+                $gnode.popover("destroy"); 
+              });
+            };
+        });
+      };
+      
+      function enable_edge_configuration(self, graph){
+        var rel_by_id = _.indexBy(self.instance.fields, 'id');
+        _.each(self.tag.find("svg g.edge"), function(gnode){
+            var $gnode  = $(gnode);
+            var title   = $gnode.find("title").text();
+            var label   = $gnode.find("text").first().text();
+            var id      = graph.edges[title+"_"+label].id;
+            var rel     = rel_by_id[id];
+            var settings= new FieldThemeSettingsView(self.theme, self.instance, rel);
+            
+            $gnode[0].onclick = function(){
+              // attach popover behavior
+              $gnode.popover({
+                html     : true, 
+                title    : rel.label+' relation configuration',
                 trigger  : 'manual',
                 container: $(self.tag),
                 content  : settings.tag
