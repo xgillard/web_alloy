@@ -112,7 +112,7 @@ define(
              .append('[label="').append(label).append('"')
              .append(', fillcolor="').append(conf.color).append('"')
              .append(', shape=').append(conf.shape)
-             // TODO STROKE ?? what attribute ?
+             // TODO STROKE ?? what attribute ? => style
              //.append(', fillcolor="').append(conf.stroke).append('"')
              .append('];');
       };

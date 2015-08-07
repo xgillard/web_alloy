@@ -16,7 +16,7 @@ define(
         _.each(edges, _.partial(draw_tuple, out));
         
         // node markers
-        add_skolems(out, instance);
+        add_skolems(out, theme, instance);
         add_projection_marks(out, instance, proj);
         add_rel_shown_as_attr(out, theme, instance);
         
@@ -58,13 +58,13 @@ define(
         return filtered;
     }
     
-    function add_skolems(out, instance){
-        if(!instance.show_skolems) return;
+    function add_skolems(out, theme, instance){
+        if(!theme.show_skolem_const) return;
         // maybe configure this
         _.each(instance.skolems, function(s){
            _.each(s.witnesses, function(w){
-               _.each(w.atoms, function(a){
-                 out.add_skolem_marker(a, s.label);  
+               _.each(w.atomnames, function(a){
+                 out.add_skolem_marker(a, s.constantname);  
                });
            });
         });
