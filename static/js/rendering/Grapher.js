@@ -115,7 +115,7 @@ define(
         if(visible.length > 1){
             var nids    = _.pluck(visible, 'nid');
             var middle = nids.slice(1, nids.length-1);
-            out.add_edge(t.id, _.first(nids), _.last(nids), t.fieldname, middle); 
+            out.add_edge(t.id, t.typename, _.first(nids), _.last(nids), t.fieldname, middle); 
         } else if(visible.length === 1){
             out.add_project_marker(t.dst, t.fieldname); 
         }

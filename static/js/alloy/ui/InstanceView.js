@@ -83,7 +83,7 @@ define(
               // attach popover behavior
               $gnode.popover({
                 html     : true, 
-                title    : rel.label+' relation configuration',
+                title    : rel.fieldname+' relation configuration',
                 trigger  : 'manual',
                 container: $(self.tag),
                 content  : settings.tag
