@@ -45,7 +45,7 @@ define(
       function get_sig_conf(self, sig){
           var ret = self.sig_configs[sig.typename];
           if(! ret){                    // INIT IF NOT FOUND
-            ret                  = {};
+            ret                  = {typename: sig.typename};
             self.sig_configs[sig.typename] = ret;
           }
           return ret;
@@ -120,7 +120,7 @@ define(
       function get_rel_conf(self, rel){
           var ret = self.rel_configs[rel.typename];
           if(! ret){                    // INIT IF NOT FOUND
-            ret                  = {};
+            ret = {typename: rel.typename};
             self.rel_configs[rel.typename] = ret;
           }
           return ret;

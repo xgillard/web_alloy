@@ -75,15 +75,14 @@ define(
             var $gnode  = $(gnode);
             var title   = $gnode.find("title").text();
             var label   = $gnode.find("text").first().text();
-            var id      = graph.edges[title+"_"+label].id;
-            var rel     = rel_by_id[id];
-            var settings= new FieldThemeSettingsView(self.theme, self.instance, rel);
+            var edge    = graph.edges[title+"_"+label];
+            var settings= new FieldThemeSettingsView(self.theme, self.instance, edge);
             
             $gnode[0].onclick = function(){
               // attach popover behavior
               $gnode.popover({
                 html     : true, 
-                title    : rel.fieldname+' relation configuration',
+                title    : edge.label+' relation configuration',
                 trigger  : 'manual',
                 container: $(self.tag),
                 content  : settings.tag

@@ -25,9 +25,10 @@ define(
         this.nodes[nid] = $.extend(memo, node);
       };
       
-      Graph.prototype.add_edge = function(id, typename,src, dst, label, intermed){
-        var eid = edge_id(src, dst, label);
-        this.edges[eid] = {id: id, eid: eid, typename: typename, src: node_id(src), dst: node_id(dst), intermed: intermed, label: label||''};
+      Graph.prototype.add_edge = function(id, src, dst, label, intermed){
+        var eid         = edge_id(src.nid, dst.nid, label);
+        var typename    = label+":"+_.pluck([].concat([src], intermed, [dst]), 'typename').join('->');
+        this.edges[eid] = {id: id, eid: eid, typename: typename, src: src.nid, dst: dst.nid, intermed: _.pluck(intermed, 'nid'), label: label||''};
       };
       
       Graph.prototype.add_skolem_marker=function(id, label){
@@ -118,7 +119,7 @@ define(
       };
       
       function e_to_viz(theme, instance, out, e){
-          var conf  = theme.get_rel_config(e, instance);
+              var conf  = theme.get_rel_config(e, instance);
           var label = e.label; // FIXME use real label
           if(! _.isEmpty(e.intermed)){
               label+="\n";

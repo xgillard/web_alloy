@@ -13,11 +13,11 @@ define(
            out.add_node(a);
         });
         
-        _.each(edges, _.partial(draw_tuple, out));
+        _.each(edges, _.partial(draw_tuple, out, theme));
         
         // node markers
         add_skolems(out, theme, instance);
-        add_projection_marks(out, instance, proj);
+        add_projection_marks(out, theme, instance, proj);
         add_rel_shown_as_attr(out, theme, instance);
         
         // TODO: edge markers
@@ -100,22 +100,28 @@ define(
         return submarks;
     };
     
-    function add_projection_marks(out, instance, projection){
-        var draw = _.partial(draw_tuple, out);
+    function add_projection_marks(out, theme, instance, projection){
+        var draw = _.partial(draw_tuple, out, theme);
         _.each(_.values(projection), function(p){
           var p_rel = _.where(instance.tuples, {src: p});
           _.each(p_rel, draw);
         });
     };
     
-    function draw_tuple(out, t){
+    function draw_tuple(out, theme, t){
         var steps  = _.map(t.atoms,  function(a){return out.node(a);});
         var visible= _.filter(steps, function(s){return s!== undefined;});
 
         if(visible.length > 1){
-            var nids    = _.pluck(visible, 'nid');
+            // Following three lines handle the special case where a relation
+            // chunk was marked as to not display by the user
+            var typename= t.fieldname+':'+_.pluck(visible, 'typename').join('->');
+            var edgeconf= theme.rel_configs[typename];
+            if( edgeconf && edgeconf.show_as_arc === false) return;
+            
+            var nids    = _.map(visible, function(n){ return {nid: n.nid, typename: n.typename};});
             var middle = nids.slice(1, nids.length-1);
-            out.add_edge(t.id, t.typename, _.first(nids), _.last(nids), t.fieldname, middle); 
+            out.add_edge(t.id, _.first(nids), _.last(nids), t.fieldname, middle); 
         } else if(visible.length === 1){
             out.add_project_marker(t.dst, t.fieldname); 
         }
@@ -132,6 +138,10 @@ define(
     function is_prototype_of(x, y){
         return x.isPrototypeOf(y);
     };
+    
+    function build_edge_typename(src, intermed, dst){
+        return _.pluck([].concat([src], intermed, [dst]), 'typename').join('->');
+    }
     
     return Grapher;
   }
