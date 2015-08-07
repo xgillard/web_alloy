@@ -95,7 +95,7 @@ define(
       function default_sig_theme(sig){
         return {
             label  : sig.simple_signame(),
-            color  : 'white',
+            color  : '#FFFFFF', // white
             stroke : 'solid',
             shape  : _.first(shape),
             visible: true,
