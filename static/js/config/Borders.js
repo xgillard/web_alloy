@@ -1,5 +1,5 @@
 define(function(){
     
-   return ['solid', 'dotted', 'dashed', 'double'];
+   return [ 'solid', 'dotted', 'dashed' ];
    
 });

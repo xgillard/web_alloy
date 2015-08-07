@@ -23,7 +23,9 @@ define(
         this.tag               = mkTag(this);
         
         $(this.apply_btn).on("click", _.partial(commit, this));
-        $(theme).on("changed", _.partial(set_values, this));
+        // THIS IS a controller view only: it doesn't need to refresh
+        // upon model update
+        //$(theme).on("changed", _.partial(set_values, this));
         set_values(this);
     };
     

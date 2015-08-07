@@ -20,7 +20,7 @@ define(
       Graph.prototype.add_node = function(atom){
         var nid     = node_id(atom.atomname);
         var lbl     = atom.simple_atomname();
-        var node    = {nid: nid, label: lbl, skolem: [], project: [], rels: []};
+        var node    = {id: atom.id, nid: nid, label: lbl, skolem: [], project: [], rels: []};
         var memo    = $.extend({}, atom);
         this.nodes[nid] = $.extend(memo, node);
       };

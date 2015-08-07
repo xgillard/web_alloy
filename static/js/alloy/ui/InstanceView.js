@@ -1,9 +1,10 @@
 define(
   [
   'jquery', 'util/_', 'viz', 'd3',
-  'rendering/Grapher', 'config/ui/VizToolBar'
+  'rendering/Grapher', 'config/ui/VizToolBar',
+  'config/ui/SignatureThemeSettingsView'
   ],
-  function($, _, viz, d3, grapher, VizToolBar){
+  function($, _, viz, d3, grapher, VizToolBar, SigThemeSettingsView){
       
       
       function InstanceView(theme, instance, projection){
@@ -34,6 +35,35 @@ define(
         self.tag.append(self.viztoolbar.tag);
         enable_zoom(self);
         enable_highlighting(self, graph);
+        //
+        enable_node_configuration(self, graph);
+      };
+      
+      function enable_node_configuration(self, graph){
+        var sig_by_id = _.indexBy(self.instance.signatures, 'id');
+        _.each(self.tag.find("svg g.node"), function(gnode){
+            var $gnode  = $(gnode);
+            var title   = $gnode.find("title").text();
+            var id      = graph.nodes[title].id;
+            var sig     = sig_by_id[id];
+            var settings= new SigThemeSettingsView(self.theme, self.instance, sig);
+            
+            $gnode[0].onclick = function(){
+              // attach popover behavior
+              $gnode.popover({
+                html     : true, 
+                trigger  : 'manual',
+                container: $(document.body),
+                content  : settings.tag
+              });
+              // turn it on
+              $gnode.popover('toggle');  
+              // destroy it when no longer needed
+              $(settings).on("done", function(){
+                $gnode.popover("destroy"); 
+              });
+            };
+        });
       };
       
       // ZOOMING
