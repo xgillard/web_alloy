@@ -70,7 +70,8 @@ define(
       
       Theme.prototype.get_sig_config = function(sig, instance){
         // extends an empty object = copy
-        var this_conf = $.extend({}, get_sig_conf(this, sig));
+        var init      = {label: sig.simple_signame()};
+        var this_conf = $.extend(init, get_sig_conf(this, sig));
         // inherit parent config
         if(sig.parentID){
           var parent= _.indexBy(instance.signatures, 'id')[sig.parentID];
