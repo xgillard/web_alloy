@@ -99,15 +99,15 @@ define(
           var label = n.label; // FIXME: use the real label
           if(! _.isEmpty(n.skolem)){
               label+="\n";
-              label+=n.skolem.join(", ");
+              label+=_.uniq(n.skolem).join(", ");
           }
           if(! _.isEmpty(n.project)){
               label+="\n";
-              label+="("+n.project.join(", ")+")";
+              label+="("+_.uniq(n.project).join(", ")+")";
           }
           if(! _.isEmpty(n.rels)){
               label+="\n";
-              label+=n.rels.join(", ");
+              label+=_.uniq(n.rels).join(", ");
           }
           out.append(n.nid)
              .append('[label="').append(label).append('"')
