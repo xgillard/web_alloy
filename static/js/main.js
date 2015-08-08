@@ -190,7 +190,7 @@ require(
        } catch (e) {
           // nothing encoded ?
           navigate_to("#editor");
-          ui.Alert('danger', 'Sorry: I could not restor the previous state.');
+          ui.Alert('danger', 'Sorry: I could not restore the previous state.');
           console.log(e);
        }
     }
