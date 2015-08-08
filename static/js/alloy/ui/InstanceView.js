@@ -70,7 +70,6 @@ define(
       };
       
       function enable_edge_configuration(self, graph){
-        var rel_by_id = _.indexBy(self.instance.fields, 'id');
         _.each(self.tag.find("svg g.edge"), function(gnode){
             var $gnode  = $(gnode);
             var title   = $gnode.find("title").text();

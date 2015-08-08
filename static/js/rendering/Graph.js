@@ -28,7 +28,7 @@ define(
       Graph.prototype.add_edge = function(id, src, dst, label, intermed){
         var eid         = edge_id(src.nid, dst.nid, label);
         var typename    = label+":"+_.pluck([].concat([src], intermed, [dst]), 'typename').join('->');
-        this.edges[eid] = {id: id, eid: eid, typename: typename, src: src.nid, dst: dst.nid, intermed: _.pluck(intermed, 'nid'), label: label||''};
+        this.edges[eid] = {id: id, eid: eid, typename: typename, src: src.nid, dst: dst.nid, intermed: _.pluck(intermed, 'nid'),fieldname: label ,label: label||''};
       };
       
       Graph.prototype.add_skolem_marker=function(id, label){
