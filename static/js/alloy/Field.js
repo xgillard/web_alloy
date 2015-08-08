@@ -14,6 +14,7 @@ define(
         this.fieldname = $field.attr("label");
         this.type      = $pluck($field.find("type"), "ID");
         this.private   = $field.attr("private")  === "yes";
+        // typename set by typesystem
       };
       /**
        * This method allows you to set the parent Field of this

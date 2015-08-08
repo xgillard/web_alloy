@@ -52,10 +52,17 @@ define(
     
     function update(self){
       self.navspan.empty();
-      var signatures  = _.indexBy(self.instance.signatures, 'id');
+      var signatures  = _.indexBy(self.instance.signatures, 'typename');
       var projections = self.projection.projections;
       _.each(_.keys(projections), function(sig){
-          self.navspan.append(new AtomNav(self.instance, self.projection, signatures[sig]).tag);
+          var the_sig = signatures[sig];
+          if(the_sig) {
+              self.navspan.append(new AtomNav(self.instance, self.projection, the_sig).tag);
+          } else {
+              console.log("WARN: "+sig+" was considered stale, is it OK ?");
+              // Cleanup if the sig no longer exist
+              self.projection.remove(sig);   
+          }
       });
     };
 

@@ -32,9 +32,9 @@ define(
         // atoms -= hidden per user decision
         atoms = _.filter(atoms, function(a){return theme.get_sig_config(a, instance).visible;});
         
-        var sig_byid = _.indexBy(instance.signatures, 'id');
+        var sig_bytypename = _.indexBy(instance.signatures, 'typename');
         var projected= _.flatten(_.map(_.keys(projection), function(s){
-           return _.filter(atoms, _.partial(is_prototype_of, sig_byid[s])); 
+           return _.filter(atoms, _.partial(is_prototype_of, sig_bytypename[s])); 
         }));
         // atoms -= projected away
         atoms = _.difference(atoms, projected);

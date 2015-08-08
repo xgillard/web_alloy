@@ -19,12 +19,12 @@ define(
         this.tag.append(this.container);
 
         
-        this.projection = new Projector(instance, projection);
+        this.projector = new Projector(instance, projection);
         this.general_settings_btn = mkGeneralSettings(self);
         
         this.sig_visibility= new VisibilitySelector("Hidden sigs", "Select to make visible", theme, theme.sig_configs);
         
-        this.container.append(this.projection.tag);
+        this.container.append(this.projector.tag);
         this.container.append(mkRight( this.sig_visibility.tag, this.general_settings_btn));
     };
     

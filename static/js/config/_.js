@@ -1,22 +1,19 @@
 define(
   [
-  'config/SatSolvers',
-  'config/ConfigType',
-  'config/Configuration','config/Fonts', 'config/Palettes', 'config/Layouts', 
-  'config/Shapes', 'config/Borders', 'config/Signature',
+  'config/Borders', 'config/Fonts', 'config/Layouts', 'config/Orientation',
+  'config/Palettes', 'config/SatSolvers', 'config/Shapes','config/Theme',
   'config/ui/_'
   ],
-  function(Sat, ConfigType, Configuration, Fonts, Palettes, Layouts, Shapes, Borders, Sig, confui){
+  function(Borders, Fonts, Layouts, Orientation, Palettes, Sat, Shapes, Themes, confui){
       return {
-          SatSolver  : Sat,
-          ConfigType : ConfigType,
-          Config     : Configuration,
-          Fonts      : Fonts,
-          Palettes   : Palettes,
-          Layouts    : Layouts, 
-          Shapes     : Shapes,
           Borders    : Borders,
-          Signature  : Sig,
+          Fonts      : Fonts,
+          Layouts    : Layouts, 
+          Orienation : Orientation,
+          Palettes   : Palettes,
+          SatSolver  : Sat,
+          Shapes     : Shapes,
+          Themes     : Themes,
           ui         : confui
       };
 });

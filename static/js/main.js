@@ -83,12 +83,33 @@ require(
 
     function success($rsp){
       app.instance   = model.read_xml($rsp);
-      app.projection = new Projection();
+      remove_stale_data();
       
       $("#graph").html(new InstanceView(app.theme, app.instance, app.projection).tag);
       encode_state_in_url();
       // partial solution
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
+    };
+    
+    function remove_stale_data(){
+      // remove stale listeners
+      $(app.projection).off();
+      $(app.theme).off();
+      
+       var sig_bytypename = _.indexBy(app.instance.signatures, 'typename');
+       // stale projection sigs
+       _.each(_.keys(app.projection.projections), function(k){
+           if(_.indexOf(sig_bytypename, k) < 0){
+               app.projection.remove(k);
+           }
+       });
+       // stale sig theming
+       _.each(_.keys(app.theme.sig_configs), function(k){
+           if(_.indexOf(sig_bytypename, k) < 0){
+               delete app.theme.sig_configs[k];
+           }
+       });
+       // not much todo for the relations (for now)
     };
     
     function failure(xml){

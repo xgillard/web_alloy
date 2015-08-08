@@ -22,14 +22,14 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       this.tag.append(this.dropdown.tag);
       this.tag.append(this.right);
       
-      var initial_atom = inst.atom(proj.projections[sig.id]);
+      var initial_atom = inst.atom(proj.projections[sig.typename]);
       var initial_value= !initial_atom ? ' ' : initial_atom.simple_atomname();
       this.dropdown.val(initial_value);
     };
     
     function fireUpdate(self){
         var atoms_bysname = _.indexBy(self.instance.atoms, atom_to_sname);
-        self.projection.navigate(self.sig.id, atoms_bysname[self.dropdown.val()].atomname);
+        self.projection.navigate(self.sig.typename, atoms_bysname[self.dropdown.val()].atomname);
     };
     
     function currentIndex(options, value) {

@@ -16,6 +16,7 @@ define(
          this.abstract = $sig.attr("abstract") === "yes";
          this.private  = $sig.attr("private")  === "yes";
          this.signame  = $sig.attr("label"); 
+         // typename set by typesystem
       }
       
       /**

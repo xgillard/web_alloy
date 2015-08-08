@@ -1,15 +1,20 @@
 define(
   [
-  'config/ui/AtomNav', 'config/ui/GeneralConfig', 'config/ui/SigConfig', 
-  'config/ui/ProjectionSelector', 'config/ui/SigSelector', 'config/ui/VizToolBar'
+  'config/ui/AtomNav', 'config/ui/FieldThemeSettingsView', 'config/ui/GeneralThemeSettingsView', 
+  'config/ui/ProjectionSelector', 'config/ui/SigSelector', 'config/ui/SignatureThemeSettingsView',
+  'config/ui/VisibilitySelector', 'config/ui/VisibilityThemeSettingsView', 'config/ui/VizToolBar'
   ], 
-  function(AtomNav, GeneralConfig, SigConf, ProjSelector, SigSelector, VizToolbar){
+  function(AtomNav, FieldThemeSettingsView, GeneralThemeSettingsView, ProjSelector, SigSelector, 
+  SigThemeSettingsView, VisibilitySelector, VisibilityThemeSettingsView, VizToolbar){
     return {
-        AtomNav           : AtomNav,
-        GeneralConfig     : GeneralConfig,
-        SigConfig         : SigConf,
-        ProjectionSelector: ProjSelector,
-        SigSelector       : SigSelector,
-        VizToolBar        : VizToolbar
+        AtomNav                    : AtomNav,
+        FieldThemeSettingsView     : FieldThemeSettingsView,
+        GeneralThemeSettingsView   : GeneralThemeSettingsView,
+        ProjectionSelector         : ProjSelector,
+        SigSelector                : SigSelector,
+        SigThemeSettingsView       : SigThemeSettingsView,
+        VisibilitySelector         : VisibilitySelector,
+        VisibilityThemeSettingsView: VisibilityThemeSettingsView,
+        VizToolBar                 : VizToolbar
     };
 });

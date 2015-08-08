@@ -22,18 +22,18 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
     function proj_update(self){
       var value = self.projection.projections;
       _.each(self.instance.signatures, function(sig){
-         var sid   = sig.id;
-         var sname = sig.signame;
-         self.tag.find("input[type='checkbox'][name='"+sname+"']").prop("checked",value[sid]);
+         var typename = sig.typename;
+         var sname    = sig.signame;
+         self.tag.find("input[type='checkbox'][name='"+sname+"']").prop("checked",value[typename]);
       });
     };
     
     function project(self, instance, sig){
         var chk = $(this);
         if(chk.prop('checked')){
-            self.projection.add(sig.id, default_atom(instance, sig));
+            self.projection.add(sig.typename, default_atom(instance, sig));
         } else {
-            self.projection.remove(sig.id);
+            self.projection.remove(sig.typename);
         }
     };
     
