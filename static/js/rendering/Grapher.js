@@ -70,7 +70,7 @@ define(
             }
             // By default, you don't write it as attr
             if( edgeconf && edgeconf.show_as_attr) {
-                var marker= t.fieldname+':'+_.pluck(visible, 'label').join('->');
+                var marker= t.fieldname+':'+_.pluck(visible.slice(1), 'label').join('->');
                 out.add_rel_marker(_.first(nids).nid, marker);
             }
         } else if(visible.length === 1){
