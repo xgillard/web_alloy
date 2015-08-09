@@ -15,7 +15,7 @@ define(
       
       function commit(self){
         _.each(_.keys(self.hidden), function(k){
-           var checkbox = self.tag.find('[data-name="'+k+'"] > input[type="checkbox"]');
+           var checkbox = self.tag.find('input[type="checkbox"][data-name="'+k+'"]');
            self.hidden[k].visible = checkbox.prop("checked");
         });
         
