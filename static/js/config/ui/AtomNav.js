@@ -32,9 +32,9 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
     function reset_values(self){
         self.tag.empty();
         self.dropdown = ui.Dropdown(_.map(self.instance.atomsOf(self.sig), _.partial(atom_label, self)), self.updated);
-        this.tag.append(self.left);
-        this.tag.append(self.dropdown.tag);
-        this.tag.append(self.right);
+        self.tag.append(self.left);
+        self.tag.append(self.dropdown.tag);
+        self.tag.append(self.right);
     };
     
     function fireUpdate(self){
