@@ -32,9 +32,8 @@ define(
         this.nodes[nid] = $.extend(memo, node);
       };
       
-      Graph.prototype.add_edge = function(id, src, dst, label, intermed){
+      Graph.prototype.add_edge = function(id, typename, src, dst, label, intermed){
         var eid         = edge_id(src.nid, dst.nid, label);
-        var typename    = label+":"+_.pluck([].concat([src], intermed, [dst]), 'typename').join('->');
         this.edges[eid] = {id: id, 
                            eid: eid, 
                            typename: typename, 

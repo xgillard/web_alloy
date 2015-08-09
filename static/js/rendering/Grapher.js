@@ -67,7 +67,7 @@ define(
             var can_show= !(t.private && theme.hide_private_rels);
             // By default, you draw it
             if(can_show && (!edgeconf || edgeconf.show_as_arc !== false)) {
-                out.add_edge(t.id, _.first(nids), _.last(nids), t.fieldname, middle); 
+                out.add_edge(t.id, t.typename, _.first(nids), _.last(nids), t.fieldname, middle); 
             }
             // By default, you don't write it as attr
             if(can_show && (edgeconf && edgeconf.show_as_attr)) {
