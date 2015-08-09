@@ -72,9 +72,8 @@ define(
       function enable_edge_configuration(self, graph){
         _.each(self.tag.find("svg g.edge"), function(gnode){
             var $gnode  = $(gnode);
-            var title   = $gnode.find("title").text();
-            var label   = $gnode.find("text").first().text();
-            var edge    = graph.edges[title+"_"+label];
+            var eid     = previousComment($gnode[0]).replace(/&#45;&gt;/g, "->");
+            var edge    = graph.edges[eid];
             var settings= new FieldThemeSettingsView(self.theme, self.instance, edge);
             
             $gnode[0].onclick = function(){
@@ -94,6 +93,13 @@ define(
               });
             };
         });
+      };
+      
+      function previousComment(e){
+        if(!e) return '';
+        var prev = e.previousSibling;
+        if(prev.nodeType === 8) return prev.data.trim();
+        return previousComment(prev);
       };
       
       // ZOOMING

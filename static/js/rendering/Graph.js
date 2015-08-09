@@ -22,7 +22,13 @@ define(
         var lbl     = atom.simple_atomname();
         // note: even if initially they seem to have the same role: label can change
         //       whereas atomname cannot (well SHOULD not even if technically feasible)
-        var node    = {id: atom.id, nid: nid, atomname: atom.atomname, label: lbl, skolem: [], project: [], rels: []};
+        var node    = {id: atom.id, 
+                       nid: nid, 
+                       atomname: atom.atomname, 
+                       label: lbl, 
+                       skolem: [], 
+                       project: [], 
+                       rels: []};
         var memo    = $.extend({}, atom);
         this.nodes[nid] = $.extend(memo, node);
       };
@@ -30,7 +36,14 @@ define(
       Graph.prototype.add_edge = function(id, src, dst, label, intermed){
         var eid         = edge_id(src.nid, dst.nid, label);
         var typename    = label+":"+_.pluck([].concat([src], intermed, [dst]), 'typename').join('->');
-        this.edges[eid] = {id: id, eid: eid, typename: typename, src: src.nid, dst: dst.nid, intermed: _.pluck(intermed, 'nid'),fieldname: label ,label: label||''};
+        this.edges[eid] = {id: id, 
+                           eid: eid, 
+                           typename: typename, 
+                           src: src.nid, 
+                           dst: dst.nid, 
+                           intermed: _.pluck(intermed, 'nid'),
+                           fieldname: label ,
+                           label: label||''};
       };
       
       Graph.prototype.add_skolem_marker=function(id, label){
@@ -136,7 +149,7 @@ define(
       
       function e_to_viz(self, out, e){
           var conf  = self.theme.get_rel_config(e, self.instance);
-          var label = e.label; // FIXME use real label
+          var label = conf.label;
           if(! _.isEmpty(e.intermed)){
               var intermed_titles = _.map(e.intermed, function(i){return self.node_title(i);});
               label+="\n";
@@ -144,6 +157,7 @@ define(
           }
           out.append(e.src).append("->").append(e.dst)
              .append('[label="').append(label).append('"')
+             .append(', comment="').append(e.eid).append('"')
              .append(', color="').append(conf.color).append('"')
              .append(', style=').append(conf.stroke)
              .append(', weight=').append(conf.weight)
