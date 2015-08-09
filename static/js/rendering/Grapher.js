@@ -13,7 +13,7 @@ define(
         });
         
         // edges
-        _.each(instance.tuples, _.partial(draw_tuple, out, theme));
+        _.each(instance.tuples, _.partial(draw_tuple, out, theme, instance, proj));
         
         // node markers
         add_skolems(out, theme, instance);
@@ -54,7 +54,7 @@ define(
         });
     };
     
-    function draw_tuple(out, theme, t){
+    function draw_tuple(out, theme, instance, proj, t){
         var steps  = _.map(t.atoms,  function(a){return out.node(a);});
         var visible= _.filter(steps, function(s){return s!== undefined;});
         
@@ -74,7 +74,14 @@ define(
                 out.add_rel_marker(_.first(nids).nid, marker);
             }
         } else if(visible.length === 1){
-            out.add_project_marker(t.dst, t.fieldname); 
+            var src     = instance.atom(t.src);
+            var srcconf = theme.get_sig_config(src, instance); 
+            var can_draw= srcconf.visible && 
+                          (!(proj[src.typename] && proj[src.typename] !== src.atomname));
+            
+            if(can_draw){
+                out.add_project_marker(t.dst, t.fieldname); 
+            }
         }
     };
     
