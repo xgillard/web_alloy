@@ -111,7 +111,7 @@ define(
           }
           
           // set default font
-          out.append('node[style=filled, fontname="').append(t.font).append('"]');
+          out.append('node[fontname="').append(t.font).append('"]');
           out.append('edge[fontname="').append(t.font).append('"]');
           
           _.each(g.nodes, _.partial(n_to_viz, g, out));
@@ -126,6 +126,7 @@ define(
           var label = self.node_label(n);
           out.append(n.nid)
              .append('[label="').append(label).append('"')
+             .append(', style="filled, ').append(conf.stroke).append('"')
              .append(', fillcolor="').append(conf.color).append('"')
              .append(', shape=').append(conf.shape)
              // TODO STROKE ?? what attribute ? => style
