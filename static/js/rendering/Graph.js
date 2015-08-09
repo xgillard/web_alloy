@@ -20,7 +20,9 @@ define(
       Graph.prototype.add_node = function(atom){
         var nid     = node_id(atom.atomname);
         var lbl     = atom.simple_atomname();
-        var node    = {id: atom.id, nid: nid, label: lbl, skolem: [], project: [], rels: []};
+        // note: even if initially they seem to have the same role: label can change
+        //       whereas atomname cannot (well SHOULD not even if technically feasible)
+        var node    = {id: atom.id, nid: nid, atomname: atom.atomname, label: lbl, skolem: [], project: [], rels: []};
         var memo    = $.extend({}, atom);
         this.nodes[nid] = $.extend(memo, node);
       };
@@ -70,6 +72,31 @@ define(
         return out.toString();
       };
       
+      // The very node headline
+      Graph.prototype.node_title = function(nid){
+          var node     = this.nodes[nid];
+          var conf     = this.theme.get_sig_config(node, this.instance);
+          var node_num =  _.last(node.atomname.split('$'));
+          return conf.label+node_num;
+      };
+      // The complete label
+      Graph.prototype.node_label = function(node){
+          var label = this.node_title(node.nid);
+          if(! _.isEmpty(node.skolem)){
+              label+="\n";
+              label+=_.uniq(node.skolem).join(", ");
+          }
+          if(! _.isEmpty(node.project)){
+              label+="\n";
+              label+="("+_.uniq(node.project).join(", ")+")";
+          }
+          if(! _.isEmpty(node.rels)){
+              label+="\n";
+              label+=_.uniq(node.rels).join(", ");
+          }
+          return label;
+      };
+      
       function g_to_viz(out, g){
           var t = g.theme;
           var i = g.instance;
@@ -87,28 +114,16 @@ define(
           out.append('node[style=filled, fontname="').append(t.font).append('"]');
           out.append('edge[fontname="').append(t.font).append('"]');
           
-          _.each(g.nodes, _.partial(n_to_viz, t, i, out));
-          _.each(g.edges, _.partial(e_to_viz, t, i, out));
+          _.each(g.nodes, _.partial(n_to_viz, g, out));
+          _.each(g.edges, _.partial(e_to_viz, g, out));
           out.append("}");
           
           //console.log(out.toString());
       };
       
-      function n_to_viz(theme, instance, out, n){
-          var conf  = theme.get_sig_config(n, instance);
-          var label = n.label; // FIXME: use the real label
-          if(! _.isEmpty(n.skolem)){
-              label+="\n";
-              label+=_.uniq(n.skolem).join(", ");
-          }
-          if(! _.isEmpty(n.project)){
-              label+="\n";
-              label+="("+_.uniq(n.project).join(", ")+")";
-          }
-          if(! _.isEmpty(n.rels)){
-              label+="\n";
-              label+=_.uniq(n.rels).join(", ");
-          }
+      function n_to_viz(self, out, n){
+          var conf  = self.theme.get_sig_config(n, self.instance);
+          var label = self.node_label(n);
           out.append(n.nid)
              .append('[label="').append(label).append('"')
              .append(', fillcolor="').append(conf.color).append('"')
@@ -118,12 +133,13 @@ define(
              .append('];');
       };
       
-      function e_to_viz(theme, instance, out, e){
-              var conf  = theme.get_rel_config(e, instance);
+      function e_to_viz(self, out, e){
+          var conf  = self.theme.get_rel_config(e, self.instance);
           var label = e.label; // FIXME use real label
           if(! _.isEmpty(e.intermed)){
+              var intermed_titles = _.map(e.intermed, function(i){return self.node_title(i);});
               label+="\n";
-              label+="["+e.intermed.join(", ")+"]";
+              label+="["+intermed_titles.join(", ")+"]";
           }
           out.append(e.src).append("->").append(e.dst)
              .append('[label="').append(label).append('"')
