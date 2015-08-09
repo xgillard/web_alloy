@@ -58,18 +58,19 @@ define(
         var steps  = _.map(t.atoms,  function(a){return out.node(a);});
         var visible= _.filter(steps, function(s){return s!== undefined;});
         
-        var typename= t.fieldname+':'+_.pluck(visible, 'typename').join('->');
-        var edgeconf= theme.rel_configs[typename];
+        //var typename= t.fieldname+':'+_.pluck(visible, 'typename').join('->');
+        var edgeconf= theme.get_rel_config(t, instance);
         
         if(visible.length > 1){
-            var nids   = _.map(visible, function(n){ return {nid: n.nid, typename: n.typename, label: n.label};});
-            var middle = nids.slice(1, nids.length-1);
+            var nids    = _.map(visible, function(n){ return {nid: n.nid, typename: n.typename, label: n.label};});
+            var middle  = nids.slice(1, nids.length-1);
+            var can_show= !(t.private && theme.hide_private_rels);
             // By default, you draw it
-            if( !edgeconf || edgeconf.show_as_arc !== false) {
+            if(can_show && (!edgeconf || edgeconf.show_as_arc !== false)) {
                 out.add_edge(t.id, _.first(nids), _.last(nids), t.fieldname, middle); 
             }
             // By default, you don't write it as attr
-            if( edgeconf && edgeconf.show_as_attr) {
+            if(can_show && (edgeconf && edgeconf.show_as_attr)) {
                 var marker= t.fieldname+':'+_.pluck(visible.slice(1), 'label').join('->');
                 out.add_rel_marker(_.first(nids).nid, marker);
             }
@@ -77,7 +78,8 @@ define(
             var src     = instance.atom(t.src);
             var srcconf = theme.get_sig_config(src, instance); 
             var can_draw= srcconf.visible && 
-                          (!(proj[src.typename] && proj[src.typename] !== src.atomname));
+                          (!(proj[src.typename] && proj[src.typename] !== src.atomname)) &&
+                          (!(t.private && theme.hide_private_rels));
             
             if(can_draw){
                 out.add_project_marker(t.dst, t.fieldname); 
