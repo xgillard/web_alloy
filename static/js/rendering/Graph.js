@@ -25,7 +25,6 @@ define(
         var node    = {id: atom.id, 
                        nid: nid, 
                        atomname: atom.atomname, 
-                       label: lbl, 
                        skolem: [], 
                        project: [], 
                        rels: []};
@@ -42,8 +41,7 @@ define(
                            src: src.nid, 
                            dst: dst.nid, 
                            intermed: _.pluck(intermed, 'nid'),
-                           fieldname: label ,
-                           label: label||''};
+                           fieldname: label};
       };
       
       Graph.prototype.add_skolem_marker=function(id, label){
