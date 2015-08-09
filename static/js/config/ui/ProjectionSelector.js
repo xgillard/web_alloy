@@ -2,13 +2,14 @@ define(
   ['jquery', 'util/_', 'ui/_','config/ui/SigSelector', 'config/ui/AtomNav', 'bootstrap'], 
   function($,_, ui, SigSelector,AtomNav){
     
-    function ProjectionSelector(instance, projection){
+    function ProjectionSelector(theme, instance, projection){
         var self        = this;
+        this.theme      = theme;
         this.instance   = instance;
         this.projection = projection;
         
         this.tag        = $(mkTag());
-        this.sigSelector= new SigSelector(instance, projection);
+        this.sigSelector= new SigSelector(theme, instance, projection);
         this.projButton = ui.Button("Projection", _.partial(askProjection, this), ['btn-primary', 'navbar-btn']);
         this.navspan    = $("<div class='btn-group'></div>");
         
@@ -16,6 +17,7 @@ define(
         this.tag.append(this.navspan);
        
         var update_me = _.partial(update, self);
+        $(theme     ).on("changed",       update_me);
         $(instance  ).on("changed",       update_me);
         $(projection).on("changed reset", update_me);
         update_me(); // make sure I display everything what's needed
@@ -57,7 +59,7 @@ define(
       _.each(_.keys(projections), function(sig){
           var the_sig = signatures[sig];
           if(the_sig) {
-              self.navspan.append(new AtomNav(self.instance, self.projection, the_sig).tag);
+              self.navspan.append(new AtomNav(self.theme, self.instance, self.projection, the_sig).tag);
           } else {
               console.log("WARN: "+sig+" was considered stale, is it OK ?");
               // Cleanup if the sig no longer exist

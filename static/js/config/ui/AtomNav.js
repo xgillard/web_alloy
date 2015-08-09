@@ -3,14 +3,15 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
     /*
      * Callback must be of the form function(nav, sig, atom) 
      */
-    function AtomNav(inst, proj, sig){
+    function AtomNav(theme, inst, proj, sig){
+      this.theme      = theme;
       this.instance   = inst;
       this.projection = proj;
       
       this.sig        = sig;
       this.updated    = _.partial(fireUpdate, this);
       
-      this.dropdown = ui.Dropdown(_.map(inst.atomsOf(sig), atom_to_sname), this.updated);
+      this.dropdown = ui.Dropdown(_.map(inst.atomsOf(sig), _.partial(atom_label, this)), this.updated);
       this.left     = ui.Button("<<", _.partial(navigate, this, prev), ['btn-default', 'navbar-btn']);
       this.right    = ui.Button(">>", _.partial(navigate, this, next), ['btn-default', 'navbar-btn']);
       this.tag      = $("<span class='btn-group atom_nav' ></span>");
@@ -23,12 +24,21 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
       this.tag.append(this.right);
       
       var initial_atom = inst.atom(proj.projections[sig.typename]);
-      var initial_value= !initial_atom ? ' ' : initial_atom.simple_atomname();
+      var initial_value= !initial_atom ? ' ' : atom_label(this, initial_atom);
       this.dropdown.val(initial_value);
+      $(theme).on("changed", _.partial(reset_values, this));
+    };
+    
+    function reset_values(self){
+        self.tag.empty();
+        self.dropdown = ui.Dropdown(_.map(self.instance.atomsOf(self.sig), _.partial(atom_label, self)), self.updated);
+        this.tag.append(self.left);
+        this.tag.append(self.dropdown.tag);
+        this.tag.append(self.right);
     };
     
     function fireUpdate(self){
-        var atoms_bysname = _.indexBy(self.instance.atoms, atom_to_sname);
+        var atoms_bysname = _.indexBy(self.instance.atoms, _.partial(atom_label, self));
         self.projection.navigate(self.sig.typename, atoms_bysname[self.dropdown.val()].atomname);
     };
     
@@ -55,8 +65,10 @@ define(['jquery', 'util/_', 'ui/_'], function($,_,ui){
         nav.updated(succ);
     };
     
-    function atom_to_sname(a){
-        return a.simple_atomname();
+    function atom_label(self, a){
+        var conf = self.theme.get_sig_config(a, self.instance);
+        var label= conf.label + a.atom_num();
+        return label;
     };
     
     return AtomNav;

@@ -1,21 +1,30 @@
 define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
    
-    function SigSelector(instance, projection){
+    function SigSelector(theme, instance, projection){
+        this.theme      = theme;
         this.instance   = instance;
         this.projection = projection;
         
         this.tag   = $("<div class='sig_selector'/>");
         
-        add_checkboxes(this);
-        proj_update(this);   // make sure I display everything what's needed
+        initialize(this);
+        $(theme).on("changed", _.partial(initialize, this));
         $(projection).on("changed reset", _.partial(proj_update, this));        
+    };
+    
+    function initialize(self){
+      self.tag.empty();
+      add_checkboxes(self);
+      proj_update(self);
     };
     
     function add_checkboxes(self){
       self.tag.empty();
       var instance = self.instance;
       _.each(instance.root_signatures(), function(sig){
-        self.tag.append(ui.LabeledCheckbox(sig.signame, _.partial(project, self, instance, sig)));
+        var conf = self.theme.get_sig_config(sig, self.instance);
+        var label= conf.label;
+        self.tag.append(mkSigCheckbox(label, sig.signame, _.partial(project, self, instance, sig)));
       });
     };
 
@@ -40,6 +49,15 @@ define(['jquery', 'util/_', 'ui/_'], function($,_, ui){
     function default_atom(instance, sig){
         var atoms = instance.atomsOf(sig);
         return _.isEmpty(atoms) ? ' ' : atoms[0].atomname;
+    };
+    
+    function mkSigCheckbox(label, signame, callback){
+        var $span = $("<span />").text(label);
+        var $chk  = $("<input type='checkbox' name='"+signame+"' />");
+        //
+        $chk[0].onchange = callback;
+        //
+        return $("<label />").append($span).append($chk);
     };
     
     return SigSelector;
