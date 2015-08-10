@@ -16,8 +16,9 @@ define(
           this.hide_private_sigs  = true;
           this.hide_private_rels  = true;
           this.show_skolem_const  = true;
-          this.automatic_shapes   = false;  
-          this.automatic_colors   = false;  
+          this.group_atoms_by_sig = true;
+          this.automatic_shapes   = true;  
+          this.automatic_colors   = true;
           
           // technically it would be possible to store all confs in one
           // single map indexed on sig.typename and rel.typename but

@@ -16,8 +16,9 @@ define(
         this.alphabetical      = mkCheckbox(false);
         this.hide_private_sigs = mkCheckbox(true);
         this.hide_private_rels = mkCheckbox(true);
-        this.automatic_shape   = mkCheckbox(false);
-        this.automatic_color   = mkCheckbox(false);
+        this.group_atoms_by_sig= mkCheckbox(true);
+        this.automatic_shape   = mkCheckbox(true);
+        this.automatic_color   = mkCheckbox(true);
         this.show_skolem_const = mkCheckbox(false);
         this.apply_btn         = mkApplyButton("Apply");
         this.tag               = mkTag(this);
@@ -40,6 +41,7 @@ define(
         self.hide_private_sigs.prop("checked", self.theme.hide_private_sigs);
         self.hide_private_rels.prop("checked", self.theme.hide_private_rels);
         self.show_skolem_const.prop("checked", self.theme.show_skolem_const);
+        self.group_atoms_by_sig.prop("checked", self.theme.group_atoms_by_sig);
         self.automatic_shape.prop("checked", self.theme.automatic_shapes);
         self.automatic_color.prop("checked", self.theme.automatic_colors);
     };
@@ -53,6 +55,7 @@ define(
         self.theme.force_alphabetical = self.alphabetical.prop("checked");
         self.theme.hide_private_sigs = self.hide_private_sigs.prop("checked");
         self.theme.hide_private_rels = self.hide_private_rels.prop("checked");
+        self.theme.group_atoms_by_sig = self.group_atoms_by_sig.prop("checked");
         self.theme.automatic_shapes = self.automatic_shape.prop("checked");
         self.theme.automatic_colors = self.automatic_color.prop("checked");
         self.theme.show_skolem_const= self.show_skolem_const.prop("checked");
@@ -116,6 +119,7 @@ define(
         '</tr>'                                                                        +
         '<tr><td>Hide private rel</td><td data-name="private_rels" class="fill"></td></tr>' +
         '<tr><td>Show Skolem constants</td><td data-name="skolems" class="fill"></td></tr>' +
+        '<tr><td>Group atoms by signature</td><td data-name="group_by_sig" class="fill"></td></tr>'+
         '<tr><td>Automatically choose shape</td><td data-name="auto_shape" class="fill"></td></tr>'+
         '<tr><td>Automatically choose color</td><td data-name="auto_color" class="fill"></td></tr>'+
         '<tr><td></td><td data-name="apply" style="padding-top: 1em"></td></tr>'+
@@ -130,6 +134,7 @@ define(
         $html.find("[data-name='private_sigs']").append(self.hide_private_sigs);
         $html.find("[data-name='private_rels']").append(self.hide_private_rels);
         $html.find("[data-name='skolems']").append(self.show_skolem_const);
+        $html.find("[data-name='group_by_sig']").append(self.group_atoms_by_sig);
         $html.find("[data-name='auto_shape']").append(self.automatic_shape);
         $html.find("[data-name='auto_color']").append(self.automatic_color);
         $html.find("[data-name='apply']").append(self.apply_btn);
