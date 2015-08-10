@@ -2,11 +2,12 @@ define(
   ['jquery', 'util/_'],
   function($,_){
       
-      function VisibilityThemeSettingsView(theme, hidden){
-         this.theme     = theme;
-         this.hidden    = hidden;
-         this.apply_btn = mkApplyButton("Apply");
-         this.tag       = mkTag(this);
+      function VisibilityThemeSettingsView(theme, hidden, write_update){
+         this.theme       = theme;
+         this.hidden      = hidden;
+         this.write_update= write_update;
+         this.apply_btn   = mkApplyButton("Apply");
+         this.tag         = mkTag(this);
          
          this.apply_btn.on("click", _.partial(commit, this));
          $(theme).on("changed", _.partial(refresh, this));
@@ -16,7 +17,7 @@ define(
       function commit(self){
         _.each(_.keys(self.hidden), function(k){
            var checkbox = self.tag.find('input[type="checkbox"][data-name="'+k+'"]');
-           self.hidden[k].visible = checkbox.prop("checked");
+           self.write_update(k, checkbox.prop("checked"));
         });
         
         $(self).trigger("done");
