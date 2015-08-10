@@ -67,3 +67,11 @@ body{
 .sig_selector > label > input[type='checkbox'] {
     text-align: right;
 }
+
+.popover-content select,
+.popover-content input {
+    height   : 18px;
+    font-size: 8pt;
+    vertical-align: middle;
+    line-height: 18px;
+}

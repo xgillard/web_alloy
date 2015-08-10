@@ -45,6 +45,16 @@ define(
             return signature.isPrototypeOf(a);  
           });
       };
+      
+      // note, by inheritance signature can be an atom if need be
+      Instance.prototype.setsContaining = function(signature){
+          return _.uniq(_.reduce(this.signatures, function(a, s){
+              if(s.isPrototypeOf(signature)){
+                 a.push(s.typename);
+              }
+              return a;
+          }, [signature.typename]));
+      };
 
       Instance.prototype.setChanged = function(){
         $(this).trigger("changed");  
