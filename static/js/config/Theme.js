@@ -12,7 +12,7 @@ define(
           this.edge_palette_name  = 'Default';
           this.font_name          = 'Default';
           
-          this.force_alphabetical = false;
+          this.force_alphabetical = true;
           this.hide_private_sigs  = true;
           this.hide_private_rels  = true;
           this.show_skolem_const  = true;
