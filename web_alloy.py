@@ -68,14 +68,14 @@ def wrap_success(answer):
     """
     Wraps an answer into a format that can easily be displayed in html page
     """
-    print answer
+    #print answer
     return "<success>{}</success>".format(answer)
 
 def wrap_error(error):
     """
     Wraps an error into a format that can easily be displayed in html page
     """
-    print error
+    #print error
     return "<error>{}></error>".format(error)
 
 #
