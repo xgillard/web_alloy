@@ -194,4 +194,9 @@ require(
           console.log(e);
        }
     }
+    
+    // When the user navigates using the back-next buttons, reload the context encoded in the hash
+    window.onpopstate = function(){
+        restore_ctx(tail_hash());
+    };
 });
