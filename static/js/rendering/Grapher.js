@@ -58,31 +58,33 @@ define(
         var steps  = _.map(t.atoms,  function(a){return out.node(a);});
         var visible= _.filter(steps, function(s){return s!== undefined;});
         
-        //var typename= t.fieldname+':'+_.pluck(visible, 'typename').join('->');
-        var edgeconf= theme.get_rel_config(t, instance);
+        var edgeconf = theme.get_rel_config(t, instance);
+        var baselabel= edgeconf ? edgeconf.label || t.fieldname : t.fieldname;
         
+        var src     = instance.atom(t.src);
+        var srcconf = theme.get_sig_config(src, instance); 
+        var can_draw= srcconf.visible && 
+                      (!(proj[src.typename] && proj[src.typename] !== src.atomname)) &&
+                      (!(t.private && theme.hide_private_rels));
+
         if(visible.length > 1){
             var nids    = _.map(visible, function(n){ return {nid: n.nid, typename: n.typename, label: n.label};});
             var middle  = nids.slice(1, nids.length-1);
-            var can_show= !(t.private && theme.hide_private_rels);
+            var can_show= can_draw && !(t.private && theme.hide_private_rels);
             // By default, you draw it
             if(can_show && (!edgeconf || edgeconf.show_as_arc !== false)) {
                 out.add_edge(t.id, t.typename, _.first(nids), _.last(nids), t.fieldname, middle); 
             }
             // By default, you don't write it as attr
             if(can_show && (edgeconf && edgeconf.show_as_attr)) {
-                var marker= t.fieldname+':'+_.pluck(visible.slice(1), 'label').join('->');
+                var marker= baselabel+':'+_.map(visible.slice(1), function(n){
+                    return out.node_title(n.nid);
+                }).join('->');
                 out.add_rel_marker(_.first(nids).nid, marker);
             }
-        } else if(visible.length === 1){
-            var src     = instance.atom(t.src);
-            var srcconf = theme.get_sig_config(src, instance); 
-            var can_draw= srcconf.visible && 
-                          (!(proj[src.typename] && proj[src.typename] !== src.atomname)) &&
-                          (!(t.private && theme.hide_private_rels));
-            
+        } else if(visible.length === 1){            
             if(can_draw){
-                out.add_project_marker(t.dst, t.fieldname); 
+                out.add_project_marker(t.dst, baselabel); 
             }
         }
     };
