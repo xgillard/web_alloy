@@ -1,5 +1,5 @@
 define(
-  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'bootstrap'],
+  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/ShareDialog','bootstrap'],
   function($,_, drop, wait){
     
     function _alert(type, mesg){

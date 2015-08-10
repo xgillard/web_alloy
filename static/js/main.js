@@ -40,7 +40,8 @@ require(
     'config/Theme',
     //
     'util/compress',
-    'bootstrap'], 
+    'bootstrap'
+  ], 
   function($,_,ace, ui, model, InstanceView, Projection, Theme, compress){
    
    var please_wait = ui.Wait("The analyzer is processing your model");
@@ -53,6 +54,7 @@ require(
    tab("visualizer");
    
    $("#execute").on("click", _.partial(execute, editor));
+   $("#share").shareDialog();
    
     // This function initializes the editor to use the ACE editor with
     // Alloy highligher

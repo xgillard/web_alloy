@@ -33,6 +33,10 @@ def javascript(path):
 def style(path):
     return send_from_directory("static/style/", path)
 
+@app.route('/fonts/<path:path>', methods=["GET","POST"])
+def fonts(path):
+    return send_from_directory("static/fonts/", path)
+
 @app.route('/image/<path:path>', methods=["GET","POST"])
 def image(path):
     return send_from_directory("static/image/", path)
