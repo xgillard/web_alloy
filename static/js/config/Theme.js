@@ -17,8 +17,8 @@ define(
           this.hide_private_rels  = true;
           this.show_skolem_const  = true;
           this.group_atoms_by_sig = true;
-          this.automatic_shapes   = true;  
-          this.automatic_colors   = true;
+          this.automatic_shapes   = false;  
+          this.automatic_colors   = false;
           
           // technically it would be possible to store all confs in one
           // single map indexed on sig.typename and rel.typename but
@@ -44,8 +44,14 @@ define(
       // Sig configguration
       function get_sig_conf(self, sig){
           var ret = self.sig_configs[sig.typename];
-          if(! ret){                    // INIT IF NOT FOUND
-            ret                  = {typename: sig.typename};
+          if(! ret){ // INIT IF NOT FOUND
+            ret = { 
+                typename      : sig.typename, 
+                label         : _.last(sig.typename.split("/")),
+                inherit_shape : sig.typename !== "univ",
+                inherit_stroke: sig.typename !== "univ",
+                inherit_color : sig.typename !== "univ"
+            };
             self.sig_configs[sig.typename] = ret;
           }
           return ret;
@@ -54,15 +60,43 @@ define(
         get_sig_conf(this, id).label= value;  
       };
       Theme.prototype.set_sig_color =function(id, value){
-        get_sig_conf(this, id).color= value;  
-        get_sig_conf(this, id)._color_was_set_manually= true;  
+        var conf = get_sig_conf(this, id);
+        if(!conf.inherit_color) {
+          conf.color= value;  
+        }
+      };
+      Theme.prototype.set_sig_inherit_color =function(id, value){
+        var conf = get_sig_conf(this, id);
+        conf.inherit_color = value;  
+        if(conf.inherit_color) {
+          delete conf.color;
+        }
       };
       Theme.prototype.set_sig_stroke =function(id, value){
-        get_sig_conf(this, id).stroke= value;  
+        var conf = get_sig_conf(this, id);
+        if(!conf.inherit_stroke) {
+            conf.stroke= value;
+        }
+      };
+      Theme.prototype.set_sig_inherit_stroke =function(id, value){
+        var conf = get_sig_conf(this, id);
+        conf.inherit_stroke = value;  
+        if(conf.inherit_stroke) {
+          delete conf.stroke;
+        }
       };
       Theme.prototype.set_sig_shape =function(id, value){
-        get_sig_conf(this, id).shape= value;  
-        get_sig_conf(this, id)._shape_was_set_manually= true;  
+        var conf = get_sig_conf(this, id);
+        if(!conf.inherit_shape){
+          conf.shape= value;
+        }
+      };
+      Theme.prototype.set_sig_inherit_shape =function(id, value){
+        var conf = get_sig_conf(this, id);
+        conf.inherit_shape = value;  
+        if(conf.inherit_shape) {
+          delete conf.shape;
+        }
       };
       Theme.prototype.set_sig_visibility= function(id, value){
         get_sig_conf(this, id).visible  = value;  
@@ -70,22 +104,19 @@ define(
       
       Theme.prototype.get_sig_config = function(sig, instance){
         // extends an empty object = copy
-        var init      = {label: sig.simple_signame()};
-        var this_conf = $.extend(init, get_sig_conf(this, sig));
+        var this_conf = default_sig_theme(sig);
         // inherit parent config
         if(sig.parentID){
           var parent= _.indexBy(instance.signatures, 'id')[sig.parentID];
-          this_conf = $.extend(this.get_sig_config(parent, instance), this_conf);
+          this_conf = $.extend(this_conf, this.get_sig_config(parent, instance));
         }
-        
-        // set default values (DONE this way to avoid overriding inherited props)
-        this_conf = $.extend(default_sig_theme(sig), this_conf);
+        this_conf = $.extend(this_conf, get_sig_conf(this, sig));
         
         // set automatic values
-        if(this.automatic_shapes && !this_conf._shape_was_set_manually){
+        if(this.automatic_shapes){
             this_conf.shape =  automatic_shape(this, sig.id);
         }
-        if(this.automatic_colors && !this_conf._color_was_set_manually){
+        if(this.automatic_colors){
             this_conf.color =  automatic_node_color(this, sig.id);
         }
         
@@ -94,14 +125,14 @@ define(
       
       function default_sig_theme(sig){
         return {
-            label  : sig.simple_signame(),
-            color  : '#FFFFFF', // white
-            stroke : 'solid',
-            shape  : _.first(shape),
-            visible: true,
-            //
-            _shape_was_set_manually: false,
-            _color_was_set_manually: false
+            label         : sig.simple_signame(),
+            color         : '#FFFFFF', // white
+            stroke        : 'solid',
+            shape         : _.first(shape),
+            visible       : true,
+            inherit_shape : true,
+            inherit_stroke: true,
+            inherit_color : true
         };
       };
       
@@ -131,7 +162,6 @@ define(
       };
       Theme.prototype.set_rel_color =function(id, value){
         get_rel_conf(this, id).color = value;  
-        get_rel_conf(this, id)._color_was_set_manually = true;
       };
       Theme.prototype.set_rel_stroke =function(id, value){
         get_rel_conf(this, id).stroke = value;  
@@ -148,8 +178,8 @@ define(
       Theme.prototype.get_rel_config = function(rel, instance){
         var this_conf = $.extend(default_rel_theme(rel), get_rel_conf(this, rel));
         // automatic stuff
-        if(this.automatic_colors && !this_conf._color_was_set_manually){
-            this_conf.color =  automatic_edge_color(this, rel.id);
+        if(this.automatic_colors){
+            this_conf.color = automatic_edge_color(this, rel.id);
         }
         return this_conf;
       };
