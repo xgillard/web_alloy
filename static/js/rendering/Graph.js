@@ -124,6 +124,13 @@ define(
           out.append('node[fontname="').append(t.font).append('"]');
           out.append('edge[fontname="').append(t.font).append('"]');
           
+          // group (rank) the nodes by type
+          var nodes_by_typename = _.groupBy(g.nodes, 'typename');
+          _.each(_.values(nodes_by_typename), function(v){
+              out.append("{rank=same ").append(_.pluck(v, 'nid').join(" ")).append("}");
+          });
+          
+          // write particuliar node and edges config
           _.each(g.nodes, _.partial(n_to_viz, g, out));
           _.each(g.edges, _.partial(e_to_viz, g, out));
           out.append("}");
