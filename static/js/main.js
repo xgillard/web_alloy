@@ -55,7 +55,10 @@ require(
    
    $("#execute").on("click", _.partial(execute, editor));
    $("#share").shareDialog();
-   $("#save").on("click", encode_state_in_url);
+   $("#save").on("click", function(){
+       encode_state_in_url();
+       ui.Alert('info', "You may now bookmark this url for further reference");
+   });
    
     // This function initializes the editor to use the ACE editor with
     // Alloy highligher
