@@ -70,6 +70,10 @@ require(
     function execute(editor){
       var text   = editor.getSession().getValue();
       app.text   = text;
+      // 1. start by encoding everything: you don't wanna lose your work just because something 
+      //    you don't know about has crashed somewhere else.
+      encode_state_in_url();
+      //
       please_wait.show();
       var execution = $.post("/execute", { solver : 'sat4j', content: text }, function(rsp_data){
         please_wait.hide();
