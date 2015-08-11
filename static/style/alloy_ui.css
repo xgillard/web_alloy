@@ -20,7 +20,7 @@ body{
     top    : 50px;
     left   : 0;
     width  : 100%;
-    height : calc(100% - 50px);
+    height : calc(100% - 100px); // 100px because 50 at the top and 50 at bottom
     margin : 0;
 }
 
