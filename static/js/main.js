@@ -55,10 +55,27 @@ require(
    
    $("#execute").on("click", _.partial(execute, editor));
    $("#share").shareDialog();
-   $("#save").on("click", function(){
-       encode_state_in_url();
-       ui.Alert('info', "You may now bookmark this url for further reference");
-   });
+   $("#save").on("click", save);
+   
+   function capture_ctrl_s(){
+      $(window).bind('keydown', function(event) {
+        if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+          case 's':
+            event.preventDefault();
+            save();
+            break;
+          default: 
+            break;
+          }
+        }
+      });
+   };
+   
+   function save(){
+      encode_state_in_url();
+      ui.Alert('info', "You may now bookmark this url for further reference");
+   };
    
     // This function initializes the editor to use the ACE editor with
     // Alloy highligher
