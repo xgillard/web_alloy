@@ -57,6 +57,8 @@ require(
    $("#share").shareDialog();
    $("#save").on("click", save);
    
+   capture_ctrl_s();
+   
    function capture_ctrl_s(){
       $(window).bind('keydown', function(event) {
         if (event.ctrlKey || event.metaKey) {
