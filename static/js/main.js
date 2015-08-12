@@ -98,26 +98,57 @@ require(
       encode_state_in_url();
       //
       please_wait.show();
-      var execution = $.post("/execute", { solver : 'sat4j', content: text }, function(rsp_data){
+      $.post("/execute", { solver : 'sat4j', content: text }, function(data){
         please_wait.hide();
-        var xml   = $( $.parseXML(rsp_data) );
-        var found = xml.find("success").length > 0;
-        if(found){
-          success(xml);
-        } else {
-          failure(xml);
+        var response = JSON.parse(data);
+        
+        if (response.isSat) {
+          success(response);
         }
+        if (response.isUnsat) {
+          ui.Alert('info', 'No instance found for given scope')
+        }
+        
+        if(response.isError){
+           error(editor, response); 
+        }
+        if (response.isWarn){
+           warning(editor, response); 
+        }
+        
       });
     };
 
-    function success($rsp){
-      app.instance   = model.read_xml($rsp);
+    function success(response){
+      app.instance   = model.read_xml($.parseXML(response.instance));
       remove_stale_data();
       
       $("#graph").html(new InstanceView(app.theme, app.instance, app.projection).tag);
       encode_state_in_url();
       // partial solution
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
+    };
+    
+    function warning(editor, response){
+      var annot = _.map(response.warnings, function(w){
+         return {
+             row : w.pos.start_row-1,
+             text: w.msg,
+             type: 'warning'
+         };
+      });
+      editor.getSession().setAnnotations(annot);
+    };
+    
+    function error(editor, response){
+       var annot = _.map(response.errors, function(w){
+         return {
+             row : w.pos.start_row-1,
+             text: w.msg,
+             type: 'error'
+         };
+      });
+      editor.getSession().setAnnotations(annot);
     };
     
     function remove_stale_data(){
@@ -139,10 +170,6 @@ require(
            }
        });
        // not much todo for the relations (for now)
-    };
-    
-    function failure(xml){
-      ui.Alert('danger', xml.text());
     };
     
     function encode_state_in_url(){
