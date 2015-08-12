@@ -125,8 +125,9 @@ require(
       
       $("#graph").html(new InstanceView(app.theme, app.instance, app.projection).tag);
       encode_state_in_url();
-      
-      navigate_to('#visualizer');
+      // partial solution
+      ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
+      //navigate_to('#visualizer');
     };
     
     function warning(editor, response){

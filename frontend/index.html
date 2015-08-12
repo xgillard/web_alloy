@@ -34,13 +34,26 @@
                         </div>
                         
                         <ul class="nav navbar-nav navbar-right">
+                            <!-- new one on a blank page -->
                             <li>
                               <a id="new_ed" href="#" target="_blank">
                                 <span class="glyphicon glyphicon-new-window" title="New editor"></span>
                               </a>
                             </li>
+                            <!-- new tab -->
                             <li>
-                                <a id="save"><span class="glyphicon glyphicon-floppy-disk" title="Save work"/></a>
+                                <a id="add_ed">
+                                    <span class="glyphicon glyphicon-plus" title="Add module" ></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="execute">
+                                    <span class="glyphicon glyphicon-play" title="Execute" ></span>
+                                </a>
+                            </li>
+                            
+                            <li>
+                                <a id="save"><span class="glyphicon glyphicon-floppy-disk" title="Save work"></span></a>
                             </li>
                             <li>
                               <a id="share" ><span class="glyphicon glyphicon-send" title="Share this model"></span></a>
@@ -51,15 +64,14 @@
             </header>
             
             <section id="editor" class="tab-content">
-                <pre id="text_editor"></pre>
+                <ul id="editor-choice" class="nav nav-pills nav-stacked">
+                    <li role="presentation" class="active"><a>Home</a></li>
+                    <li role="presentation"><a>Profile</a></li>
+                    <li role="presentation"><a>Messages</a></li>
+                    <li role="presentation"><a>Settings</a></li>  
+                </ul>
                 
-                <nav class="navbar navbar-default navbar-fixed-bottom">
-                    <div class="container">
-                    <div class="navbar-right">
-                        <button id="execute" class="btn btn-primary navbar-btn" type="button" >Execute</button>
-                    </div>
-                    </div>
-                </nav>
+                <pre id="text_editor"></pre>
             </section>
             
             <section id="visualizer" class="tab-content">
