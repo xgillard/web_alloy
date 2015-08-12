@@ -1,6 +1,6 @@
 define(
-  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/ShareDialog','bootstrap'],
-  function($,_, drop, wait){
+  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/Editor', 'ui/ShareDialog','bootstrap'],
+  function($,_, drop, wait, Editor){
     
     function _alert(type, mesg){
         var pop = 
@@ -72,6 +72,7 @@ define(
         LabeledCheckbox: labeledcheckbox,
         Dropdown       : createdropdown,
         Alert          : _alert,
+        Editor         : _.new(Editor),
         Wait           : createwaitpopup
     };
 });

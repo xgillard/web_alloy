@@ -38,16 +38,13 @@ require(
     'alloy/Projection',
     //
     'config/Theme',
-    //
-    'util/compress',
-    'bootstrap'
+    'AppContext'
   ], 
-  function($,_,ace, ui, model, InstanceView, Projection, Theme, compress){
+  function($,_,ace, ui, model, InstanceView, Projection, Theme, AppContext){
    
    var please_wait = ui.Wait("The analyzer is processing your model");
-   var editor      = mkEdit();
-   
-   var app         = {text: "", theme: new Theme(), instance: {}, projection: new Projection()};
+   var editor      = ui.Editor();
+   var app         = new AppContext();
    register_ctx(app);
    
    tab("editor");
@@ -55,44 +52,14 @@ require(
    
    $("#execute").on("click", _.partial(execute, editor));
    $("#share").shareDialog();
-   $("#save").on("click", save);
    
-   capture_ctrl_s();
+   $("#editor").append(editor.tag);
    
-   function capture_ctrl_s(){
-      $(window).bind('keydown', function(event) {
-        if (event.ctrlKey || event.metaKey) {
-        switch (String.fromCharCode(event.which).toLowerCase()) {
-          case 's':
-            event.preventDefault();
-            save();
-            break;
-          default: 
-            break;
-          }
-        }
-      });
-   };
-   
-   function save(){
-      encode_state_in_url();
-      ui.Alert('info', "You may now bookmark this url for further reference");
-   };
-   
-    // This function initializes the editor to use the ACE editor with
-    // Alloy highligher
-    function mkEdit(){
-      var editor = ace.edit("text_editor");
-      editor.setTheme("ace/theme/chrome");
-      editor.getSession().setMode("ace/mode/alloy");
-      return editor;
-    }
-    
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
     function execute(editor){
-      var text   = editor.getSession().getValue();
-      app.text   = text;
+      var text       = editor.getSession().getValue();
+      app.modules[0] = text;
       // 1. start by encoding everything: you don't wanna lose your work just because something 
       //    you don't know about has crashed somewhere else.
       encode_state_in_url();
@@ -174,14 +141,7 @@ require(
     };
     
     function encode_state_in_url(){
-      var inst_text = JSON.stringify(app.instance);
-      var theme_text= JSON.stringify(app.theme);
-      var proj_text = JSON.stringify(app.projection);
-      
-      var state= {text: app.text, theme: theme_text, instance: inst_text, projection: proj_text};
-      var text = JSON.stringify(state);
-      var compressed = compress.compress(text);  
-      tail_hash(compressed);
+      tail_hash(app.encode());
     };
     
     function tab(id){
@@ -224,18 +184,11 @@ require(
     };
     
     function restore_ctx(compressed){
-        var decompressed  = compress.decompress(tail_hash());
-        var parsed        = JSON.parse(decompressed);
-        
-        var text          = parsed.text;
-        var instance      = model.read_json(parsed.instance);
-        var projection    = Projection.read_json(parsed.projection);
-        var theme         = Theme.read_json(parsed.theme);
-        register_ctx({text: text, theme: theme,instance: instance, projection: projection});
-        
-        editor.getSession().setValue(text);
-        if(instance){
-            $("#graph").html(new InstanceView(theme, instance, projection).tag);
+        var decoded = AppContext.load(compressed);
+        register_ctx(decoded);
+        editor.getSession().setValue(decoded.modules[0]);
+        if(decoded.instance){
+            $("#graph").html(new InstanceView(decoded.theme, decoded.instance, decoded.projection).tag);
         }
     };
     

@@ -21,10 +21,6 @@ body{
     margin : 0;
 }
 
-#text_editor{
-    width: calc(100% - 205px);
-}
-
 #editor-choice {
     display: inline-block;
     width: 200px;
