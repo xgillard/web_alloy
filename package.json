@@ -1,0 +1,18 @@
+{
+  "name": "alloy",
+  "version": "1.0.0",
+  "description": "Web-based implementation of the Alloy Analyzer",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xgillard/web_alloy.git"
+  },
+  "author": "X. Gillard",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "http": "0.0.0",
+    "underscore": "^1.8.3"
+  }
+}

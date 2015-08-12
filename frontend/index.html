@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>Alloy Editor</title>
+        
+        <link rel="stylesheet" href="frontend/style/bootstrap.min.css" />
+        <link rel="stylesheet" href="frontend/style/alloy_ui.css"      />
+        <link rel="stylesheet" href="frontend/style/please_wait.css"   />
+
+        <script src="frontend/js/require.js" data-main="frontend/js/main.js"></script>
+    </head>
+
+    <body>
+
+        <div class="container" >
+            
+            <header>
+                <nav class="navbar navbar-default navbar-fixed-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" target="_blank" href="http://alloy.mit.edu/alloy/index.html">
+                                <img id="alloy-logo" src="frontend/image/logo.gif" alt="Alloy" />
+                            </a>
+                        </div>
+                        
+                        <div class='btn-group'>
+                        <ul class="nav navbar-nav">
+                            <li><a id="editor-tab"     >Editor</a></li>
+                            <li><a id="visualizer-tab" >Visualizer</a></li>
+                        </ul>
+                        </div>
+                        
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                              <a id="new_ed" href="#" target="_blank">
+                                <span class="glyphicon glyphicon-new-window" title="New editor"></span>
+                              </a>
+                            </li>
+                            <li>
+                                <a id="save"><span class="glyphicon glyphicon-floppy-disk" title="Save work"/></a>
+                            </li>
+                            <li>
+                              <a id="share" ><span class="glyphicon glyphicon-send" title="Share this model"></span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            
+            <section id="editor" class="tab-content">
+                <pre id="text_editor"></pre>
+                
+                <nav class="navbar navbar-default navbar-fixed-bottom">
+                    <div class="container">
+                    <div class="navbar-right">
+                        <button id="execute" class="btn btn-primary navbar-btn" type="button" >Execute</button>
+                    </div>
+                    </div>
+                </nav>
+            </section>
+            
+            <section id="visualizer" class="tab-content">
+                <div id="graph"></div>
+            </section>
+        </div>
+    </body>
+</html>
