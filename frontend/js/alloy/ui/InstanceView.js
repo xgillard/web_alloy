@@ -13,7 +13,7 @@ define(
           this.instance   = instance;
           this.projection = projection;
           this.viztoolbar = new VizToolBar(theme, instance, projection);
-          this.tag        = $("<div class='instance_view' style='width:100%;height:100%'></div>");
+          this.tag        = $("<div class='instance_view' ></div>");
           
           draw(this);
           $(theme     ).on("changed",       _.partial(draw, this));

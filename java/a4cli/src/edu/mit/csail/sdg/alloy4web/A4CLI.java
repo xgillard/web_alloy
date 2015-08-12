@@ -7,6 +7,7 @@ import static edu.mit.csail.sdg.alloy4web.Config.Key.SOLVER;
 import java.io.File;
 
 import edu.mit.csail.sdg.alloy4.Err;
+import edu.mit.csail.sdg.alloy4.ErrorWarning;
 import edu.mit.csail.sdg.alloy4compiler.parser.CompModule;
 import edu.mit.csail.sdg.alloy4compiler.parser.CompUtil;
 import edu.mit.csail.sdg.alloy4compiler.translator.A4Options;
@@ -39,7 +40,8 @@ public class A4CLI {
 		try {
 			CompModule module = CompUtil.parseEverything_fromFile(result, null, conf.<String>get(INPUT));
 	        if(module.getAllCommands().size()<1) {
-	            throw new IllegalStateException("There are no commands to execute");
+	            result.error(new ErrorWarning("There is no command to execute"));
+	            return result;
 	        }
 	        TranslateAlloyToKodkod.execute_command(
 	                                        result,

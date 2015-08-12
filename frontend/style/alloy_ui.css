@@ -15,20 +15,31 @@ body{
 
 #text_editor, 
 #graph{
-    /* Don't change this absolute value: it is required by ACE editor */
-    position: absolute;
-    top    : 50px;
-    bottom : 50px;
-    left   : 0;
+    display: inline-block;
     width  : 100%;
     height : calc(100% - 100px); // 100px because 50 at the top and 50 at bottom
     margin : 0;
 }
 
-.tab-content{ 
-    display: none;
+#text_editor{
+    width: calc(100% - 205px);
+}
+
+#editor-choice {
+    display: inline-block;
+    width: 200px;
+    height: 100%;
+    vertical-align: top;
+}
+
+.tab-content{
+    position: absolute;
+    top: 50px;
+    left:0px; 
+    display: block;
     width: 100%;
     height:100%;
+    line-height: 100%;
 }
 
 .alert{
