@@ -233,7 +233,9 @@ require(
         register_ctx({text: text, theme: theme,instance: instance, projection: projection});
         
         editor.getSession().setValue(text);
-        $("#graph").html(new InstanceView(theme, instance, projection).tag);
+        if(instance){
+            $("#graph").html(new InstanceView(theme, instance, projection).tag);
+        }
     };
     
     // Reset state if needed
