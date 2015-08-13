@@ -75,12 +75,16 @@ app.post("/execute", function(request, response){
            var command = "java -jar a4cli.jar -i "+name+" -s "+request.body.solver;
            exec(command, function(stdin, stdout, stderr){
              response.send(stdout);
-           });
-           
-           exec("rm -rf "+tempdir, function(err){
+             if(stderr){
+		console.log(stderr);
+	     }
+
+             exec("rm -rf "+tempdir, function(err){
               if(err){
                   console.log("WARNING: COULD NOT DELETE DIRECTORY "+tempdir);
               } 
+             });
+
            });
         });
   });
