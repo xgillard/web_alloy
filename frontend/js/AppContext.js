@@ -10,10 +10,11 @@ define(
   function($, _, Model, Projection, Theme, compress){
       
       function AppContext(){
-        this.modules    = []; // Array of string
-        this.instance   = {};
-        this.theme      = new Theme();
-        this.projection = new Projection();
+        this.current_module = 0;
+        this.modules        = [ "module default" ]; // Array of string
+        this.instance       = {};
+        this.theme          = new Theme();
+        this.projection     = new Projection();
       };
       
       AppContext.prototype.encode = function(){
