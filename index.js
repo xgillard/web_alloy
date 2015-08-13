@@ -9,6 +9,7 @@ var app        = express();
 var http       = require('http').Server(app);
 
 // This is to be able to spawn the alloy subprocess
+var async      = require('async');
 var fs         = require('fs');
 var exec       = require('child_process').exec;
 
@@ -37,27 +38,72 @@ app.get("/", function(request, response){
 
 // execute an alloy subprocess with the given user model
 app.post("/execute", function(request, response){
-  var tempfile = new Date().getTime()+".als";
+  var tempdir    = new Date().getTime();
+  var modules    = request.body.modules;
+  var main_module= request.body.current_module;
   
-  fs.writeFile(tempfile, request.body.content, _.partial(handle_file_error, response));
-
-  var command = "java -jar a4cli.jar -i "+tempfile+" -s "+request.body.solver+" -d";
-  exec(command, function(stdin, stdout, stderr){
-  	response.send(stdout);
+  /*
+   * The following subscript looks pretty complex but in reality, it isnt:
+   * it symply does the following pseudo code using async operation for everything.
+   * 
+   * 1. Create a tempdir to store all user data
+   * 2. Write all user modules in the temp folder
+   * 3. Excute Alloy to produce an instance
+   * 4. Delete the folder that has been created
+   */
+  fs.mkdir(""+tempdir, function(err){
+      if(err){
+         handle_file_error(response, err); 
+         return;
+      }
+      async.each(
+         modules, 
+         // write all files
+         function(item, callback){
+           var title = module_title(item);
+           fs.writeFile(tempdir+"/"+title+".als", item, function(err){
+               callback();
+           });
+         },
+         // when it's all done, run the command
+         function(err){
+           if(err){
+             handle_file_error(response, err); 
+             return;
+           }
+           var name = tempdir+"/"+module_title(modules[main_module])+".als";
+           var command = "java -jar a4cli.jar -i "+name+" -s "+request.body.solver;
+           exec(command, function(stdin, stdout, stderr){
+             response.send(stdout);
+           });
+           
+           exec("rm -rf "+tempdir, function(err){
+              if(err){
+                  console.log("WARNING: COULD NOT DELETE DIRECTORY "+tempdir);
+              } 
+           });
+        });
   });
+ 
 });
 
 // responds a properly formatted error message
 function handle_file_error(response, err){
   if (err){
-  	var err_rsp = {
-  	  isError : true,
-  	  errors  : {
-  	  	// unknown position since it doesn't originate from the model itself
-  	    pos: {start_row: 1, start_col: 1, end_row: 1, end_col: 1},
-  	    msg: "There was a problem writing your model to disk"
-      }
-  	};
+    var err_rsp = {
+      isError : true,
+      errors  : [{
+            // unknown position since it doesn't originate from the model itself
+        pos: {start_row: 1, start_col: 1, end_row: 1, end_col: 1},
+        msg: "There was a problem writing your model to disk"
+      }]
+    };
     response.send(JSON.stringify(err_rsp));
   }
 }
+
+function module_title(module){
+  var exp = /module\s+([^\s]+)/;
+  var ret = exp.exec(module);
+  return ret.length<2 ? 'Untitled' : ret[1];
+};

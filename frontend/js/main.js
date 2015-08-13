@@ -52,7 +52,7 @@ require(
    tab("editor");
    tab("visualizer");
    
-   $("#execute").on("click", _.partial(execute, multieditor.currentEditor()));
+   $("#execute").on("click", _.partial(execute, multieditor));
    $("#share").shareDialog();
    
    $("#editor").append(multieditor.tag);
@@ -63,15 +63,19 @@ require(
    
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
-    function execute(editor){
-      var text       = editor.getSession().getValue();
-      app.modules[0] = text;
+    function execute(multied){
       // 1. start by encoding everything: you don't wanna lose your work just because something 
       //    you don't know about has crashed somewhere else.
       encode_state_in_url();
       //
       please_wait.show();
-      $.post("/execute", { solver : 'sat4j', content: text }, function(data){
+      
+      var content = { 
+          solver : 'sat4j', 
+          modules: app.modules, 
+          current_module: app.current_module 
+      };
+      $.post("/execute", content, function(data){
         please_wait.hide();
         var response = JSON.parse(data);
         
@@ -83,10 +87,12 @@ require(
         }
         
         if(response.isError){
-           error(editor, response); 
+            // fixme: not sure
+           error(multied.currentEditor(), response); 
         }
         if (response.isWarn){
-           warning(editor, response); 
+            // fixme: not sure
+           warning(multied.currentEditor(), response); 
         }
         
       });

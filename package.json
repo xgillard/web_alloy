@@ -10,6 +10,7 @@
   "author": "X. Gillard",
   "license": "MIT",
   "dependencies": {
+    "async": "^1.4.2",
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
     "http": "0.0.0",
