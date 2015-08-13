@@ -197,6 +197,8 @@ require(
        app.projection= ctx.projection;
        app.current_module = ctx.current_module;
        app.modules = ctx.modules;
+       // not pretty but does the job.
+       $(app).trigger("changed:modules");
     };
     
     function restore_ctx(compressed){
