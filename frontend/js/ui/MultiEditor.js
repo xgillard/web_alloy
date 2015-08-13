@@ -5,6 +5,7 @@ define(
       function MultiEditor(app){
         this.app      = app;
         this.tag      = mkTag();
+        this.editors  = mkEditors(this);
         this.navigator= mkNavigator(this);
         // this is required to help me implement a resizable left pane that works in FF too.
         // credits : http://stackoverflow.com/questions/23992091/drag-and-drop-directive-no-e-clientx-or-e-clienty-on-drag-event-in-firefox
@@ -16,15 +17,45 @@ define(
       
       MultiEditor.prototype.currentEditor = function(){
         var mod = this.app.current_module;
-        return this.navigator.find("li.active")[mod]._editor;  
+        return this.editors[mod];  
+      };
+      
+      MultiEditor.prototype.reportErrors = function(warnings, errors){
+        var titles = _.map(this.app.modules, module_title);
+        var wannot = _.map(warnings, _.partial(mkAnnot, 'warning'));
+        var eannot = _.map(errors, _.partial(mkAnnot, 'error'));
+        
+        var annot  = [].concat(wannot, eannot);
+        
+        var annot_bymodule = _.indexBy(annot, function(a){
+            return titles.indexOf(a.module);
+        });
+        
+        //TODO maybe add badges ?
+        _.each(_.keys(annot_bymodule), function(k){
+          if(k < 0) return; // handled apart
+          this.editors[k].getSession().setAnnotations(annot_bymodule[k]);
+        });
+      };
+      
+      function mkAnnot(kind, error){
+         return {
+               module: error.module, 
+               row   : error.pos.start_row-1,
+               text  : error.msg,
+               type  : kind
+         }; 
       };
       
       function update(self){
           // destroy all previously existing
-          self.navigator.find("li").each(function(i, li){
-              li._editor.destroy();
-              $(li).find("a").off();
+          self.navigator.find("li a").each(function(i, a){
+              $("a").off();
           });
+          _.each(self.editors, function(e){
+              e.destroy();
+          });
+          self.editors   = mkEditors(self);
           self.navigator = mkNavigator(self);
       };
       
@@ -36,10 +67,24 @@ define(
          });
       };
       
-      function module_title(module){
-        var exp = /module\s+([^\s]+)/;
-        var ret = exp.exec(module);
-        return ret.length<2 ? 'Untitled' : ret[1];
+      function mkEditors(self){
+          var editors = [];
+          for(var i = 0; i<self.app.modules.length; i++){
+              editors.push(mkEditor(self, i));
+          }
+          return editors;
+      };
+      
+      function mkEditor(self, i){
+        var editor    = new Editor();
+          
+        editor.on("change", function(){
+           self.app.modules[i] = editor.getSession().getValue();
+        });
+        editor.on("blur", _.partial(update_titles, self));
+
+        editor.getSession().setValue(self.app.modules[i]);
+        return editor;
       };
       
       function mkNavigator(self){
@@ -48,11 +93,10 @@ define(
           
           $.each(self.app.modules, function(i, module){
              var title     = module_title(module);
-             var editor    = new Editor();
              
              var nav_entry = $("<li></li>"); 
              $nav.append(nav_entry);
-             nav_entry[0]._editor = editor;
+             nav_entry[0]._index = i;
              
              var link = $("<a>"+title+"</a>");
              nav_entry.append(link);
@@ -61,12 +105,6 @@ define(
                 activate(self, i);
              };
              
-             editor.on("change", function(){
-                self.app.modules[i] = editor.getSession().getValue();
-             });
-             editor.on("blur", _.partial(update_titles, self));
-             
-             editor.getSession().setValue(module);
           });
           
           self.tag.find("[data-name='navigator']").html($nav);
@@ -80,7 +118,7 @@ define(
         self.navigator.find("li").removeClass("active");
         var entry = self.navigator.find("li")[index];
         $(entry).addClass("active");
-        self.tag.find("[data-name='editor']").html(entry._editor.tag);
+        self.tag.find("[data-name='editor']").html(self.editors[index].tag);
       };
       
       function mkTag(){
@@ -114,6 +152,13 @@ define(
         });
       };
       
+      
+     function module_title(module){
+        var exp = /module\s+([^\s]+)/;
+        var ret = exp.exec(module);
+        return !ret || ret.length <2 ? 'Untitled' : ret[1];
+     };
+     
       return MultiEditor;
   }
 );

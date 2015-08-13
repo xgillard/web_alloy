@@ -1,5 +1,6 @@
 package edu.mit.csail.sdg.alloy4web;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -84,8 +85,14 @@ public class ReporterResult extends A4Reporter {
 	  out.append("}");
   }   
   private void encodePosAsJson(StringBuilder out, Pos p){
-	  String format = "{\"start_col\": %d, \"start_row\": %d, \"end_col\": %d, \"end_row\": %d }";
-	  out.append(String.format(format, p.x, p.y, p.x2, p.y2));
+	  String format = "{\"module\": \"%s\", \"start_col\": %d, \"start_row\": %d, \"end_col\": %d, \"end_row\": %d }";
+	  out.append(String.format(format, moduleName(p), p.x, p.y, p.x2, p.y2));
+  }
+  
+  private String moduleName(Pos p){
+	if(p==null || p.filename==null || p.filename.matches("\\s*")) return "";
+	File f = new File(p.filename);
+	return f.getName().split("\\.")[0];
   }
   
   private void handleSolution(Object sln){

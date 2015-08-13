@@ -11,8 +11,8 @@ define(
       
       function AppContext(){
         this.current_module = 0;
-        this.modules        = [ "module default" ]; // Array of string
-        this.instance       = {};
+        this.modules        = [ "module Untitled" ]; // Array of string
+        this.instance       = null;
         this.theme          = new Theme();
         this.projection     = new Projection();
       };

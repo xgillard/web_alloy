@@ -24,6 +24,7 @@ define(
        */
       function read_json(str){
          var instance = JSON.parse(str);
+         if(!instance) return null;
          return TypeSystem.fix_types(instance);
       };
       

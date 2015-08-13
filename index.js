@@ -106,8 +106,9 @@ function handle_file_error(response, err){
   }
 }
 
+      
 function module_title(module){
-  var exp = /module\s+([^\s]+)/;
-  var ret = exp.exec(module);
-  return ret.length<2 ? 'Untitled' : ret[1];
+   var exp = /module\s+([^\s]+)/;
+   var ret = exp.exec(module);
+   return !ret || ret.length <2 ? 'Untitled' : ret[1];
 };
