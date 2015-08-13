@@ -13,6 +13,13 @@ define(
         return this.editor.getSession();
       };
       
+      Editor.prototype.on = function(event, callback){
+        return this.editor.on(event, callback);  
+      };
+      Editor.prototype.destroy = function(){
+        return this.editor.destroy();
+      };
+      
       function mkAceEdit(self){
         var editor = ace.edit(self.editorTag[0]);
         editor.setTheme("ace/theme/chrome");

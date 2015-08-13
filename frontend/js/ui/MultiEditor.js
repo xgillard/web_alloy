@@ -7,8 +7,11 @@ define(
         this.tag      = mkTag();
         this.navigator= mkNavigator(this);
         // this is required to help me implement a resizable left pane that works in FF too.
+        // credits : http://stackoverflow.com/questions/23992091/drag-and-drop-directive-no-e-clientx-or-e-clienty-on-drag-event-in-firefox
         this.mousepos = {x: 0, y: 0};
         enableResizing(this);
+        
+        $(app).on("changed:modules", _.partial(update, this));
       };
       
       MultiEditor.prototype.currentEditor = function(){
@@ -17,7 +20,20 @@ define(
       };
       
       function update(self){
-          self.navigator = mkNavigator(this);
+          // destroy all previously existing
+          self.navigator.find("li").each(function(i, li){
+              li._editor.destroy();
+              $(li).find("a").off();
+          });
+          self.navigator = mkNavigator(self);
+      };
+      
+      function update_titles(self){
+         var entries = self.navigator.find("li > a");
+         $.each(self.app.modules, function(i, module){
+             var title = module_title(module);
+             $(entries[i]).text(title);
+         });
       };
       
       function module_title(module){
@@ -28,32 +44,43 @@ define(
       
       function mkNavigator(self){
           var $nav = $("<ul class='nav nav-pills nav-stacked'></ul>");
+          self.navigator = $nav;
           
           $.each(self.app.modules, function(i, module){
              var title     = module_title(module);
              var editor    = new Editor();
              
-             var link      = $("<a>"+title+"</a>");
              var nav_entry = $("<li></li>"); 
+             $nav.append(nav_entry);
+             nav_entry[0]._editor = editor;
+             
+             var link = $("<a>"+title+"</a>");
+             nav_entry.append(link);
              
              link[0].onclick = function(){
-                 self.app.current_module = i;
-                 $nav.find("li").removeClass("active");
-                 nav_entry.addClass("active");
-                 self.tag.find("[data-name='editor']").html(editor.tag);
+                activate(self, i);
              };
              
-             nav_entry[0]._editor = editor;
-             $nav.append(nav_entry);
-             nav_entry.append(link);
+             editor.on("change", function(){
+                self.app.modules[i] = editor.getSession().getValue();
+             });
+             editor.on("blur", _.partial(update_titles, self));
+             
              editor.getSession().setValue(module);
           });
           
           self.tag.find("[data-name='navigator']").html($nav);
           
-          var current = $nav.find("li a")[self.app.current_module];
-          current.click();
+          activate(self, self.app.current_module);
           return $nav;
+      };
+      
+      function activate(self, index){
+        self.app.current_module = index;
+        self.navigator.find("li").removeClass("active");
+        var entry = self.navigator.find("li")[index];
+        $(entry).addClass("active");
+        self.tag.find("[data-name='editor']").html(entry._editor.tag);
       };
       
       function mkTag(){

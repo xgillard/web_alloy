@@ -21,7 +21,7 @@ define(
         var inst_text  = JSON.stringify(this.instance);
         var theme_text = JSON.stringify(this.theme);
         var proj_text  = JSON.stringify(this.projection);
-        var state      = {modules: this.modules, theme: theme_text, instance: inst_text, projection: proj_text};
+        var state      = {current_module: this.current_module, modules: this.modules, theme: theme_text, instance: inst_text, projection: proj_text};
         var state_text = JSON.stringify(state);
         var compressed = compress.compress(state_text);  
         return compressed;
@@ -33,6 +33,7 @@ define(
         
         var ctx           = new AppContext();
         ctx.modules       = parsed.modules;
+        ctx.current_module= parsed.current_module;
         ctx.instance      = Model.read_json(parsed.instance);
         ctx.projection    = Projection.read_json(parsed.projection);
         ctx.theme         = Theme.read_json(parsed.theme);

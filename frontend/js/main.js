@@ -38,22 +38,28 @@ require(
     'alloy/Projection',
     //
     'config/Theme',
+    
+    'ui/MultiEditor',
     'AppContext'
   ], 
-  function($,_,ace, ui, model, InstanceView, Projection, Theme, AppContext){
+  function($,_,ace, ui, model, InstanceView, Projection, Theme, MultiEditor, AppContext){
    
-   var please_wait = ui.Wait("The analyzer is processing your model");
-   var editor      = ui.Editor();
+   var please_wait = ui.Wait("The analyzer is processing your model");   
    var app         = new AppContext();
+   var multieditor = new MultiEditor(app);
    register_ctx(app);
    
    tab("editor");
    tab("visualizer");
    
-   $("#execute").on("click", _.partial(execute, editor));
+   $("#execute").on("click", _.partial(execute, multieditor.currentEditor()));
    $("#share").shareDialog();
    
-   $("#editor").append(editor.tag);
+   $("#editor").append(multieditor.tag);
+   $("#add_mod").on("click", function(){
+      app.modules.push("module Untitled"); 
+      $(app).trigger("changed:modules");
+   });
    
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
@@ -180,13 +186,17 @@ require(
        $(ctx.instance  ).on("changed", encode_state_in_url);
        $(ctx.projection).on("changed reset", encode_state_in_url);
        
-       app = ctx;
+       app.theme = ctx.theme;
+       app.instance = ctx.instance;
+       app.projection= ctx.projection;
+       app.current_module = ctx.current_module;
+       app.modules = ctx.modules;
     };
     
     function restore_ctx(compressed){
         var decoded = AppContext.load(compressed);
         register_ctx(decoded);
-        editor.getSession().setValue(decoded.modules[0]);
+        multieditor.currentEditor().getSession().setValue(decoded.modules[0]);
         if(decoded.instance){
             $("#graph").html(new InstanceView(decoded.theme, decoded.instance, decoded.projection).tag);
         }
