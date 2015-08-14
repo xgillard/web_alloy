@@ -21,15 +21,18 @@ define(
       };
       
       MultiEditor.prototype.reportErrors = function(warnings, errors){
+        var self   = this;
         var titles = _.map(this.app.modules, module_title);
         var wannot = _.map(warnings, _.partial(mkAnnot, 'warning'));
         var eannot = _.map(errors, _.partial(mkAnnot, 'error'));
         
         var annot  = [].concat(wannot, eannot);
         
-        var annot_bymodule = _.indexBy(annot, function(a){
+        var annot_bymodule = _.groupBy(annot, function(a){
             return titles.indexOf(a.module);
         });
+        
+        mergeUnboundAnnotationsToCurrentEditor(this, annot_bymodule);
         
         //TODO maybe add badges ?
         _.each(_.keys(annot_bymodule), function(k){
@@ -38,9 +41,18 @@ define(
         });
       };
       
+      function mergeUnboundAnnotationsToCurrentEditor(self, annot_bymodule){
+        var annot_of_current = annot_bymodule[self.app.current_module] || [];
+        var not_bound_to_mod = _.filter(_.keys(annot_bymodule), function(k){return k<0;});
+        annot_of_current = _.reduce(not_bound_to_mod, function(a, k){
+            return a.concat(annot_bymodule[k]);
+        }, annot_of_current);
+        annot_bymodule[self.app.current_module] = annot_of_current; 
+      };
+      
       function mkAnnot(kind, error){
          return {
-               module: error.module, 
+               module: error.pos.module, 
                row   : error.pos.start_row-1,
                text  : error.msg,
                type  : kind
@@ -124,7 +136,7 @@ define(
       function mkTag(){
           var tag = "<table style='width: 100%; height: 100%'>"  +
                     "<tr><td style='width: 15%; vertical-align: top; line-height: 100%;' data-name='navigator'></td>" +
-                    "<td data-name='drag-handle' draggable='true' style='background-color: LightGray;height: 100%; width: 5px; vertical-align: middle'>"+
+                    "<td data-name='drag-handle' draggable='true' style='cursor: col-resize; background-color: LightGray;height: 100%; width: 5px; vertical-align: middle'>"+
                     "<div style='width: 5px; height: 40px; background-color: DarkGray;' ></div>" +
                     "</td>" +
                     "<td data-name='editor' ></td></tr>" +

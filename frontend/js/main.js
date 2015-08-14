@@ -49,17 +49,19 @@ require(
    var multieditor = new MultiEditor(app);
    register_ctx(app);
    
-   tab("editor");
-   tab("visualizer");
-   
-   $("#execute").on("click", _.partial(execute, multieditor));
-   $("#share").shareDialog();
-   
    $("#editor").append(multieditor.tag);
+   
+   $("#editor-tab").on('click', _.partial(navigate_to, '#editor'));
+   $("#visualizer-tab").on('click', _.partial(navigate_to, '#visualizer'));
+   
    $("#add_mod").on("click", function(){
       app.modules.push("module Untitled"); 
       $(app).trigger("changed:modules");
    });
+   
+   $("#execute").on("click", _.partial(execute, multieditor));
+   $("#share").shareDialog();
+   
    
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
@@ -86,13 +88,8 @@ require(
           ui.Alert('info', 'No instance found for given scope');
         }
         
-        if(response.isError){
-            // fixme: not sure
-           error(multied.currentEditor(), response); 
-        }
-        if (response.isWarn){
-            // fixme: not sure
-           warning(multied.currentEditor(), response); 
+        if(response.isError || response.isWarn){
+           multied.reportErrors(response.warnings, response.errors);
         }
         
       });
@@ -107,28 +104,6 @@ require(
       // partial solution
       ui.Alert('success', '<strong>Instance found.</strong> Open visualizer to see it');
       //navigate_to('#visualizer');
-    };
-    
-    function warning(editor, response){
-      var annot = _.map(response.warnings, function(w){
-         return {
-             row : w.pos.start_row-1,
-             text: w.msg,
-             type: 'warning'
-         };
-      });
-      editor.getSession().setAnnotations(annot);
-    };
-    
-    function error(editor, response){
-       var annot = _.map(response.errors, function(w){
-         return {
-             row : w.pos.start_row-1,
-             text: w.msg,
-             type: 'error'
-         };
-      });
-      editor.getSession().setAnnotations(annot);
     };
     
     function remove_stale_data(){
@@ -154,14 +129,6 @@ require(
     
     function encode_state_in_url(){
       tail_hash(app.encode());
-    };
-    
-    function tab(id){
-      $("#"+id+"-tab").on("click", function(){
-        $(".tab-content").css({'display':'none'});  
-        $("#"+id).css({'display':'block'});
-        middle_hash(id);
-      });
     };
     
     function middle_hash(h){
@@ -204,7 +171,6 @@ require(
     function restore_ctx(compressed){
         var decoded = AppContext.load(compressed);
         register_ctx(decoded);
-        multieditor.currentEditor().getSession().setValue(decoded.modules[0]);
         if(decoded.instance){
             $("#graph").html(new InstanceView(decoded.theme, decoded.instance, decoded.projection).tag);
         }
