@@ -36,8 +36,6 @@ require(
    
    // -- BEGIN MAIN EXECUTION --
    var app           = new AppContext();
-   var editorApp     = new EditorSubApp(app);
-   var visualizerApp = new VisualizerSubApp(app);
    // common actions
    var shareAction     = mkShareAction();
    var newEditorAction = mkNewEditorAction();
@@ -81,7 +79,7 @@ require(
     };
    
    function navigate_to(destination){
-       var sub_app = destination === "#editor" ? editorApp : visualizerApp;
+       var sub_app = destination === "#editor" ? new EditorSubApp(app) : new VisualizerSubApp(app);
        spawn_sub_app(destination, sub_app);
    };
    
@@ -121,9 +119,6 @@ require(
     };
     
     function register_ctx(ctx){
-       $(app.theme     ).off("changed");
-       $(app.instance  ).off("changed"); 
-       $(app.projection).off("changed reset");
        //
        $(ctx.theme     ).on("changed", encode_state_in_url);
        $(ctx.instance  ).on("changed", encode_state_in_url);
