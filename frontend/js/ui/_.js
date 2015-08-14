@@ -1,6 +1,6 @@
 define(
-  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/Editor', 'ui/ShareDialog','bootstrap'],
-  function($,_, drop, wait, Editor){
+  ['jquery','util/_', 'ui/Dropdown', 'ui/PleaseWait', 'ui/Editor', 'ui/MultiEditor', 'ui/ShareDialog', 'bootstrap'],
+  function($,_, drop, wait, Editor, MultiEditor){
     
     function _alert(type, mesg){
         var pop = 
@@ -73,6 +73,7 @@ define(
         Dropdown       : createdropdown,
         Alert          : _alert,
         Editor         : _.new(Editor),
+        MultiEditor    : _.new(MultiEditor),
         Wait           : createwaitpopup
     };
 });

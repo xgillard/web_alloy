@@ -38,15 +38,13 @@ require(
     'alloy/Projection',
     //
     'config/Theme',
-    
-    'ui/MultiEditor',
     'AppContext'
   ], 
-  function($,_,ace, ui, model, InstanceView, Projection, Theme, MultiEditor, AppContext){
+  function($,_,ace, ui, model, InstanceView, Projection, Theme, AppContext){
    
    var please_wait = ui.Wait("The analyzer is processing your model");   
    var app         = new AppContext();
-   var multieditor = new MultiEditor(app);
+   var multieditor = ui.MultiEditor(app);
    register_ctx(app);
    
    $("#editor").append(multieditor.tag);

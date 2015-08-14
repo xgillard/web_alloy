@@ -2,7 +2,7 @@
   "name": "alloy",
   "version": "1.0.0",
   "description": "Web-based implementation of the Alloy Analyzer",
-  "main": "index.js",
+  "main": "alloy.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/xgillard/web_alloy.git"
