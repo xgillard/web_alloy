@@ -90,6 +90,8 @@ require(
         
         if(response.isError || response.isWarn){
            multied.reportErrors(response.warnings, response.errors);
+        } else {
+           multied.clearErrors();
         }
         
       });

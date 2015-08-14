@@ -19,6 +19,9 @@ define(
         var mod = this.app.current_module;
         return this.editors[mod];  
       };
+      MultiEditor.prototype.clearErrors = function(){
+        this.navigator.find("span.badge").remove();  
+      };
       
       MultiEditor.prototype.reportErrors = function(warnings, errors){
         var self   = this;
@@ -34,10 +37,11 @@ define(
         
         mergeUnboundAnnotationsToCurrentEditor(this, annot_bymodule);
         
-        //TODO maybe add badges ?
+        this.clearErrors(); // remove stale data
         _.each(_.keys(annot_bymodule), function(k){
           if(k < 0) return; // handled apart
-          this.editors[k].getSession().setAnnotations(annot_bymodule[k]);
+          addBadge(self, k, annot_bymodule[k].length);
+          self.editors[k].getSession().setAnnotations(annot_bymodule[k]);
         });
       };
       
@@ -48,6 +52,10 @@ define(
             return a.concat(annot_bymodule[k]);
         }, annot_of_current);
         annot_bymodule[self.app.current_module] = annot_of_current; 
+      };
+      
+      function addBadge(self, k, n){
+        $(self.navigator.find("li a")[k]).append("<span class='badge' style='float: right;'>"+n+"</span>");
       };
       
       function mkAnnot(kind, error){
@@ -72,7 +80,7 @@ define(
       };
       
       function update_titles(self){
-         var entries = self.navigator.find("li > a");
+         var entries = self.navigator.find("li > a > span.multied-entry-text");
          $.each(self.app.modules, function(i, module){
              var title = module_title(module);
              $(entries[i]).text(title);
@@ -110,7 +118,7 @@ define(
              $nav.append(nav_entry);
              nav_entry[0]._index = i;
              
-             var link = $("<a>"+title+"</a>");
+             var link = $("<a><span class='multied-entry-text'>"+title+"</span></a>");
              nav_entry.append(link);
              
              link[0].onclick = function(){
