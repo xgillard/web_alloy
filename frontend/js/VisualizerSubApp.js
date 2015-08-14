@@ -1,14 +1,16 @@
 define(
   [
   'jquery', 'util/_',
+  'config/ui/_',
   'alloy/ui/InstanceView'
   ],
-  function($,_, InstanceView){
+  function($,_, conf_ui, InstanceView){
     
     function VisualizerSubApp(app){
       this.app   = app;  
       this.main  = mkWrapperTag();
       
+      this.revealHiddenAction = new conf_ui.VisibilitySelector(app).tag;
       $(app).on("changed:instance", _.partial(update_view, this));
     };
     
@@ -17,7 +19,7 @@ define(
     };
     
     VisualizerSubApp.prototype.actions = function(){
-      return [];
+      return [this.revealHiddenAction];
     };
     
     function mkWrapperTag(){
