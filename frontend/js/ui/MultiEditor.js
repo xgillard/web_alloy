@@ -50,7 +50,7 @@ define(
       function update(self){
           // destroy all previously existing
           self.navigator.find("li a").each(function(i, a){
-              $("a").off();
+              $(a).off();
           });
           _.each(self.editors, function(e){
               e.destroy();
