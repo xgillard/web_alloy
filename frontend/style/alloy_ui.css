@@ -8,27 +8,12 @@ body{
     height:50px;
 }
 
-#editor-tab, 
-#visualizer-tab {
+#editor, #visualizer {
     cursor: pointer;
 }
 
-#text_editor, 
-#graph{
-    display: inline-block;
-    width  : 100%;
-    height : calc(100% - 100px); // 100px because 50 at the top and 50 at bottom
-    margin : 0;
-}
 
-#editor-choice {
-    display: inline-block;
-    width: 200px;
-    height: 100%;
-    vertical-align: top;
-}
-
-.tab-content{
+#main_content{
     position: absolute;
     top: 50px;
     left:0px; 

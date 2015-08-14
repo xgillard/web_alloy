@@ -28,43 +28,17 @@
                         
                         <div class='btn-group'>
                         <ul class="nav navbar-nav">
-                            <li><a id="editor-tab"     >Editor</a></li>
-                            <li><a id="visualizer-tab" >Visualizer</a></li>
+                            <li class="subapp"><a id="editor"     >Editor</a></li>
+                            <li class="subapp"><a id="visualizer" >Visualizer</a></li>
                         </ul>
                         </div>
                         
-                        <ul class="nav navbar-nav navbar-right">
-                            <!-- new one on a blank page -->
-                            <li>
-                              <a id="new_ed" href="#" target="_blank">
-                                <span class="glyphicon glyphicon-new-window" title="New editor"></span>
-                              </a>
-                            </li>
-                            <!-- new tab -->
-                            <li>
-                                <a id="add_mod">
-                                    <span class="glyphicon glyphicon-plus" title="Add module" ></span>
-                                </a>
-                            </li>
-                            <li>
-                                <a id="execute">
-                                    <span class="glyphicon glyphicon-play" title="Execute" ></span>
-                                </a>
-                            </li>
-                            
-                            <li>
-                              <a id="share" ><span class="glyphicon glyphicon-send" title="Share this model"></span></a>
-                            </li>
-                        </ul>
+                        <ul id="actions" class="nav navbar-nav navbar-right"></ul>
                     </div>
                 </nav>
             </header>
             
-            <section id="editor" class="tab-content">
-            </section>
-            
-            <section id="visualizer" class="tab-content">
-                <div id="graph"></div>
+            <section id="main_content">
             </section>
         </div>
     </body>
