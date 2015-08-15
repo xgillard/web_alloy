@@ -10,7 +10,7 @@ define(
  function($, _, layout, orientation, palette, font){
  
     function GeneralThemeSettingsView(app){
-        this.theme             = app.theme;
+        this.app               = app;
         this.layout            = mkLayout();
         this.orientation       = mkOrientation();
         this.node_palette      = mkColorPalette();
@@ -51,19 +51,19 @@ define(
     };
     
     function set_values(self){
-        self.layout.val(self.theme.layout);
-        self.orientation.val(self.theme.orientation_name);
-        self.node_palette.val(self.theme.node_palette_name);
-        self.edge_palette.val(self.theme.edge_palette_name);
-        self.font.val(self.theme.font_name);
+        self.layout.val(self.app.theme.layout);
+        self.orientation.val(self.app.theme.orientation_name);
+        self.node_palette.val(self.app.theme.node_palette_name);
+        self.edge_palette.val(self.app.theme.edge_palette_name);
+        self.font.val(self.app.theme.font_name);
         
-        self.alphabetical.prop("checked", self.theme.force_alphabetical);
-        self.hide_private_sigs.prop("checked", self.theme.hide_private_sigs);
-        self.hide_private_rels.prop("checked", self.theme.hide_private_rels);
-        self.show_skolem_const.prop("checked", self.theme.show_skolem_const);
-        self.group_atoms_by_sig.prop("checked", self.theme.group_atoms_by_sig);
-        self.automatic_shape.prop("checked", self.theme.automatic_shapes);
-        self.automatic_color.prop("checked", self.theme.automatic_colors);
+        self.alphabetical.prop("checked", self.app.theme.force_alphabetical);
+        self.hide_private_sigs.prop("checked", self.app.theme.hide_private_sigs);
+        self.hide_private_rels.prop("checked", self.app.theme.hide_private_rels);
+        self.show_skolem_const.prop("checked", self.app.theme.show_skolem_const);
+        self.group_atoms_by_sig.prop("checked", self.app.theme.group_atoms_by_sig);
+        self.automatic_shape.prop("checked", self.app.theme.automatic_shapes);
+        self.automatic_color.prop("checked", self.app.theme.automatic_colors);
     };
     
     function fireChanged(self){
