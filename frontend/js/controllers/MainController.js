@@ -13,9 +13,6 @@ define(
         var app             = new AppContext();
         var editor          = new EditorSubApp(app);
         var visualizer      = new VisualizerSubApp(app);
-        // common actions
-        var shareAction     = mkShareAction();
-        var newEditorAction = mkNewEditorAction();
 
         configure_global_actions();
         init_event_mgt();
@@ -73,6 +70,9 @@ define(
             $("#main_content").html(sub_app.main_content());
             $("#actions").empty();
             middle_hash(tab_name);
+
+            var shareAction     = mkShareAction();
+            var newEditorAction = mkNewEditorAction();
 
             var actions = [].concat(sub_app.actions(), [newEditorAction, shareAction]);
             _.each(actions, function(action){

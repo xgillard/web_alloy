@@ -14,8 +14,6 @@ define(
       function EditorSubApp(app){
           this.app             = app;
           this.editor          = ui.MultiEditor(app);
-          this.addModuleAction = mkAddModuleAction(this);
-          this.executeAction   = mkExecuteAction(this);
           
           $(this.editor).on("changed:module",         _.partial(updateModuleContent, this));
           $(this.editor).on("changed:current_module", _.partial(updateCurrentModule, this));
@@ -26,7 +24,7 @@ define(
       };
       
       EditorSubApp.prototype.actions = function(){
-          return [this.addModuleAction, this.executeAction];
+          return [mkAddModuleAction(this), mkExecuteAction(this)];
       };
       
       function mkAddModuleAction(self){

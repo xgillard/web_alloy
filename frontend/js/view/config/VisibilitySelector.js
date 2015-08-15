@@ -24,12 +24,12 @@ define(
               html     : true, 
               trigger  : 'manual',
               placement: 'bottom',
-              container: $(self.tag).parents(".container"),
+              container: $(document.body),
               content  : self.selector.tag
           });
           self.tag.popover('toggle');
           $(self.selector).on("changed", function(e, a){
-             self.tag.popover("destroy"); 
+             self.tag.popover("hide"); 
              $(self).trigger("changed", a);
           });
       };
