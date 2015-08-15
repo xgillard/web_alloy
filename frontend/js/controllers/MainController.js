@@ -26,14 +26,13 @@ define(
 
         function init_event_mgt(){
           // init event management
-          /*
           $(app).on("registration_point",    encode_state_in_url);
           $(app).on("changed:instance",      encode_state_in_url);   
           $(app).on("changed:projection",    encode_state_in_url);   
           $(app).on("changed:theme",         encode_state_in_url);   
           $(app).on("changed:modules",       encode_state_in_url);   
           $(app).on("changed:current_module",encode_state_in_url);   
-          
+          /*
           // When the user navigates using the back-next buttons, reload the context encoded in the hash
           window.onpopstate = function(){
             restore_ctx(tail_hash());
@@ -50,6 +49,11 @@ define(
               try {
                  restore_ctx(tail_hash());
                  navigate_to(middle_hash());   
+                 // fire all events so that everybody gets in sync
+                 $(app).trigger("changed:modules");
+                 $(app).trigger("changed:instance");
+                 $(app).trigger("changed:theme");
+                 $(app).trigger("changed:projection");
               } catch (e) {
                  // nothing encoded ?
                  navigate_to("#editor");
