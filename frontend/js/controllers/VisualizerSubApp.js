@@ -65,7 +65,7 @@ define(
       self.app.theme.set_sig_inherit_stroke(sig_stub, arg.inherit_stroke);
       self.app.theme.set_sig_inherit_shape(sig_stub,  arg.inherit_shape);
       if(!arg.inherit_color){
-        self.app.theme.set_sig_color(arg, event.color);
+        self.app.theme.set_sig_color(arg, arg.color);
       }
       if(!arg.inherit_stroke){
         self.app.theme.set_sig_stroke(sig_stub, arg.stroke);
