@@ -21,6 +21,9 @@ define(
       };
       MultiEditor.prototype.clearErrors = function(){
         this.navigator.find("span.badge").remove();  
+        _.each(this.editors, function(ed){
+           ed.getSession().setAnnotations([]); 
+        });
       };
       
       MultiEditor.prototype.reportErrors = function(warnings, errors){
