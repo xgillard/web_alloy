@@ -38,7 +38,7 @@ define(
               var instance = self.app.instance;
               atom = !instance ? ' ' : default_atom(instance, instance.sig(typename));
           } else {
-              atom = atom.val().atom;
+              atom = atom.val().atom.atomname;
           }
           a[typename] = atom;
           return a;
