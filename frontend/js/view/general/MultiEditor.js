@@ -103,7 +103,7 @@ define(
              index: i,
              text : editor.getSession().getValue()
            };
-           $(self).trigger("changed:module", event)
+           $(self).trigger("changed:module", event);
         });
         editor.on("blur", _.partial(update_titles, self));
 

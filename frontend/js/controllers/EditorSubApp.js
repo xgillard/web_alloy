@@ -31,16 +31,16 @@ define(
       
       function mkAddModuleAction(self){
         var $markup = $("<a><span class='glyphicon glyphicon-plus' title='Add module'></span></a>");
-        $markup.on("click", function(){
+        $markup[0].onclick = function(){
             self.app.modules.push("module Untitled"); 
             $(self.app).trigger("changed:modules");
-        });
+        };
         return $markup;
       };
       
       function mkExecuteAction(self){
          var $markup = $("<a><span class='glyphicon glyphicon-play' title='Execute'></span></a>"); 
-         $markup.on("click", _.partial(execute, self));
+         $markup[0].onclick = _.partial(execute, self);
          return $markup;
       };
     

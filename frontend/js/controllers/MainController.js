@@ -23,8 +23,8 @@ define(
         // -- END OF MAIN EXECUTION --
 
         function configure_global_actions(){
-          $("#editor"    ).on('click', _.partial(navigate_to, '#editor'));
-          $("#visualizer").on('click', _.partial(navigate_to, '#visualizer'));
+          $("#editor"    )[0].onclick = _.partial(navigate_to, '#editor');
+          $("#visualizer")[0].onclick = _.partial(navigate_to, '#visualizer');
         };
 
         function init_event_mgt(){

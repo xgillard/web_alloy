@@ -24,7 +24,7 @@ define(
           this.apply_btn       = mkApplyButton("Apply to Set");
           this.tag             = mkTag(this);
           
-          $(this.apply_btn).on("click", _.partial(fireChanged, this));
+          $(this.apply_btn)[0].onclick = _.partial(fireChanged, this);
           
           $(app).on("changed:theme", _.partial(set_values, this));
           set_values(this);

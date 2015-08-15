@@ -11,7 +11,7 @@ define(
           this.selector = new VisibilityThemeSettings(app);
           this.tag      = $("<a><span class='glyphicon glyphicon-star' title='Visibility' ></span></a>");
           
-          this.tag.on("click", _.partial(show_config_popup, this));
+          this.tag[0].onclick = _.partial(show_config_popup, this);
       };
       
       VisibilitySelector.prototype.val = function(){
