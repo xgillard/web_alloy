@@ -92,7 +92,7 @@ define(
     };
     
     function revealSelection(self, event, arg){
-      _.each(arg, function(k){
+      _.each(arg.selected, function(k){
           if(self.app.theme.sig_configs[k]){
             self.app.theme.sig_configs[k].visible = true;
           }

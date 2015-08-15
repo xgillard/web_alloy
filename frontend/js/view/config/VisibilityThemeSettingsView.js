@@ -15,10 +15,12 @@ define(
       VisibilityThemeSettingsView.prototype.val = function(){
         var self         = this; 
         var hidden_items = read_hidden_items(this);
-        return _.filter(_.keys(hidden_items), function(k){
+        var selected     = _.filter(_.keys(hidden_items), function(k){
             var checkbox = self.tag.find('input[type="checkbox"][data-name="'+k+'"]');
             return checkbox.prop("checked");
-        });  
+        });
+        
+        return { selected : selected };
       };
       
       function fireChanged(self){
