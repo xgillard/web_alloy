@@ -2,11 +2,14 @@ define(
   [
   'jquery', 
   'util/_',
+  'view/general/_',
   'model/AppContext',
   'controllers/EditorSubApp',
-  'controllers/VisualizerSubApp'
+  'controllers/VisualizerSubApp',
+  'view/general/UploadFileDialog',
+  'base64'
   ],
-  function($, _, AppContext, EditorSubApp, VisualizerSubApp){
+  function($, _, ui, AppContext, EditorSubApp, VisualizerSubApp, UploadFileDialog, Base64){
    return {
      start : function(){
         // -- BEGIN MAIN EXECUTION --
@@ -75,15 +78,48 @@ define(
             $("#actions").empty();
             middle_hash(tab_name);
 
-            var shareAction     = mkShareAction();
-            var newEditorAction = mkNewEditorAction();
-
-            var actions = [].concat(sub_app.actions(), [newEditorAction, shareAction]);
+            
+            var actions = [].concat(sub_app.actions(), mkActions());
             _.each(actions, function(action){
                var item = $("<li></li>");
                item.append(action);
                $("#actions").append(item);
             });
+        };
+
+        function mkActions(){
+            var shareAction     = mkShareAction();
+            var downloadAction  = mkDownloadAction();
+            var uploadAction    = mkUploadAction();
+            var newEditorAction = mkNewEditorAction();
+
+            return [newEditorAction, downloadAction, uploadAction, shareAction];
+        };
+        
+        function mkDownloadAction(){
+           var $markup = $("<a><span class='glyphicon glyphicon-cloud-download' title='Download'></span></a>");
+           $markup[0].onclick = function(e){
+             $markup[0].href     = "data:application/octet-stream;base64," + Base64.toBase64(Base64.utob(app.toString()));
+             $markup[0].download = "AlloyModel.json";
+           };
+           return $markup;
+        };
+        
+        function mkUploadAction(){
+           var action = new UploadFileDialog();
+           $(action).on("changed", function(e, f){
+              loadFromFile(f);
+           });
+           return action.tag;
+        };
+        
+        function loadFromFile(f){
+            register_ctx(AppContext.fromString(f));
+            // fire all events so that everybody gets in sync
+            $(app).trigger("changed:modules");
+            $(app).trigger("changed:instance");
+            $(app).trigger("changed:theme");
+            $(app).trigger("changed:projection");
         };
 
         function mkShareAction(){

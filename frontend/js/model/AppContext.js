@@ -17,7 +17,7 @@ define(
         this.projection     = new Projection();
       };
       
-      AppContext.prototype.encode = function(){
+      AppContext.prototype.toString = function(){
         var inst_text  = JSON.stringify(this.instance);
         var theme_text = JSON.stringify(this.theme);
         var proj_text  = JSON.stringify(this.projection);
@@ -29,13 +29,11 @@ define(
             projection    : proj_text
         };
         var state_text = JSON.stringify(state);
-        var compressed = compress.compress(state_text);  
-        return compressed;
+        return state_text;
       };
       
-      AppContext.load = function(compressed){
-        var decompressed  = compress.decompress(compressed);
-        var parsed        = JSON.parse(decompressed);
+      AppContext.fromString = function(s){
+        var parsed        = JSON.parse(s);
         
         var ctx           = new AppContext();
         ctx.modules       = parsed.modules;
@@ -45,6 +43,16 @@ define(
         ctx.theme         = Theme.read_json(parsed.theme);
         
         return ctx;
+      };
+      
+      AppContext.prototype.encode = function(){
+        var compressed = compress.compress(this.toString());  
+        return compressed;
+      };
+      
+      AppContext.load = function(compressed){
+        var decompressed  = compress.decompress(compressed);
+        return AppContext.fromString(decompressed);
       };
       
       return AppContext;
