@@ -33,6 +33,23 @@ define(
         set_values(this);
     };
     
+    GeneralThemeSettingsView.prototype.val = function(){
+        return {
+            layout              : this.layout.val(),
+            orientation_name    : this.orientation.val(),
+            node_palette_name   : this.node_palette.val(),
+            edge_palette_name   : this.edge_palette.val(),
+            font_name           : this.font.val(),
+            force_alphabetical  : this.alphabetical.prop("checked"),
+            hide_private_sigs   : this.hide_private_sigs.prop("checked"),
+            hide_private_rels   : this.hide_private_rels.prop("checked"),
+            group_atoms_by_sig  : this.group_atoms_by_sig.prop("checked"),
+            automatic_shapes    : this.automatic_shape.prop("checked"),
+            automatic_colors    : this.automatic_color.prop("checked"),
+            show_skolem_const   : this.show_skolem_const.prop("checked")
+        };
+    };
+    
     function set_values(self){
         self.layout.val(self.theme.layout);
         self.orientation.val(self.theme.orientation_name);
@@ -50,21 +67,7 @@ define(
     };
     
     function fireChanged(self){
-        var event = {
-            layout              : self.layout.val(),
-            orientation_name    : self.orientation.val(),
-            node_palette_name   : self.node_palette.val(),
-            edge_palette_name   : self.edge_palette.val(),
-            font_name           : self.font.val(),
-            force_alphabetical  : self.alphabetical.prop("checked"),
-            hide_private_sigs   : self.hide_private_sigs.prop("checked"),
-            hide_private_rels   : self.hide_private_rels.prop("checked"),
-            group_atoms_by_sig  : self.group_atoms_by_sig.prop("checked"),
-            automatic_shapes    : self.automatic_shape.prop("checked"),
-            automatic_colors    : self.automatic_color.prop("checked"),
-            show_skolem_const   : self.show_skolem_const.prop("checked")
-        };
-        $(self).trigger("changed", event);
+        $(self).trigger("changed", self.val());
     };
     
     function mkLayout(){

@@ -4,25 +4,25 @@ define(
   'util/_',
   'view/config/ProjectionSelector',
   'view/config/VisibilitySelector',
+  'view/config/GeneralSettingsSelector',
   'view/core/InstanceView'
   ],
-  function($,_, ProjectionSelector, VisibilitySelector, InstanceView){
+  function($,_, ProjectionSelector, VisibilitySelector, GeneralSettingsSelector, InstanceView){
     
     function VisualizerSubApp(app){
       this.app                = app;  
       this.graph              = new InstanceView(app);
       this.projector          = new ProjectionSelector(app);
       
-      // TODO: general settings
-      this.revealHiddenAction = new VisibilitySelector(app);
+      this.revealHiddenAction  = new VisibilitySelector(app);
+      this.generalSettingAction= new GeneralSettingsSelector(app);
       
       $(this.projector).on("changed",      _.partial(updateProjection, this));
       $(this.graph).on("changed:conf:sig", _.partial(updateSignatureConfig, this));
       $(this.graph).on("changed:conf:rel", _.partial(updateRelationConfig,  this));
       
-      // TODO: general settings
-      $(this.revealHiddenAction).on("changed", _.partial(revealSelection, this));
-      
+      $(this.revealHiddenAction  ).on("changed", _.partial(revealSelection, this));
+      $(this.generalSettingAction).on("changed", _.partial(updateGeneralSettings, this));
       
       this.main = mkTag(this);
     };
@@ -32,8 +32,7 @@ define(
     };
     
     VisualizerSubApp.prototype.actions = function(){
-      // TODO: general settings
-      return [this.revealHiddenAction.tag];
+      return [this.revealHiddenAction.tag, this.generalSettingAction.tag];
     };
         
     function mkTag(self){
