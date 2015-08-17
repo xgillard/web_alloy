@@ -61,10 +61,6 @@ define(
           }, [signature.typename]));
       };
 
-      Instance.prototype.setChanged = function(){
-        $(this).trigger("changed");  
-      };
-
       return Instance;
   }
 );

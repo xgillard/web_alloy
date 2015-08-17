@@ -43,7 +43,6 @@ define(
               get: function(){return font[this.font_name];}
           });
       };
-      Theme.prototype.setChanged = function(){ $(this).trigger("changed"); };
       
       // Sig configguration
       function get_sig_conf(self, sig){

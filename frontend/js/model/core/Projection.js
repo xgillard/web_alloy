@@ -21,6 +21,7 @@ define(['jquery', 'util/_'], function($, _){
     Projection.prototype.visible_tuples = function (instance){
       return _.filter(instance.tuples, _.partial(is_tuple_visible, this.projections, instance));
     };
+    
 
     /**
      * This function reloads a Projection from a json string 
