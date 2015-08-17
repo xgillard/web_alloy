@@ -12,11 +12,14 @@ var exec       = require('child_process').exec;
  * 3. Excute Alloy to produce an instance
  * 4. Delete the folder that has been created
  */
-exports.find_instance = function(solver, main_module, modules, cb){
-  var tempdir    = new Date().getTime();
+function find_instance(model, context, whendone){
+  var solver     = model.solver;
+  var main_module= model.current_module;
+  var modules    = model.modules;
+  var tempdir    = context.id;
   fs.mkdir(""+tempdir, function(err){
       if(err){
-         handle_file_error(err, cb); 
+         handle_file_error(err, whendone); 
          return;
       }
       async.each(
@@ -31,46 +34,51 @@ exports.find_instance = function(solver, main_module, modules, cb){
          // when it's all done, run the command
          function(err){
            if(err){
-             handle_file_error(err, cb); 
+             handle_file_error(err, whendone); 
              return;
            }
            var name = tempdir+"/"+module_title(modules[main_module])+".als";
            var command = "java -jar a4cli.jar -i "+name+" -s "+solver;
-           exec(command, function(error, stdout, stderr){
-             cb(stdout);
-             
-             if(err){
-                 console.log(err);
-             }
-             if(stderr){
-		console.log(stderr);
-	     }
-
-             exec("rm -rf "+tempdir, function(err){
-              if(err){
-                  console.log("WARNING: COULD NOT DELETE DIRECTORY "+tempdir);
-              } 
-             });
-
+           // we might want to change stdout **maxBuffer** option
+           context.execution = exec(command, function(err, stdout, stderr){
+               if(err){
+                   handle_error("Execution failed "+err, whendone);
+               } else {
+                   whendone(stdout);
+               }
+               
+               if(stderr) {
+                   console.log(stderr);
+               }
+               
+               exec("rm -rf "+tempdir, function(){/* done */});
            });
         });
   });
 };
 
+function abort(context){
+   if( context.execution ){
+       context.execution.kill(/*SIGTERM*/);
+   }
+};
+
 // responds a properly formatted error message
 function handle_file_error(err, callback){
-  if (err){
-    var err_rsp = {
-      isError : true,
-      errors  : [{
-            // unknown position since it doesn't originate from the model itself
-        pos: {start_row: 1, start_col: 1, end_row: 1, end_col: 1},
-        msg: "There was a problem writing your model to disk"
-      }]
-    };
-    callback(JSON.stringify(err_rsp));
-  }
+  handle_error("There was a problem writing your model to disk", callback);
 }
+
+function handle_error(err, callback){
+  var err_rsp = {
+    isError : true,
+    errors  : [{
+          // unknown position since it doesn't originate from the model itself
+      pos: {start_row: 1, start_col: 1, end_row: 1, end_col: 1},
+      msg: err
+    }]
+  };
+  callback(JSON.stringify(err_rsp));  
+};
 
       
 function module_title(module){
@@ -78,3 +86,6 @@ function module_title(module){
    var ret = exp.exec(module);
    return !ret || ret.length <2 ? 'Untitled' : ret[1];
 };
+
+exports.find_instance = find_instance;
+exports.abort         = abort;

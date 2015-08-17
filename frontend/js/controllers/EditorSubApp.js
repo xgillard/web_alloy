@@ -54,7 +54,10 @@ define(
     function execute(self){
       $(self.app).trigger("registration_point");
       //
-      var please_wait = ui.Wait("The analyzer is processing your model");
+      var please_wait = ui.Wait();
+      $(please_wait).on('abort', function(){
+         self.app.socket.emit("abort_execution"); 
+      });
       please_wait.show();
       
       var content = { 
@@ -63,10 +66,9 @@ define(
           current_module: self.app.current_module 
       };
       
-      // make this global ?
       self.app.socket.emit('find_instance', content);
       self.app.socket.on('instance_found' , function(data){
-        if(data.sock_id !== socket.id) {
+        if(data.sock_id !== self.app.socket.id) {
             return;
         }
         
@@ -77,7 +79,7 @@ define(
           success(self,response);
         }
         if (response.isUnsat) {
-          ui.Alert('info', 'No instance found for given scope');
+          //ui.Alert('info', 'No instance found for given scope');
         }
         
         if(response.isError || response.isWarn){

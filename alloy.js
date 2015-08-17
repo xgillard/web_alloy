@@ -30,12 +30,19 @@ app.get("/", function(request, response){
 });
 
 io.on('connection', function(socket){
-
+   var socket_context = {id: socket.id};
+   
+   var instance_found = function(result){
+     var emission = {sock_id: socket.id, result: result};
+     io.emit("instance_found", emission);
+   };
+   
    socket.on('find_instance', function(model){
-     resolution.find_instance(model.solver, model.current_module, model.modules, function(result){
-        var emission = {sock_id: socket.id, result: result};
-        io.emit("instance_found", emission);
-     });
+     resolution.find_instance(model, socket_context, instance_found);
    });
-      
+   
+   socket.on('abort_execution', function(){
+     resolution.abort(socket_context);
+   });
+   
 });
