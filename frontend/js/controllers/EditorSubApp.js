@@ -7,10 +7,9 @@ define(
   'jquery', 
   'util/_',
   'model/core/Model',
-  'view/general/_',
-  'socket.io'
+  'view/general/_'
   ],
-  function($,_, Model, ui, io){
+  function($,_, Model, ui){
       
       function EditorSubApp(app){
           this.app             = app;
@@ -65,9 +64,8 @@ define(
       };
       
       // make this global ?
-      var socket = io();
-      socket.emit('find_instance', content);
-      socket.on('instance_found' , function(data){
+      self.app.socket.emit('find_instance', content);
+      self.app.socket.on('instance_found' , function(data){
         if(data.sock_id !== socket.id) {
             return;
         }

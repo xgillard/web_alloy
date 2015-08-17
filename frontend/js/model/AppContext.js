@@ -5,9 +5,10 @@ define(
   'model/core/Model', 
   'model/core/Projection',
   'model/config/Theme',
-  'util/compress'
+  'util/compress', 
+  'socket.io'
   ],
-  function($, _, Model, Projection, Theme, compress){
+  function($, _, Model, Projection, Theme, compress, io){
       
       function AppContext(){
         this.current_module = 0;
@@ -15,6 +16,7 @@ define(
         this.instance       = null;
         this.theme          = new Theme();
         this.projection     = new Projection();
+        this.socket         = io(); // This stores the one single socket associated w/ this client
       };
       
       AppContext.prototype.toString = function(){

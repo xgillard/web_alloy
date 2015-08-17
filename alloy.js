@@ -30,7 +30,7 @@ app.get("/", function(request, response){
 });
 
 io.on('connection', function(socket){
-   
+
    socket.on('find_instance', function(model){
      resolution.find_instance(model.solver, model.current_module, model.modules, function(result){
         var emission = {sock_id: socket.id, result: result};
