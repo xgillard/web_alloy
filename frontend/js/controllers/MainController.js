@@ -18,30 +18,13 @@ define(
         var visualizer      = new VisualizerSubApp(app);
 
         configure_global_actions();
-        init_event_mgt();
+        register_ctx(app);
         load_initial_state();
         // -- END OF MAIN EXECUTION --
 
         function configure_global_actions(){
           $("#editor"    )[0].onclick = _.partial(navigate_to, '#editor');
           $("#visualizer")[0].onclick = _.partial(navigate_to, '#visualizer');
-        };
-
-        function init_event_mgt(){
-          // init event management
-          $(app).on("registration_point",    encode_state_in_url);
-          $(app).on("changed:instance",      encode_state_in_url);   
-          $(app).on("changed:projection",    encode_state_in_url);   
-          $(app).on("changed:theme",         encode_state_in_url);   
-          $(app).on("changed:modules",       encode_state_in_url);   
-          $(app).on("changed:current_module",encode_state_in_url);   
-          /*
-          // When the user navigates using the back-next buttons, reload the context encoded in the hash
-          window.onpopstate = function(){
-            restore_ctx(tail_hash());
-          };
-          */
-          register_ctx(app);
         };
 
         function load_initial_state(){
@@ -96,6 +79,18 @@ define(
             return [newEditorAction, downloadAction, uploadAction, shareAction];
         };
         
+        function mkNewEditorAction(){
+          var html = "<a href='#' target='_blank'><span class='glyphicon glyphicon-new-window' title='New editor'></span></a>";
+          var $markup = $(html);
+          return $markup;
+        };
+        
+        function mkShareAction(){
+            var $markup = $("<a><span class='glyphicon glyphicon-send' title='Share this model'></span></a>");
+            $markup.shareDialog(app);
+            return $markup;
+        };
+        
         function mkDownloadAction(){
            var $markup = $("<a><span class='glyphicon glyphicon-cloud-download' title='Download'></span></a>");
            $markup[0].onclick = function(e){
@@ -122,22 +117,6 @@ define(
             $(app).trigger("changed:projection");
         };
 
-        function mkShareAction(){
-            var $markup = $("<a><span class='glyphicon glyphicon-send' title='Share this model'></span></a>");
-            $markup.shareDialog();
-            return $markup;
-        };
-
-        function mkNewEditorAction(){
-          var html = "<a href='#' target='_blank'><span class='glyphicon glyphicon-new-window' title='New editor'></span></a>";
-          var $markup = $(html);
-          return $markup;
-        };
-
-         function encode_state_in_url(){
-           tail_hash(app.encode());
-         };
-
          function restore_ctx(compressed){
              register_ctx(AppContext.load(compressed));
          };
@@ -148,13 +127,6 @@ define(
             app.projection= ctx.projection;
             app.current_module = ctx.current_module;
             app.modules = ctx.modules;
-            /*
-            // not pretty but does the job.
-            $(app).trigger("changed:modules");
-            $(app).trigger("changed:instance");
-            $(app).trigger("changed:theme");
-            $(app).trigger("changed:projection");
-            */
          };
 
          function middle_hash(h){

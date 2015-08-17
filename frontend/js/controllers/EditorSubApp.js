@@ -52,8 +52,6 @@ define(
     // This function is basically nothing but a stub to handle the 
     // execution (analysis) of some page
     function execute(self){
-      $(self.app).trigger("registration_point");
-      //
       var please_wait = ui.Wait();
       $(please_wait).on('abort', function(){
          self.app.socket.emit("abort_execution"); 
