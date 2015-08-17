@@ -7,9 +7,10 @@ define(
   'jquery', 
   'util/_',
   'model/core/Model',
-  'view/general/_'
+  'view/general/_',
+  'socket.io'
   ],
-  function($,_, Model, ui){
+  function($,_, Model, ui, io){
       
       function EditorSubApp(app){
           this.app             = app;
@@ -62,9 +63,17 @@ define(
           modules: self.app.modules, 
           current_module: self.app.current_module 
       };
-      $.post("/execute", content, function(data){
+      
+      // make this global ?
+      var socket = io();
+      socket.emit('find_instance', content);
+      socket.on('instance_found' , function(data){
+        if(data.sock_id !== socket.id) {
+            return;
+        }
+        
         please_wait.hide();
-        var response = JSON.parse(data);
+        var response = JSON.parse(data.result);
         
         if (response.isSat) {
           success(self,response);
@@ -78,7 +87,6 @@ define(
         } else {
            self.editor.clearErrors();
         }
-        
       });
     };
 

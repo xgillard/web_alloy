@@ -7,6 +7,8 @@ var express    = require('express');
 var bodyParser = require('body-parser'); 
 var app        = express();
 var http       = require('http').Server(app);
+// websockets  (bidirectional interaction)
+var io         = require('socket.io')(http);
 
 // This is to be able to spawn the alloy subprocess
 var async      = require('async');
@@ -36,24 +38,31 @@ app.get("/", function(request, response){
   response.sendFile(__dirname + "/frontend/index.html");
 });
 
-// execute an alloy subprocess with the given user model
-app.post("/execute", function(request, response){
+io.on('connection', function(socket){
+   
+   socket.on('find_instance', function(model){
+     find_instance(model.solver, model.current_module, model.modules, function(result){
+        var emission = {sock_id: socket.id, result: result};
+        io.emit("instance_found", emission);
+     });
+   });
+      
+});
+
+/*
+ * The following function looks pretty complex but in reality, it isnt:
+ * it symply does the following pseudo code using async operation for everything.
+ * 
+ * 1. Create a tempdir to store all user data
+ * 2. Write all user modules in the temp folder
+ * 3. Excute Alloy to produce an instance
+ * 4. Delete the folder that has been created
+ */
+function find_instance(solver, main_module, modules, cb){
   var tempdir    = new Date().getTime();
-  var modules    = request.body.modules;
-  var main_module= request.body.current_module;
-  
-  /*
-   * The following subscript looks pretty complex but in reality, it isnt:
-   * it symply does the following pseudo code using async operation for everything.
-   * 
-   * 1. Create a tempdir to store all user data
-   * 2. Write all user modules in the temp folder
-   * 3. Excute Alloy to produce an instance
-   * 4. Delete the folder that has been created
-   */
   fs.mkdir(""+tempdir, function(err){
       if(err){
-         handle_file_error(response, err); 
+         handle_file_error(err, cb); 
          return;
       }
       async.each(
@@ -68,13 +77,17 @@ app.post("/execute", function(request, response){
          // when it's all done, run the command
          function(err){
            if(err){
-             handle_file_error(response, err); 
+             handle_file_error(err, cb); 
              return;
            }
            var name = tempdir+"/"+module_title(modules[main_module])+".als";
-           var command = "java -jar a4cli.jar -i "+name+" -s "+request.body.solver;
-           exec(command, function(stdin, stdout, stderr){
-             response.send(stdout);
+           var command = "java -jar a4cli.jar -i "+name+" -s "+solver;
+           exec(command, function(error, stdout, stderr){
+             cb(stdout);
+             
+             if(err){
+                 console.log(err);
+             }
              if(stderr){
 		console.log(stderr);
 	     }
@@ -88,11 +101,10 @@ app.post("/execute", function(request, response){
            });
         });
   });
- 
-});
+};
 
 // responds a properly formatted error message
-function handle_file_error(response, err){
+function handle_file_error(err, callback){
   if (err){
     var err_rsp = {
       isError : true,
@@ -102,7 +114,7 @@ function handle_file_error(response, err){
         msg: "There was a problem writing your model to disk"
       }]
     };
-    response.send(JSON.stringify(err_rsp));
+    callback(JSON.stringify(err_rsp));
   }
 }
 

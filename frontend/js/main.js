@@ -13,7 +13,9 @@ require.config({
        // https://github.com/dankogai/js-deflate
        'rawinflate': '_libs/js-deflate/rawinflate',
        'rawdeflate': '_libs/js-deflate/rawdeflate',
-       'base64'    : '_libs/js-deflate/base64'
+       'base64'    : '_libs/js-deflate/base64',
+       //
+       'socket.io' : '/socket.io/socket.io'
    },
    shim: {
        'jquery'    : {exports: '$' },
@@ -26,7 +28,9 @@ require.config({
        'viz'       : {exports: 'Viz'},
        'rawinflate': {exports: 'RawInflate'},
        'rawdeflate': {exports: 'RawDeflate'},
-       'base64'    : {exports: 'Base64'}
+       'base64'    : {exports: 'Base64'},
+       //
+       'socket.io' : {exports: 'io'}
    }
 });
 
