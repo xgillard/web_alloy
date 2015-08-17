@@ -6,16 +6,15 @@ define(
         var out  = new Graph(theme, instance);
         // no point in doing that if there's no inst.
         if (instance){
-          var proj = projection.projections || {};
-        
           // nodes
-          var atoms= visible_atoms(theme, instance, proj);
+          var atoms= visible_atoms(theme, instance, projection);
           _.each(atoms, function(a){
              out.add_node(a);
           });
         
           // edges
-          _.each(instance.tuples, _.partial(draw_tuple, out, theme, instance, proj));
+          var tuples= visible_tuples(theme, instance, projection);
+          _.each(tuples, _.partial(draw_tuple, out, theme, instance));
         
           // node markers
           add_skolems(out, theme, instance);
@@ -24,7 +23,7 @@ define(
     };
     
     function visible_atoms(theme, instance, projection){
-        var atoms    = instance.atoms;
+        var atoms    = projection.visible_atoms(instance);
         
         // atoms -= private (IFF configured)
         if(theme.hide_private_sigs){
@@ -34,14 +33,21 @@ define(
         // atoms -= hidden per user decision
         atoms = _.filter(atoms, function(a){return theme.get_sig_config(a, instance).visible;});
         
-        var sig_bytypename = _.indexBy(instance.signatures, 'typename');
-        var projected= _.flatten(_.map(_.keys(projection), function(s){
-           return _.filter(atoms, _.partial(is_prototype_of, sig_bytypename[s])); 
-        }));
-        // atoms -= projected away
-        atoms = _.difference(atoms, projected);
-        
         return atoms;
+    };
+    
+    function visible_tuples(theme, instance, projection){
+        var tuples = projection.visible_tuples(instance);
+        
+        // tuples -= private (IFF configured)
+        if(theme.hide_private_rels){
+            tuples = _.difference(tuples, _.filter(tuples, is_private));
+        }
+        
+        // tuples -= hidden per user decision ==> This decision has to be deferred: an edge can be visible 
+        // if it is drawn as arc or if it is shown as attribute.
+         
+        return tuples;
     };
     
     function add_skolems(out, theme, instance){
@@ -56,47 +62,34 @@ define(
         });
     };
     
-    function draw_tuple(out, theme, instance, proj, t){
+    function draw_tuple(out, theme, instance, t){
         var steps  = _.map(t.atoms,  function(a){return out.node(a);});
         var visible= _.filter(steps, function(s){return s!== undefined;});
         
         var edgeconf = theme.get_rel_config(t, instance);
         var baselabel= edgeconf ? edgeconf.label || t.fieldname : t.fieldname;
         
-        var src     = instance.atom(t.src);
-        var srcconf = theme.get_sig_config(src, instance); 
-        var can_draw= srcconf.visible && 
-                      (!(proj[src.typename] && proj[src.typename] !== src.atomname)) &&
-                      (!(t.private && theme.hide_private_rels));
-
         if(visible.length > 1){
             var nids    = _.map(visible, function(n){ return {nid: n.nid, typename: n.typename, label: n.label};});
             var middle  = nids.slice(1, nids.length-1);
-            var can_show= can_draw && !(t.private && theme.hide_private_rels);
             // By default, you draw it
-            if(can_show && (!edgeconf || edgeconf.show_as_arc !== false)) {
+            if(!edgeconf || edgeconf.show_as_arc !== false) {
                 out.add_edge(t.id, t.typename, _.first(nids), _.last(nids), t.fieldname, middle); 
             }
             // By default, you don't write it as attr
-            if(can_show && (edgeconf && edgeconf.show_as_attr)) {
+            if(edgeconf && edgeconf.show_as_attr) {
                 var marker= baselabel+':'+_.map(visible.slice(1), function(n){
                     return out.node_title(n.nid);
                 }).join('->');
                 out.add_rel_marker(_.first(nids).nid, marker);
             }
         } else if(visible.length === 1){            
-            if(can_draw){
-                out.add_project_marker(t.dst, baselabel); 
-            }
+            out.add_project_marker(t.dst, baselabel); 
         }
     };
     
-    function is_private(atom){
-        return atom.private;
-    };
-    
-    function is_prototype_of(x, y){
-        return x.isPrototypeOf(y);
+    function is_private(maybe_private){
+        return maybe_private.private;
     };
     
     return GrapheFactory;
