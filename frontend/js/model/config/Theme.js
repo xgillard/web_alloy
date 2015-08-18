@@ -125,8 +125,12 @@ define(
         // getting atomname from set will be undefined unless set is a singleton atom
         this_conf = _.reduce(projection.projection_sets_of(instance, set.atomname), function(a, s){
               var set_config = get_set_conf(self, s);
+              var copy       = $.extend({}, set_config);
+              
               // can we tolerate that the set override the sig label ? I guess we don't
-              return $.extend(a, set_config);
+              delete copy.label;
+              
+              return $.extend(a, copy);
           }, this_conf);
         
         // set automatic values

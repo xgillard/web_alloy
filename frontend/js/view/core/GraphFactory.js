@@ -10,10 +10,7 @@ define(
           var atoms= visible_atoms(theme, instance, projection);
           _.each(atoms, function(a){
              out.add_node(a);
-             _.each(projection.projection_sets_of(instance, a.atomname), function(ps){
-                var label = theme.get_set_config({typename: ps.relation_typename}, instance, projection).label;
-                out.add_project_marker(a.atomname, label); 
-             });
+             add_projection_marks(out, theme, instance, projection, a);
           });
         
           // edges
@@ -54,6 +51,13 @@ define(
         return tuples;
     };
     
+    function add_projection_marks(out, theme, instance, projection, atom){
+        _.each(projection.projection_sets_of(instance, atom.atomname), function(ps){
+           var label = theme.get_set_config({typename: ps.relation_typename}, instance, projection).label;
+           out.add_project_marker(atom.atomname, label); 
+        }); 
+    };
+    
     function add_skolems(out, theme, instance){
         if(!theme.show_skolem_const) return;
         // maybe configure this
@@ -73,6 +77,13 @@ define(
         var edgeconf = theme.get_rel_config(t, instance);
         var baselabel= edgeconf ? edgeconf.label || t.fieldname : t.fieldname;
         
+        // If the space is == to 1, this means that : 
+        // - either the tuple (set member) is the result of a projection and in that case, the projection marker
+        //   has already bee added previously (see -> method add_projection_marks() which is called from constructor)
+        //   
+        // - or it has an arity one because all other atoms have been hidden. In that case, we don't want to show the
+        //   tuple at all and don't add markers.
+        //
         if(visible.length > 1){
             var nids    = _.map(visible, function(n){ return {nid: n.nid, typename: n.typename, label: n.label};});
             var middle  = nids.slice(1, nids.length-1);
@@ -87,8 +98,6 @@ define(
                 }).join('->');
                 out.add_rel_marker(_.first(nids).nid, marker);
             }
-        } else if(visible.length === 1){            
-            out.add_project_marker(t.dst, baselabel); 
         }
     };
     
