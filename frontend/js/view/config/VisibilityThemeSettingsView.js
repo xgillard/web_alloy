@@ -56,9 +56,9 @@ define(
       };
       
       function read_hidden_sigs(self){
-         return _.reduce(_.keys(self.app.theme.sig_configs), function(a, k){
-                if(self.app.theme.sig_configs[k].visible === false){
-                  a[k] = self.app.theme.sig_configs[k];
+         return _.reduce(_.keys(self.app.theme.set_configs), function(a, k){
+                if(self.app.theme.set_configs[k].visible === false){
+                  a[k] = self.app.theme.set_configs[k];
                 }
                 return a;
               }, {});

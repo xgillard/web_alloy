@@ -31,7 +31,7 @@ define(['jquery', 'util/_', 'view/general/_'], function($,_, ui){
       var instance = self.app.instance;
       if(!instance) return;
       _.each(instance.root_signatures(), function(sig){
-        var conf = self.app.theme.get_sig_config(sig, instance);
+        var conf = self.app.theme.get_set_config(sig, instance, self.app.projection);
         var label= conf.label;
         var ckbox= mkSigCheckbox(label, _.partial(fireChanged, self));
         self.checkboxes[sig.typename] = ckbox;

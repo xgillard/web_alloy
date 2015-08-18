@@ -3,13 +3,17 @@ define(
   function($,_, Graph){
    
     function GrapheFactory(theme, instance, projection){
-        var out  = new Graph(theme, instance);
+        var out  = new Graph(theme, instance, projection);
         // no point in doing that if there's no inst.
         if (instance){
           // nodes
           var atoms= visible_atoms(theme, instance, projection);
           _.each(atoms, function(a){
              out.add_node(a);
+             _.each(projection.projection_sets_of(instance, a.atomname), function(ps){
+                var label = theme.get_set_config({typename: ps.relation_typename}, instance, projection).label;
+                out.add_project_marker(a.atomname, label); 
+             });
           });
         
           // edges
@@ -31,7 +35,7 @@ define(
         }
         
         // atoms -= hidden per user decision
-        atoms = _.filter(atoms, function(a){return theme.get_sig_config(a, instance).visible;});
+        atoms = _.filter(atoms, function(a){return theme.get_set_config(a, instance, projection).visible;});
         
         return atoms;
     };

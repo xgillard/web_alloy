@@ -99,9 +99,7 @@ define(
               self.navspan.append(anav.tag);
               self.atomnavs[the_sig.typename] = anav;
           } else {
-              console.log("WARN: "+sig+" was considered stale, is it OK ?");
-              // Cleanup if the sig no longer exist
-              self.app.projection.remove(sig);   
+              console.log("WARN: "+sig+" was considered stale, is it OK ?");   
           }
       });
     };

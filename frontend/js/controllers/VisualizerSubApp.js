@@ -59,20 +59,20 @@ define(
     function updateSignatureConfig(self, event, arg){
       var sig_stub = {typename: arg.typename};
       
-      self.app.theme.set_sig_label(sig_stub, arg.label);
-      self.app.theme.set_sig_inherit_color(sig_stub,  arg.inherit_color);
-      self.app.theme.set_sig_inherit_stroke(sig_stub, arg.inherit_stroke);
-      self.app.theme.set_sig_inherit_shape(sig_stub,  arg.inherit_shape);
+      self.app.theme.set_set_label(sig_stub, arg.label);
+      self.app.theme.set_set_inherit_color(sig_stub,  arg.inherit_color);
+      self.app.theme.set_set_inherit_stroke(sig_stub, arg.inherit_stroke);
+      self.app.theme.set_set_inherit_shape(sig_stub,  arg.inherit_shape);
       if(!arg.inherit_color){
-        self.app.theme.set_sig_color(arg, arg.color);
+        self.app.theme.set_set_color(arg, arg.color);
       }
       if(!arg.inherit_stroke){
-        self.app.theme.set_sig_stroke(sig_stub, arg.stroke);
+        self.app.theme.set_set_stroke(sig_stub, arg.stroke);
       }
       if(!arg.inherit_shape){
-        self.app.theme.set_sig_shape(sig_stub, arg.shape);
+        self.app.theme.set_set_shape(sig_stub, arg.shape);
       }
-      self.app.theme.set_sig_visibility(sig_stub, arg.visible);
+      self.app.theme.set_set_visibility(sig_stub, arg.visible);
       
       $(self.app).trigger("changed:theme");
     };
@@ -92,8 +92,8 @@ define(
     
     function revealSelection(self, event, arg){
       _.each(arg.selected, function(k){
-          if(self.app.theme.sig_configs[k]){
-            self.app.theme.sig_configs[k].visible = true;
+          if(self.app.theme.set_configs[k]){
+            self.app.theme.set_configs[k].visible = true;
           }
           if(self.app.theme.rel_configs[k]){
             self.app.theme.rel_configs[k].show_as_arc = true;
