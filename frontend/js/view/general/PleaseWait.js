@@ -28,7 +28,7 @@ define(['jquery'], function($){
     };
     
     function mkAbort(self){
-      var $abort = $("<button type='button' class='btn btn-danger'>Cancel</button>");
+      var $abort = $("<button type='button' class='btn btn-default'>Cancel</button>");
       $abort[0].onclick = function(){
           $(self).trigger("abort");
       };

@@ -7,6 +7,7 @@ define(
         this.tag      = mkTag();
         this.editors  = mkEditors(this);
         this.navigator= mkNavigator(this);
+        this.navToggle= mkNavToggle(this);
         // this is required to help me implement a resizable left pane that works in FF too.
         // credits : http://stackoverflow.com/questions/23992091/drag-and-drop-directive-no-e-clientx-or-e-clienty-on-drag-event-in-firefox
         this.mousepos = {x: 0, y: 0};
@@ -24,6 +25,10 @@ define(
         _.each(this.editors, function(ed){
            ed.getSession().setAnnotations([]); 
         });
+      };
+      
+      MultiEditor.prototype.toggle_navigator = function(){
+        this.tag.find(".hidable").toggleClass('invisible'); 
       };
       
       MultiEditor.prototype.reportErrors = function(warnings, errors){
@@ -71,15 +76,16 @@ define(
       };
       
       function update(self){
-          // destroy all previously existing
-          //self.navigator.find("li a").each(function(i, a){
-          //    $(a).off();
-          //});
           _.each(self.editors, function(e){
               e.destroy();
           });
           self.editors   = mkEditors(self);
           self.navigator = mkNavigator(self);
+          
+          // since we've added some new module, we might want to show the navigator
+          if(self.app.modules.length > 1){
+            self.tag.find('.invisible').removeClass('invisible');
+          }
       };
       
       function update_titles(self){
@@ -115,7 +121,7 @@ define(
       };
       
       function mkNavigator(self){
-          var $nav = $("<ul class='nav nav-pills nav-stacked'></ul>");
+          var $nav = $("<ul class='nav nav-pills nav-stacked gray'></ul>");
           self.navigator = $nav;
           
           $.each(self.app.modules, function(i, module){
@@ -140,6 +146,16 @@ define(
           return $nav;
       };
       
+      function mkNavToggle(self){
+        var tag = "<a class='multiedit-nav-toggle'>"+
+                  "<span class='glyphicon glyphicon-eye-open' title='Show/Hide Module Navigator'></span>"+
+                  "</a>"; 
+        var $tag = $(tag);
+        $tag[0].onclick = function(){ self.toggle_navigator(); };
+        self.tag.append($tag);
+        return $tag;
+      };
+      
       function activate(self, index){
         $(self).trigger("changed:current_module", index);
         self.navigator.find("li").removeClass("active");
@@ -150,8 +166,8 @@ define(
       
       function mkTag(){
           var tag = "<table style='width: 100%; height: 100%'>"  +
-                    "<tr><td style='width: 15%; vertical-align: top; line-height: 100%;' data-name='navigator'></td>" +
-                    "<td data-name='drag-handle' draggable='true' style='cursor: col-resize; background-color: LightGray;height: 100%; width: 5px; vertical-align: middle'>"+
+                    "<tr><td class='hidable invisible' style='width: 15%; vertical-align: top; line-height: 100%;' data-name='navigator'></td>" +
+                    "<td class='hidable invisible' data-name='drag-handle' draggable='true' style='cursor: col-resize; background-color: LightGray;height: 100%; width: 5px; vertical-align: middle'>"+
                     "<div style='width: 5px; height: 40px; background-color: DarkGray;' ></div>" +
                     "</td>" +
                     "<td data-name='editor' ></td></tr>" +

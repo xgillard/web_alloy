@@ -156,9 +156,9 @@ define(
       function default_set_theme(set){
         return {
             label         : default_set_label(set),
-            color         : '#FFFFFF', // white
+            color         : '#E8E8E8', // some shade of light gray
             stroke        : 'solid',
-            shape         : _.first(shape),
+            shape         : 'box',
             visible       : true,
             inherit_shape : true,
             inherit_stroke: true,

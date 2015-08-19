@@ -24,7 +24,7 @@ define(
       };
       
       EditorSubApp.prototype.actions = function(){
-          return [mkAddModuleAction(this), mkExecuteAction(this)];
+          return [mkAddModuleAction(this), mkToggleEditorNavAction(this), mkExecuteAction(this)];
       };
       
       function mkAddModuleAction(self){
@@ -32,6 +32,17 @@ define(
         $markup[0].onclick = function(){
             self.app.modules.push("module Untitled"); 
             $(self.app).trigger("changed:modules");
+        };
+        return $markup;
+      };
+      
+      function mkToggleEditorNavAction(self){
+        var markup = "<a>"+
+                     "<span class='glyphicon glyphicon-eye-open' title='Show/Hide Module Navigator'></span>"+
+                     "</a>";
+        var $markup = $(markup);
+        $markup[0].onclick = function(){
+            self.editor.toggle_navigator();
         };
         return $markup;
       };

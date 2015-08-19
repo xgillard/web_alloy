@@ -38,6 +38,23 @@ body{
 .small {
     font-size: 10pt;
 }
+
+.invisible {
+  display: none;  
+}
+
+.multiedit-nav-toggle{
+  font-size: 25px;
+  color: white;
+  padding: .5em; 
+  border-radius: 25px;
+  background-color: #31b0d5; 
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  border: none;
+}
+
 .popover {
     max-width: 100%;
 }
@@ -73,6 +90,21 @@ body{
     cursor: pointer;
 }
 
+.nav-pills.gray > li:not(.active) > a {
+  color: #777777;
+}
+.nav-pills.gray > li:not(.active) > a:hover {
+  color: black;
+  background-color: transparent;
+}
+
+.nav-pills.gray > li.active,
+.nav-pills.gray > li.active > a,
+.nav-pills.gray > li.active > a:hover,
+.nav-pills.gray > li.active > a:focus {
+  color: black;
+  background-color: #e8e8e8;
+}
 [draggable] {
   -moz-user-select: none;
   -khtml-user-select: none;
