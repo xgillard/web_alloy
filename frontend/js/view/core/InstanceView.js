@@ -47,6 +47,7 @@ define(
                     "</foreignObject>" +
                     "</g>"+
                     "</svg>");
+            
         svg.find("div").css({
             "display"       : "block",
             "width"         : w+"px",
@@ -55,7 +56,17 @@ define(
             "text-align"    : "center",
             "vertical-align": "middle"
         });
+        
         svg.find("div").html(target);
+        
+        var $target = svg.find("div > svg");
+        // The drawing is too large to fit the window, we need to squash it
+        // so that the full content can be zoomed.
+        if(parseInt($target.attr("width")) > w || parseInt($target.attr("height")) > h){
+            $target.attr("width", "100%");
+            $target.attr("height", "100%");
+        }
+        
         return svg;
       };
       
