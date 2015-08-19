@@ -29,9 +29,9 @@ define(
         
         self.tag.html(svg);
         self.tag.find("svg")
-                .css({'position':'absolute'})
-                .attr("width", "100%")
-                .attr("height","100%");
+                    .css({'display':'inline-block'})
+                    .attr("width",  $(document).innerWidth()+'px')
+                    .attr("height", $(document).innerHeight()-150+'px');
         
         enable_zoom(self);
         enable_highlighting(self, graph);

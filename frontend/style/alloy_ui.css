@@ -22,7 +22,9 @@ body{
     height:100%;
     line-height: 100%;
 }
-
+.instance_view{
+    text-align: center;
+}
 .alert{
     position: absolute;
     z-index: 1000;
