@@ -7,8 +7,6 @@ define(
         this.tag         = mkTag();
         this.editors     = mkEditors(this);
         this.navigator   = mkNavigator(this);
-        this.navToggleBtn= mkNavToggle(this);
-        this.addModuleBtn= mkAddModule(this);
         // this is required to help me implement a resizable left pane that works in FF too.
         // credits : http://stackoverflow.com/questions/23992091/drag-and-drop-directive-no-e-clientx-or-e-clienty-on-drag-event-in-firefox
         this.mousepos = {x: 0, y: 0};
@@ -145,26 +143,6 @@ define(
           
           activate(self, self.app.current_module);
           return $nav;
-      };
-      
-      function mkNavToggle(self){
-        var tag = "<a class='multiedit-nav-toggle'>"+
-                  "<span class='glyphicon glyphicon-eye-open' title='Show/Hide Module Navigator'></span>"+
-                  "</a>"; 
-        var $tag = $(tag);
-        $tag[0].onclick = function(){ self.toggle_navigator(); };
-        self.tag.append($tag);
-        return $tag;
-      };
-      
-      function mkAddModule(self){
-        var tag = "<a class='multiedit-add-module'>"+
-                  "<span class='glyphicon glyphicon-plus' title='Add Module'></span>"+
-                  "</a>"; 
-        var $tag = $(tag);
-        $tag[0].onclick = function(){ $(self).trigger("add:module") };
-        self.tag.append($tag);
-        return $tag;
       };
       
       function activate(self, index){

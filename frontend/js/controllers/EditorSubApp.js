@@ -17,7 +17,6 @@ define(
           
           $(this.editor).on("changed:module",         _.partial(updateModuleContent, this));
           $(this.editor).on("changed:current_module", _.partial(updateCurrentModule, this));
-          $(this.editor).on("add:module",             _.partial(addNewModule, this));
       };
       
       EditorSubApp.prototype.main_content = function(){
