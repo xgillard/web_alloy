@@ -21,8 +21,7 @@ define(
           this.hide_private_rels  = true;
           this.show_skolem_const  = true;
           this.group_atoms_by_sig = true;
-          this.automatic_shapes   = false;  
-          this.automatic_colors   = false;
+
           
           // technically it would be possible to store all confs in one
           // single map indexed on typename and typename but
@@ -48,6 +47,19 @@ define(
           Object.defineProperty(this, "font", {
               get: function(){return font[this.font_name];}
           });
+      };
+      
+      Theme.prototype.auto_layout = function(){
+        var self = this;
+        _.each(_.values(self.set_configs), function(set_conf){
+            set_conf.color = automatic_node_color(self, set_conf.typename);
+            set_conf.shape = automatic_shape(self, set_conf.typename);
+            set_conf.inherit_shape = false;
+            set_conf.inherit_color = false;
+        });  
+        _.each(_.values(self.rel_configs), function(rel_conf){
+           rel_conf.color = automatic_edge_color(self, rel_conf.typename);
+        });
       };
       
       // Sig configguration
@@ -122,6 +134,11 @@ define(
         }
         this_conf = $.extend(this_conf, get_set_conf(this, set));
         
+        //
+        // This is done after merging get_sig_conf because the projection sets are sub-types of 
+        // the signatures. As such, they should be treated as an extra refinement on top of the
+        // sig.
+        // 
         // getting atomname from set will be undefined unless set is a singleton atom
         this_conf = _.reduce(projection.projection_sets_of(instance, set.atomname), function(a, s){
               var set_config = get_set_conf(self, s);
@@ -131,15 +148,7 @@ define(
               delete copy.label;
               
               return $.extend(a, copy);
-          }, this_conf);
-        
-        // set automatic values
-        if(this.automatic_shapes){
-            this_conf.shape =  automatic_shape(this, set.id);
-        }
-        if(this.automatic_colors){
-            this_conf.color =  automatic_node_color(this, set.id);
-        }       
+        }, this_conf);
         
         return this_conf;
       };
@@ -163,13 +172,13 @@ define(
           return _.last(_.first(set.typename.split(":")).split("/"));
       };
       
-      function automatic_shape(self, id){
-        var idx = (hash(id) + shape.length) % shape.length;  
+      function automatic_shape(self, typename){
+        var idx = (hash(typename) + shape.length) % shape.length;  
         return shape[idx];
       };
-      function automatic_node_color(self, id){
+      function automatic_node_color(self, typename){
         var palette=self.node_palette;
-        var idx = (hash(id) + palette.length) % palette.length;
+        var idx = (hash(typename) + palette.length) % palette.length;
         return palette[idx];
       };
       
@@ -204,10 +213,6 @@ define(
       };
       Theme.prototype.get_rel_config = function(rel, instance){
         var this_conf = $.extend(default_rel_theme(rel), get_rel_conf(this, rel));
-        // automatic stuff
-        if(this.automatic_colors){
-            this_conf.color = automatic_edge_color(this, rel.id);
-        }
         return this_conf;
       };
       
@@ -221,15 +226,17 @@ define(
             show_as_attr: false
         };
       };
-      function automatic_edge_color(self, id){
+      function automatic_edge_color(self, typename){
         var palette=self.edge_palette;
-        var idx = (hash(id) + palette.length) % palette.length;
+        var idx = (hash(typename) + palette.length) % palette.length;
         return palette[idx];
       };
       
       // Utils
-      function hash(id){
-        return (parseInt(id)*41 % 97);  
+      function hash(s){
+        return _.reduce(s, function(h, c){
+            return (h*41 + c.charCodeAt(0) % 97);
+        }, 0);
       };
       
       Theme.read_json = function(text){

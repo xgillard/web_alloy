@@ -20,8 +20,6 @@ define(
         this.hide_private_sigs = mkCheckbox(true);
         this.hide_private_rels = mkCheckbox(true);
         this.group_atoms_by_sig= mkCheckbox(true);
-        this.automatic_shape   = mkCheckbox(true);
-        this.automatic_color   = mkCheckbox(true);
         this.show_skolem_const = mkCheckbox(false);
         this.apply_btn         = mkApplyButton("Apply");
         this.tag               = mkTag(this);
@@ -44,8 +42,6 @@ define(
             hide_private_sigs   : this.hide_private_sigs.prop("checked"),
             hide_private_rels   : this.hide_private_rels.prop("checked"),
             group_atoms_by_sig  : this.group_atoms_by_sig.prop("checked"),
-            automatic_shapes    : this.automatic_shape.prop("checked"),
-            automatic_colors    : this.automatic_color.prop("checked"),
             show_skolem_const   : this.show_skolem_const.prop("checked")
         };
     };
@@ -62,8 +58,6 @@ define(
         self.hide_private_rels.prop("checked", self.app.theme.hide_private_rels);
         self.show_skolem_const.prop("checked", self.app.theme.show_skolem_const);
         self.group_atoms_by_sig.prop("checked", self.app.theme.group_atoms_by_sig);
-        self.automatic_shape.prop("checked", self.app.theme.automatic_shapes);
-        self.automatic_color.prop("checked", self.app.theme.automatic_colors);
     };
     
     function fireChanged(self){
@@ -114,8 +108,8 @@ define(
         var $html = $('<table class="small" width="310px">'+
         '<tr><td width="65%">Layout     </td><td data-name="layout"       class="fill"></td></tr>' +
         '<tr><td>Orientation</td><td data-name="orientation"  class="fill"></td></tr>' +
-        '<tr><td>Node Colors</td><td data-name="node_palette" class="fill"></td></tr>' +
-        '<tr><td>Edge Colors</td><td data-name="edge_palette" class="fill"></td></tr>' +
+        '<tr><td>Magic Layout Node Colors</td><td data-name="node_palette" class="fill"></td></tr>' +
+        '<tr><td>Magic Layout Edge Colors</td><td data-name="edge_palette" class="fill"></td></tr>' +
         '<tr><td>Font       </td><td data-name="font"         class="fill"></td></tr>' +
         '<tr><td>Nodes in alphabetical order</td>'                                     +
         '    <td data-name="alphabetical" class="fill"></td>'                          +
@@ -126,8 +120,6 @@ define(
         '<tr><td>Hide private rel</td><td data-name="private_rels" class="fill"></td></tr>' +
         '<tr><td>Show Skolem constants</td><td data-name="skolems" class="fill"></td></tr>' +
         '<tr><td>Group atoms by signature</td><td data-name="group_by_sig" class="fill"></td></tr>'+
-        '<tr><td>Automatically choose shape</td><td data-name="auto_shape" class="fill"></td></tr>'+
-        '<tr><td>Automatically choose color</td><td data-name="auto_color" class="fill"></td></tr>'+
         '<tr><td></td><td data-name="apply" style="padding-top: 1em"></td></tr>'+
         '</table>');
 
@@ -141,8 +133,6 @@ define(
         $html.find("[data-name='private_rels']").append(self.hide_private_rels);
         $html.find("[data-name='skolems']").append(self.show_skolem_const);
         $html.find("[data-name='group_by_sig']").append(self.group_atoms_by_sig);
-        $html.find("[data-name='auto_shape']").append(self.automatic_shape);
-        $html.find("[data-name='auto_color']").append(self.automatic_color);
         $html.find("[data-name='apply']").append(self.apply_btn);
         
         return $html;

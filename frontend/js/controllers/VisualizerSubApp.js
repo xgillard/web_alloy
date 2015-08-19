@@ -4,10 +4,11 @@ define(
   'util/_',
   'view/config/ProjectionSelector',
   'view/config/VisibilitySelector',
+  'view/config/MagicLayoutPrompt',
   'view/config/GeneralSettingsSelector',
   'view/core/InstanceView'
   ],
-  function($,_, ProjectionSelector, VisibilitySelector, GeneralSettingsSelector, InstanceView){
+  function($,_, ProjectionSelector, VisibilitySelector, MagicLayoutPrompt, GeneralSettingsSelector, InstanceView){
     
     function VisualizerSubApp(app){
       this.app                = app;  
@@ -15,6 +16,7 @@ define(
       this.projector          = new ProjectionSelector(app);
       
       this.revealHiddenAction  = new VisibilitySelector(app);
+      this.magicLayoutAction   = new MagicLayoutPrompt();
       this.generalSettingAction= new GeneralSettingsSelector(app);
       
       $(this.projector).on("changed",      _.partial(updateProjection, this));
@@ -22,6 +24,10 @@ define(
       $(this.graph).on("changed:conf:rel", _.partial(updateRelationConfig,  this));
       
       $(this.revealHiddenAction  ).on("changed", _.partial(revealSelection, this));
+      $(this.magicLayoutAction   ).on("magic_layout", function(){
+         app.theme.auto_layout();
+         $(app).trigger("changed:theme");
+      });
       $(this.generalSettingAction).on("changed", _.partial(updateGeneralSettings, this));
       
       this.main = mkTag(this);
@@ -32,7 +38,7 @@ define(
     };
     
     VisualizerSubApp.prototype.actions = function(){
-      return [this.revealHiddenAction.tag, this.generalSettingAction.tag];
+      return [this.revealHiddenAction.tag, this.magicLayoutAction.tag, this.generalSettingAction.tag];
     };
         
     function mkTag(self){
@@ -111,8 +117,6 @@ define(
        self.app.theme.hide_private_sigs   = arg.hide_private_sigs; 
        self.app.theme.hide_private_rels   = arg.hide_private_rels; 
        self.app.theme.group_atoms_by_sig  = arg.group_atoms_by_sig; 
-       self.app.theme.automatic_shapes    = arg.automatic_shapes; 
-       self.app.theme.automatic_colors    = arg.automatic_colors; 
        self.app.theme.show_skolem_const   = arg.show_skolem_const; 
       
       $(self.app).trigger("changed:theme");
