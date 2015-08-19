@@ -43,7 +43,7 @@ define(
         var svg = $("<svg width='"+w+"px' height='"+h+"px'>"+
                     "<g>"+
                     "<foreignObject width='100%' height='100%' >"+
-                    "<div class='graph-container'></div>"+
+                    "<div></div>"+
                     "</foreignObject>" +
                     "</g>"+
                     "</svg>");
