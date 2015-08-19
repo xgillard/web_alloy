@@ -29,10 +29,7 @@ define(
       
       function mkAddModuleAction(self){
         var $markup = $("<a><span class='glyphicon glyphicon-plus' title='Add module'></span></a>");
-        $markup[0].onclick = function(){
-            self.app.modules.push("module Untitled"); 
-            $(self.app).trigger("changed:modules");
-        };
+        $markup[0].onclick = _.partial(addNewModule, self);
         return $markup;
       };
       
@@ -52,6 +49,12 @@ define(
          $markup[0].onclick = _.partial(execute, self);
          return $markup;
       };
+      
+    function addNewModule(self){
+        self.app.modules.push("module Untitled"); 
+        self.app.current_module = self.app.modules.length-1;
+        $(self.app).trigger("changed:modules");
+    };
     
     function updateModuleContent(self, event, arg){
       self.app.modules[arg.index] = arg.text;

@@ -117,7 +117,6 @@ define(
           if(g.instance){ // THERE's ONlY a body when an instance exists
             // graph config
             out.append("rankdir=").append(t.orientation).append(";");
-            out.append("ratio=fill;");
             out.append('label="').append(g.instance.name).append('";');
             if(t.force_alphabetical){
               out.append("ordering=out;");
