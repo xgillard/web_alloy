@@ -159,7 +159,7 @@ define(
                     "<td class='hidable invisible' data-name='drag-handle' draggable='true' style='cursor: col-resize; background-color: LightGray;height: 100%; width: 5px; vertical-align: middle'>"+
                     "<div style='width: 5px; height: 40px; background-color: DarkGray;' ></div>" +
                     "</td>" +
-                    "<td data-name='editor' ></td></tr>" +
+                    "<td data-name='editor' style='height: 100%;'></td></tr>" +
                     "</table>";
           
           return $(tag);

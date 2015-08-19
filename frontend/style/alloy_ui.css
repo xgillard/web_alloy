@@ -46,31 +46,6 @@ body{
   display: none;  
 }
 
-.multiedit-nav-toggle{
-  font-size: 25px;
-  color: white;
-  padding: .5em; 
-  border-radius: 25px;
-  background-color: #31b0d5; 
-  position: fixed;
-  bottom: 50px;
-  right: 50px;
-  border: none;
-}
-
-.multiedit-add-module{
-  font-size: 25px;
-  color: white;
-  padding: .5em; 
-  border-radius: 25px;
-  background-color: #31b0d5; 
-  position: fixed;
-  bottom: 105px;
-  right: 50px;
-  border: none;  
-}
-
-
 .popover {
     max-width: 100%;
 }
