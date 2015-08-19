@@ -17,6 +17,7 @@ define(
           
           $(this.editor).on("changed:module",         _.partial(updateModuleContent, this));
           $(this.editor).on("changed:current_module", _.partial(updateCurrentModule, this));
+          $(this.editor).on("add:module",             _.partial(addNewModule, this));
       };
       
       EditorSubApp.prototype.main_content = function(){
@@ -29,10 +30,7 @@ define(
       
       function mkAddModuleAction(self){
         var $markup = $("<a><span class='glyphicon glyphicon-plus' title='Add module'></span></a>");
-        $markup[0].onclick = function(){
-            self.app.modules.push("module Untitled"); 
-            $(self.app).trigger("changed:modules");
-        };
+        $markup[0].onclick = _.partial(addNewModule, self);
         return $markup;
       };
       
@@ -52,6 +50,11 @@ define(
          $markup[0].onclick = _.partial(execute, self);
          return $markup;
       };
+      
+    function addNewModule(self){
+        self.app.modules.push("module Untitled"); 
+        $(self.app).trigger("changed:modules");
+    };
     
     function updateModuleContent(self, event, arg){
       self.app.modules[arg.index] = arg.text;
