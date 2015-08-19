@@ -23,7 +23,8 @@ body{
     line-height: 100%;
 }
 .instance_view{
-    text-align: center;
+    width: 100%;
+    height: 100%;
 }
 .alert{
     position: absolute;

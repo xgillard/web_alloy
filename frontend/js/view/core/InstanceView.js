@@ -27,17 +27,36 @@ define(
         var gtv   = graph.to_viz();
         var svg   = viz(gtv, 'svg', self.app.theme.layout);
         
-        self.tag.html(svg);
-        self.tag.find("svg")
-                    .css({'display':'inline-block'})
-                    .attr("width",  $(document).innerWidth()+'px')
-                    .attr("height", $(document).innerHeight()-150+'px');
-        
+        self.tag.html(wrap_in_foreign_object(svg));
+
         enable_zoom(self);
         enable_highlighting(self, graph);
         //
         enable_node_configuration(self, graph);
         enable_edge_configuration(self, graph);
+      };
+      
+      function wrap_in_foreign_object(target){
+        var w = $(document).width();
+        var h = $(document).height()-100;
+        
+        var svg = $("<svg width='"+w+"px' height='"+h+"px'>"+
+                    "<g>"+
+                    "<foreignObject width='100%' height='100%' >"+
+                    "<div class='graph-container'></div>"+
+                    "</foreignObject>" +
+                    "</g>"+
+                    "</svg>");
+        svg.find("div").css({
+            "display"       : "block",
+            "width"         : w+"px",
+            "height"        : h+"px",
+            "line-height"   : h+"pt",
+            "text-align"    : "center",
+            "vertical-align": "middle"
+        });
+        svg.find("div").html(target);
+        return svg;
       };
       
       function enable_node_configuration(self, graph){
