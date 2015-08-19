@@ -53,6 +53,7 @@ define(
       
     function addNewModule(self){
         self.app.modules.push("module Untitled"); 
+        self.app.current_module = self.app.modules.length-1;
         $(self.app).trigger("changed:modules");
     };
     
