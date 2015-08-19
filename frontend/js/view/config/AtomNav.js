@@ -82,7 +82,7 @@ define(['jquery', 'util/_', 'view/general/_'], function($,_,ui){
     };
     
     function atom_label(self, a){
-        var conf = self.app.theme.get_sig_config(a, self.app.instance);
+        var conf = self.app.theme.get_set_config(a, self.app.instance, self.app.projection);
         var label= conf.label + a.atom_num();
         return label;
     };

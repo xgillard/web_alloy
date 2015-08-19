@@ -6,13 +6,11 @@ define(
   'model/config/Shapes'],
   function($,_, borders, shapes){
       
-      function SignatureThemeSettingsView(app, sig){
+      function SignatureThemeSettingsView(app, atom){
           this.app             = app;
-          this.sig             = sig;
-          // this is the default one: it can be muted
-          this.conf            = app.theme.get_sig_config(sig, app.instance);
-          
+          this.atom            = atom;
           this.containing_sets = mkContainingSets(this);
+          
           this.label           = mkTextInput();
           this.color           = mkColorPicker();
           this.stroke          = mkStroke();
@@ -23,6 +21,11 @@ define(
           this.visibility      = mkCheckbox();
           this.apply_btn       = mkApplyButton("Apply to Set");
           this.tag             = mkTag(this);
+          
+          // this is the default one: it can be muted
+          var initial_set      = this.containing_sets.find("option")[0]._the_set;
+          this.conf            = app.theme.get_set_config(initial_set, app.instance, app.projection);
+          
           
           $(this.apply_btn)[0].onclick = _.partial(fireChanged, this);
           
@@ -70,15 +73,17 @@ define(
       };
       function mkContainingSets(self){
           var $select = $("<select></select>");
-          _.each(self.app.instance.setsContaining(self.sig), function(set){
-              var the_sig = self.app.instance.sig(set);
-              var label   = self.app.theme.get_sig_config(the_sig, self.app.instance).label;
-              $select.append("<option value='"+set+"'>"+label+"</option>");
+          _.each(self.app.projection.sets_containing(self.app.instance, self.atom.atomname), function(set){
+              var label   = self.app.theme.get_set_config(set, self.app.instance, self.app.projection).label;
+              var option  = $("<option>"+label+"</option>");
+              // warning: using val() won't work since set is an object
+              option[0]._the_set = set;
+              $select.append(option);
           });
           
           $select.on("change", function(){
-              var sig   = self.app.instance.sig($select.val());
-              self.conf = self.app.theme.get_sig_config(sig, self.app.instance);
+              var set   = $select.find(":selected")[0]._the_set;
+              self.conf = self.app.theme.get_set_config(set, self.app.instance, self.app.projection);
               set_values(self);
           });
           return $select;

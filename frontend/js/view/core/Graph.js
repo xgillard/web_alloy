@@ -2,11 +2,12 @@ define(
   ['jquery', 'util/_', 'util/StringBuilder'],
   function($, _, SB){
       
-      function Graph(theme, instance){
-          this.theme    = theme;
-          this.instance = instance;
-          this.nodes    = {};
-          this.edges    = {};
+      function Graph(theme, instance, projection){
+          this.theme           = theme;
+          this.instance        = instance;
+          this.projection      = projection;
+          this.nodes           = {};
+          this.edges           = {};
       };
       
       Graph.prototype.node = function(id){
@@ -85,7 +86,8 @@ define(
       // The very node headline
       Graph.prototype.node_title = function(nid){
           var node     = this.nodes[nid];
-          var conf     = this.theme.get_sig_config(node, this.instance);
+          var atom     = this.instance.atom(node.atomname);
+          var conf     = this.theme.get_set_config(atom , this.instance, this.projection);
           var node_num =  _.last(node.atomname.split('$'));
           return conf.label+node_num;
       };
@@ -144,7 +146,8 @@ define(
       };
       
       function n_to_viz(self, out, n){
-          var conf  = self.theme.get_sig_config(n, self.instance);
+          var atom  = self.instance.atom(n.atomname);
+          var conf  = self.theme.get_set_config(atom, self.instance, self.projection);
           var label = self.node_label(n);
           out.append(n.nid)
              .append('[label="').append(label).append('"')

@@ -48,15 +48,14 @@ define(
         _.each(self.tag.find("svg g.node"), function(gnode){
             var $gnode  = $(gnode);
             var title   = $gnode.find("title").text();
-            var id      = graph.nodes[title].id;
-            var sig     = sig_by_id[id];
-            var settings= new SigThemeSettingsView(self.app, sig);
+            var atom    = self.app.instance.atom(graph.nodes[title].atomname);
+            var settings= new SigThemeSettingsView(self.app, atom);
             
             $gnode[0].onclick = function(){
               // attach popover behavior
               $gnode.popover({
                 html     : true, 
-                title    : sig.signame+' signature configuration',
+                title    : 'Set configuration',
                 trigger  : 'manual',
                 container: $(self.tag),
                 content  : settings.tag

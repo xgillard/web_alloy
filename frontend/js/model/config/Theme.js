@@ -21,13 +21,18 @@ define(
           this.hide_private_rels  = true;
           this.show_skolem_const  = true;
           this.group_atoms_by_sig = true;
-          this.automatic_shapes   = false;  
-          this.automatic_colors   = false;
+
           
           // technically it would be possible to store all confs in one
-          // single map indexed on sig.typename and rel.typename but
+          // single map indexed on typename and typename but
           // it seems cleaner this way.
-          this.sig_configs        = {}; // map indexed by sig.typename
+          // Note: when I say 'set' I mean: 
+          // - an atom 
+          // - a projection subset
+          // - a signature
+          // - a parent signature (which is technically nothing but a sig
+          //   but emphazizing on it makes everything clear.
+          this.set_configs        = {}; // map indexed by set.typename
           this.rel_configs        = {}; // map indexed by rel.typename
           
           Object.defineProperty(this, "orientation", {
@@ -43,96 +48,117 @@ define(
               get: function(){return font[this.font_name];}
           });
       };
-      Theme.prototype.setChanged = function(){ $(this).trigger("changed"); };
+      
+      Theme.prototype.auto_layout = function(){
+        var self = this;
+        _.each(_.values(self.set_configs), function(set_conf){
+            set_conf.color = automatic_node_color(self, set_conf.typename);
+            set_conf.shape = automatic_shape(self, set_conf.typename);
+            set_conf.inherit_shape = false;
+            set_conf.inherit_color = false;
+        });  
+        _.each(_.values(self.rel_configs), function(rel_conf){
+           rel_conf.color = automatic_edge_color(self, rel_conf.typename);
+        });
+      };
       
       // Sig configguration
-      function get_sig_conf(self, sig){
-          var ret = self.sig_configs[sig.typename];
+      function get_set_conf(self, set){
+          var ret = self.set_configs[set.typename];
           if(! ret){ // INIT IF NOT FOUND
             ret = { 
-                typename      : sig.typename, 
-                label         : _.last(sig.typename.split("/")),
-                inherit_shape : sig.typename !== "univ",
-                inherit_stroke: sig.typename !== "univ",
-                inherit_color : sig.typename !== "univ"
+                typename      : set.typename, 
+                label         : default_set_label(set),
+                inherit_shape : set.typename !== "univ",
+                inherit_stroke: set.typename !== "univ",
+                inherit_color : set.typename !== "univ"
             };
-            self.sig_configs[sig.typename] = ret;
+            self.set_configs[set.typename] = ret;
           }
           return ret;
       };
-      Theme.prototype.set_sig_label =function(id, value){
-        get_sig_conf(this, id).label= value;  
+      Theme.prototype.set_set_label =function(id, value){
+        get_set_conf(this, id).label= value;  
       };
-      Theme.prototype.set_sig_color =function(id, value){
-        var conf = get_sig_conf(this, id);
+      Theme.prototype.set_set_color =function(id, value){
+        var conf = get_set_conf(this, id);
         if(!conf.inherit_color) {
           conf.color= value;  
         }
       };
-      Theme.prototype.set_sig_inherit_color =function(id, value){
-        var conf = get_sig_conf(this, id);
+      Theme.prototype.set_set_inherit_color =function(id, value){
+        var conf = get_set_conf(this, id);
         conf.inherit_color = value;  
         if(conf.inherit_color) {
           delete conf.color;
         }
       };
-      Theme.prototype.set_sig_stroke =function(id, value){
-        var conf = get_sig_conf(this, id);
+      Theme.prototype.set_set_stroke =function(id, value){
+        var conf = get_set_conf(this, id);
         if(!conf.inherit_stroke) {
             conf.stroke= value;
         }
       };
-      Theme.prototype.set_sig_inherit_stroke =function(id, value){
-        var conf = get_sig_conf(this, id);
+      Theme.prototype.set_set_inherit_stroke =function(id, value){
+        var conf = get_set_conf(this, id);
         conf.inherit_stroke = value;  
         if(conf.inherit_stroke) {
           delete conf.stroke;
         }
       };
-      Theme.prototype.set_sig_shape =function(id, value){
-        var conf = get_sig_conf(this, id);
+      Theme.prototype.set_set_shape =function(id, value){
+        var conf = get_set_conf(this, id);
         if(!conf.inherit_shape){
           conf.shape= value;
         }
       };
-      Theme.prototype.set_sig_inherit_shape =function(id, value){
-        var conf = get_sig_conf(this, id);
+      Theme.prototype.set_set_inherit_shape =function(id, value){
+        var conf = get_set_conf(this, id);
         conf.inherit_shape = value;  
         if(conf.inherit_shape) {
           delete conf.shape;
         }
       };
-      Theme.prototype.set_sig_visibility= function(id, value){
-        get_sig_conf(this, id).visible  = value;  
+      Theme.prototype.set_set_visibility= function(id, value){
+        get_set_conf(this, id).visible  = value;  
       };
       
-      Theme.prototype.get_sig_config = function(sig, instance){
+      Theme.prototype.get_set_config = function(set, instance, projection){
+        var self      = this;
         // extends an empty object = copy
-        var this_conf = default_sig_theme(sig);
+        var this_conf = default_set_theme(set);
         // inherit parent config
-        if(sig.parentID){
-          var parent= _.indexBy(instance.signatures, 'id')[sig.parentID];
-          this_conf = $.extend(this_conf, this.get_sig_config(parent, instance));
+        if(set.parentID){
+          var parent= _.indexBy(instance.signatures, 'id')[set.parentID];
+          this_conf = $.extend(this_conf, this.get_set_config(parent, instance, projection));
         }
-        this_conf = $.extend(this_conf, get_sig_conf(this, sig));
+        this_conf = $.extend(this_conf, get_set_conf(this, set));
         
-        // set automatic values
-        if(this.automatic_shapes){
-            this_conf.shape =  automatic_shape(this, sig.id);
-        }
-        if(this.automatic_colors){
-            this_conf.color =  automatic_node_color(this, sig.id);
-        }
+        //
+        // This is done after merging get_sig_conf because the projection sets are sub-types of 
+        // the signatures. As such, they should be treated as an extra refinement on top of the
+        // sig.
+        // 
+        // getting atomname from set will be undefined unless set is a singleton atom
+        this_conf = _.reduce(projection.projection_sets_of(instance, set.atomname), function(a, s){
+              var set_config = get_set_conf(self, s);
+              var copy       = $.extend({}, set_config);
+              
+              // can we tolerate that the set override the sig label ? I guess we don't
+              delete copy.label;
+              
+              return $.extend(a, copy);
+        }, this_conf);
         
         return this_conf;
       };
       
-      function default_sig_theme(sig){
+      function default_set_theme(set){
         return {
-            label         : sig.simple_signame(),
-            color         : '#FFFFFF', // white
+            label         : default_set_label(set),
+            color         : '#E8E8E8', // some shade of light gray
             stroke        : 'solid',
-            shape         : _.first(shape),
+            shape         : 'box',
             visible       : true,
             inherit_shape : true,
             inherit_stroke: true,
@@ -140,13 +166,19 @@ define(
         };
       };
       
-      function automatic_shape(self, id){
-        var idx = (hash(id) + shape.length) % shape.length;  
+      function default_set_label(set){
+          // it might be a projection set whose name will have the fmt rel:A->B->C
+          // or it might be a plain sig whose name will have the fmt scope/Name
+          return _.last(_.first(set.typename.split(":")).split("/"));
+      };
+      
+      function automatic_shape(self, typename){
+        var idx = (hash(typename) + shape.length) % shape.length;  
         return shape[idx];
       };
-      function automatic_node_color(self, id){
+      function automatic_node_color(self, typename){
         var palette=self.node_palette;
-        var idx = (hash(id) + palette.length) % palette.length;
+        var idx = (hash(typename) + palette.length) % palette.length;
         return palette[idx];
       };
       
@@ -181,10 +213,6 @@ define(
       };
       Theme.prototype.get_rel_config = function(rel, instance){
         var this_conf = $.extend(default_rel_theme(rel), get_rel_conf(this, rel));
-        // automatic stuff
-        if(this.automatic_colors){
-            this_conf.color = automatic_edge_color(this, rel.id);
-        }
         return this_conf;
       };
       
@@ -198,15 +226,17 @@ define(
             show_as_attr: false
         };
       };
-      function automatic_edge_color(self, id){
+      function automatic_edge_color(self, typename){
         var palette=self.edge_palette;
-        var idx = (hash(id) + palette.length) % palette.length;
+        var idx = (hash(typename) + palette.length) % palette.length;
         return palette[idx];
       };
       
       // Utils
-      function hash(id){
-        return (parseInt(id)*41 % 97);  
+      function hash(s){
+        return _.reduce(s, function(h, c){
+            return (h*41 + c.charCodeAt(0) % 97);
+        }, 0);
       };
       
       Theme.read_json = function(text){
