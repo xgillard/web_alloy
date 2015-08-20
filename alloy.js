@@ -45,4 +45,9 @@ io.on('connection', function(socket){
      resolution.abort(socket_context);
    });
    
+   // If the client is leaving the page, we won't be able to send him the response he
+   // wants anyway. So there really is no point in continuing to do computation for him.
+   socket.on('disconnect', function(){
+     resolution.abort(socket_context);
+   });
 });
