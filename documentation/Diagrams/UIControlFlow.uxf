@@ -181,18 +181,6 @@ bg=cyan</panel_attributes>
     <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>220</x>
-      <y>240</y>
-      <w>390</w>
-      <h>110</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.
-listen to data change</panel_attributes>
-    <additional_attributes>260.0;10.0;260.0;90.0;10.0;90.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
       <x>840</x>
@@ -488,14 +476,14 @@ Visualizer actions</panel_attributes>
     <id>UMLNote</id>
     <coordinates>
       <x>250</x>
-      <y>350</y>
+      <y>320</y>
       <w>350</w>
-      <h>160</h>
+      <h>190</h>
     </coordinates>
     <panel_attributes>Note..
 --
 As a rule, only the Controller classes (yellow) ever update the values that are stored in the model (app ctx blue).
-Thus the views really only care about displaying the proper information (fetched from the model) and emit events upon user action. In the end, these events are caught by some of the controller that take the appropriate action and updates the value stored in the model if need be.
+Thus the views really only care about displaying the proper information (fetched from the model, that's why many views listen on events on the app) and emit events upon user action. In the end, these events are caught by some of the controller that take the appropriate action and updates the value stored in the model if need be.
 --
 Note also that this diagram is not exhaustive but, for the sake of clarity, leaves out some of the less important ui components. 
 bg=red</panel_attributes>

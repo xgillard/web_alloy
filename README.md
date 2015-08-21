@@ -1,7 +1,7 @@
 
 # Alloy
 
-> This documentation is far from being complete sor far (but I'm working on it).
+> This documentation is far from being complete so far (but I'm working on it).
 > I case you want an easy way to get started, you should probably take a look at the [introductory slides](./documentation/GettingStarted.pdf)
 
 ## Architecture of the project
