@@ -1,4 +1,9 @@
 
+# Alloy
+
+> This documentation is far from being complete sor far (but I'm working on it).
+> I case you want an easy way to get started, you should probably take a look at the [introductory slides](./documentation/GettingStarted.pdf)
+
 ## Architecture of the project
 > Side node about all diagrams: 
 > All diagrams that are provided as documentation have been drawn with Umlet (www.umlet.com)
