@@ -1,3 +1,45 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Xavier Gillard
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+ /**
+  * This view is a crucial one: it is the view that takes care of the rendering of
+  * an instance on screen. Its code, altought I tried to keep it as simple as possible
+  * is quite intricated as it does many things: 
+  * 1. It calls the GraphFactory to create a Graph and then obtain a GraphViz script.
+  * 2. It feeds the resulting Graphviz script to GraphViz such as to produce an SVG stream.
+  * 3. It enables the zooming on the SVG to be displayed. For that, it wraps the SVG in a
+  *    div that is in turn wrapped in a foreign object of an other SVG.
+  *    The rationale behing this complex processing is to be able to zoom the graph in full screen
+  *    but to avoid the need of directly setting the width and height of the SVG resulting from
+  *    the Graphviz compilation to 100%. 
+  *    Stretching that SVG to 100% scales the content accordingly and makes it look huge and ugly
+  *    on screen. But, not changing anything to that svg and attaching it directly to the DOM tree
+  *    makes the zoom pretty useless since the content will only be able to zoom withing the boundaries
+  *    of the original image size which, typically, will be relatively small.
+  * 4. It parses the content of the SVG and attaches the configuration view to each displayed atom and 
+  *    edge.
+  */
 define(
   [
   'jquery', 
@@ -10,7 +52,7 @@ define(
   ],
   function($, _, viz, d3, GraphFactory, SigThemeSettingsView, FieldThemeSettingsView){
       
-      
+      // constructor
       function InstanceView(app){
           this.app        = app;
           this.tag        = $("<div class='instance_view' ></div>");
@@ -21,7 +63,23 @@ define(
           $(app).on("changed:projection", _.partial(draw, this));
       };
       
-      
+      /**
+       * 1. It calls the GraphFactory to create a Graph and then obtain a GraphViz script.
+       * 2. It feeds the resulting Graphviz script to GraphViz such as to produce an SVG stream.
+       * 3. It enables the zooming on the SVG to be displayed. For that, it wraps the SVG in a
+       *    div that is in turn wrapped in a foreign object of an other SVG.
+       *    The rationale behing this complex processing is to be able to zoom the graph in full screen
+       *    but to avoid the need of directly setting the width and height of the SVG resulting from
+       *    the Graphviz compilation to 100%. 
+       *    Stretching that SVG to 100% scales the content accordingly and makes it look huge and ugly
+       *    on screen. But, not changing anything to that svg and attaching it directly to the DOM tree
+       *    makes the zoom pretty useless since the content will only be able to zoom withing the boundaries
+       *    of the original image size which, typically, will be relatively small.
+       * 4. It parses the content of the SVG and attaches the configuration view to each displayed atom and 
+       *    edge.
+       * 5. enables a behavior that permits the user to highlight a portion of the instance simply by hovering
+       *    one atom.
+       */
       function draw(self){
         var graph = new GraphFactory(self.app.theme, self.app.instance, self.app.projection);
         var gtv   = graph.to_viz();
@@ -36,6 +94,10 @@ define(
         enable_edge_configuration(self, graph);
       };
       
+      /**
+       * As eplained previously, this method wraps the 'target' content in a foreignObject embedded in some
+       * SVG that gets stretched to fill the available screen space.
+       */
       function wrap_in_foreign_object(target){
         var w = $(document).width();
         var h = $(document).height()-100;
@@ -70,6 +132,9 @@ define(
         return svg;
       };
       
+      // This function goes through all the nodes that are displayed on screen and tries to match them
+      // with some atom of the model. Once that is done, a SignatureThemeSettingsView is attached to 
+      // it so that when the user click on the displayed atom, the configuration popup appears.
       function enable_node_configuration(self, graph){
         if(!self.app.instance) {
             return; // there cannot be anything to enable
@@ -100,7 +165,14 @@ define(
             };
         });
       };
-      
+      // This function goes through every displayed edge, tries to map them to some tuple in the model
+      // and attaches a click event handler to it so that the user can configure the visual settings 
+      // associated with the rendering of that edge.
+      //
+      // Caution though, the identification of the edge is a little brittle since it uses a comment that
+      // gets generated in the SVG to determine what relation is being defined. 
+      // Don't be too afraid of it though: it is the Graph that tells Graphviz what comment to generate
+      // so it remains under pretty good control and can be used safely.
       function enable_edge_configuration(self, graph){
         if(!self.app.instance) {
             return; // there cannot be anything to enable
@@ -130,7 +202,7 @@ define(
             };
         });
       };
-      
+      // This retrieves the content of the comments that preceds element 'e' in the SVG source. 
       function previousComment(e){
         if(!e) return '';
         var prev = e.previousSibling;
@@ -139,6 +211,10 @@ define(
       };
       
       // ZOOMING
+      // This function uses the D3 library to enable the zoom an pan of the SVG. This makes
+      // for a pretty good usability since the zoom focus follows the user's mouse. So one only needs
+      // to point a particular portion of the svg and zoom on it to scale up or down any given portion 
+      // of the graph.
       function enable_zoom(self){
         var svg  = d3.select(self.tag[0]).select("svg");
         var g    = svg.select("g");
@@ -152,6 +228,8 @@ define(
       };
       
       // HIGHLIGHTING
+      // This behavior permits the user to hide some portion of the graph that are not directly relevant and to
+      // focus on the atom being hovered.
       function enable_highlighting(self, graph){
         // whenever you're over a node
         self.tag.find("svg g.node").on("mouseover", function(e){

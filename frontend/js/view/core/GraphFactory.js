@@ -1,7 +1,38 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Xavier Gillard
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/**
+ * This class serves as a factory to create Graphs. 
+ * The role of the GraphFactory is simply to determine WHAT must be rendered 
+ * and leave it up to the Graph object to decide HOW it must be rendered.
+ */
 define(
   ['jquery', 'util/_', 'view/core/Graph'],
   function($,_, Graph){
-   
+    /**
+     * Constructor.
+     */
     function GrapheFactory(theme, instance, projection){
         var out  = new Graph(theme, instance, projection);
         // no point in doing that if there's no inst.
@@ -22,7 +53,15 @@ define(
         }
         return out;
     };
-    
+    /**
+     * NOTE: this method differs from the one in Projection in the sense that this one also rules out all atoms 
+     *       belonging to a set that must be hidden (as specified by the Theme)
+     * @param {Theme} theme - the visual configuration.
+     * @param {Instance} instance - the instance to be displayed on screen
+     * @param {Projection} projection - the projection that limits the visible atoms and relations displayed on screen.
+     * @returns an array containing all the atoms that can be visible on the graph according to the user's theme
+     *  and projection
+     */
     function visible_atoms(theme, instance, projection){
         var atoms    = projection.visible_atoms(instance);
         
@@ -36,7 +75,15 @@ define(
         
         return atoms;
     };
-    
+    /**
+     * NOTE: this method differs from the one in Projection in the sense that this one also rules out all tuples 
+     *       belonging to a relations that must be hidden (as specified by the Theme)
+     * @param {Theme} theme - the visual configuration.
+     * @param {Instance} instance - the instance to be displayed on screen
+     * @param {Projection} projection - the projection that limits the visible atoms and relations displayed on screen.
+     * @returns an array containing all the atoms that can be visible on the graph according to the user's theme
+     *  and projection
+     */
     function visible_tuples(theme, instance, projection){
         var tuples = projection.visible_tuples(instance);
         
@@ -51,13 +98,29 @@ define(
         return tuples;
     };
     
+    /**
+     * This function goes through all the visible atoms that belong to some projection sets and tells the graph to 
+     * annotate these atoms with markers telling what projection set this atom belongs to.
+     * @param {Graph} out - the graph being constructed
+     * @param {Theme} theme - the visual configuration.
+     * @param {Instance} instance - the instance to be displayed on screen
+     * @param {Projection} projection - the projection that limits the visible atoms and relations displayed on screen.
+     * @param {Atom} atom - the atom that may need to be annotated with some projection markers (corresponding to the 
+     *         projection sets it belongs to).
+     */
     function add_projection_marks(out, theme, instance, projection, atom){
         _.each(projection.projection_sets_of(instance, atom.atomname), function(ps){
            var label = theme.get_set_config({typename: ps.relation_typename}, instance, projection).label;
            out.add_project_marker(atom.atomname, label); 
         }); 
     };
-    
+    /**
+     * This function goes through all the visible atoms and tells the graph to annotate them with some marker representing
+     * the skolem constant that the backend associated with that atom
+     * @param {Graph} out - the graph being constructed
+     * @param {Theme} theme - the visual configuration.
+     * @param {Instance} instance - the instance to be displayed on screen
+     */
     function add_skolems(out, theme, instance){
         if(!theme.show_skolem_const) return;
         // maybe configure this
@@ -69,7 +132,14 @@ define(
            });
         });
     };
-    
+    /**
+     * Tells the graph being constructed that it should draw an edge between two nodes to represent some tuples belonging
+     * to a relation of the instance.
+     * @param {Graph} out - the graph being constructed
+     * @param {Theme} theme - the visual configuration.
+     * @param {Instance} instance - the instance to be displayed on screen
+     * @param {Tuple} t - the tuple that must be 'explained' to the graph.
+     */
     function draw_tuple(out, theme, instance, t){
         var steps  = _.map(t.atoms,  function(a){return out.node(a);});
         var visible= _.filter(steps, function(s){return s!== undefined;});
@@ -100,7 +170,8 @@ define(
             }
         }
     };
-    
+    // this function is meant to be referenced as a partial application to filter out all the items that are private
+    // be it an atom or a tuple.
     function is_private(maybe_private){
         return maybe_private.private;
     };
