@@ -1,3 +1,36 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Xavier Gillard
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/**
+ * This is the application entry point, the file that gets called by require.js
+ * from the HTML page. The very purpose of this file is not to perform any kind
+ * of business logic but instead to tell require.js (the AMD we use) how to load
+ * the different dependencies we depend upon.
+ *
+ * For more information about this, check the following link: 
+ * http://requirejs.org/docs/api.html#config-shim
+ */
 require.config({
    paths:{
        'jquery'    : '_libs/jquery',
@@ -34,6 +67,11 @@ require.config({
    }
 });
 
+/** 
+ * This is the function that really gets executed when the file is loaded.
+ * As you can see, it does nothing except to delegate all of its control flow
+ * to MainController.
+ */
 require(
   [ 'controllers/MainController' ], 
   function(MainController){
