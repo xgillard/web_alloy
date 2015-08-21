@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>110</x>
+      <y>60</y>
+      <w>490</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Browser&gt;&gt;
+Frontend</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>110</x>
+      <y>290</y>
+      <w>490</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Node.js&gt;&gt;
+Backend</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLDeployment</id>
+    <coordinates>
+      <x>110</x>
+      <y>500</y>
+      <w>490</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Java&gt;&gt;
+A4CLI</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>210</x>
+      <y>130</y>
+      <w>110</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Modules +
+Current Module
+(JSON)</panel_attributes>
+    <additional_attributes>10.0;160.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>460</x>
+      <y>130</y>
+      <w>90</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Flags + 
+Warnings +
+Errors +
+Instance
+(JSON)</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>210</x>
+      <y>360</y>
+      <w>160</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Command line
+arguments
+[-i &lt;input&gt; -s &lt;solver&gt;]</panel_attributes>
+    <additional_attributes>10.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>460</x>
+      <y>360</y>
+      <w>90</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Flags + 
+Warnings +
+Errors +
+Instance
+(JSON)</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>570</x>
+      <y>400</y>
+      <w>220</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Communication made through an 
+anonymous pipe.
+A4CLI writes on stdout, Backend cares
+about reading &amp; buffering the answer
+
+bg=yellow
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>570</x>
+      <y>170</y>
+      <w>220</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Communication made via WebSockets (implem = Socket.io)
+Each client has ONE socket which remains active throughout the complete session.
+
+bg=yellow
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>110</x>
+      <y>600</y>
+      <w>490</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Possible improvements:
+======================================================
+- Compress data before sending them (between backend and frontend)
+- Use a websocket implem that supports unicast 
+- Avoid using one process per user.
+bg=red
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

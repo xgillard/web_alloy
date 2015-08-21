@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.2">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>528</x>
+      <y>16</y>
+      <w>136</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>ApplicationContext
+--
+current_module: Int
+modules: String[]
+theme: Theme
+instance: Instance
+projection: Projection</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>336</x>
+      <y>192</y>
+      <w>152</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>Instance
+--
+signatures: Signature[]
+fields: Field[]
+atoms: Atom[]
+tuples: Tuple[]
+skolems: SkolemConstant[]
+--
+univ()
+sig(s)
+atom(a)
+root_signatures()
+atomsOf(s)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>504</x>
+      <y>192</y>
+      <w>192</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>Projection
+--
+projections: {SigName -&gt; AtomName}
+--
+visible_atoms(Instance) : Atom[]
+visible_tuples(Instance): Tuple[]
+projected_tuples(Instance):Tuple[]
+sets_containing(Instance, AtomName): Set[]
+projection_sets_of(Instance, AtomName):Set[]
+projection_sets(Instance): Set[]
+read_json(String):Projection</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>800</x>
+      <y>184</y>
+      <w>176</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>Theme
+--
+layout: Layout
+orientation_name: String
+font_name: String
+node_palette_name:String
+edge_palette_name:String
+force_alphabetical:String
+hide_private_sigs:Boolean
+hide_private_rels:Boolean
+show_skolem_const:Boolean
+group_atom_by_sig:Boolean
+set_configs: {TypeName -&gt; Config}
+rel_configs: {TypeName -&gt; Config}
+--
+get_set_config(Set,Instance,Projection)
+...set config props setters...
+get_rel_config(Rel, Instance)
+...rel config props setters...</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>392</x>
+      <y>64</y>
+      <w>152</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;160.0;10.0;10.0;170.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>584</x>
+      <y>88</y>
+      <w>24</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>656</x>
+      <y>56</y>
+      <w>240</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>280.0;160.0;280.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>376</y>
+      <w>152</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>Signature
+--
+sigid: String
+parentID: String
+signame: String
+typename: String
+builtin: Boolean
+one: Boolean
+abstract: Boolean
+private: Boolean
+--
+simple_signame(): String
+setParent()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>440</x>
+      <y>376</y>
+      <w>152</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>Field
+--
+id : String
+parentID: String
+fieldname:String
+typename: String
+type: SigName[]
+private: Boolean</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>320</y>
+      <w>104</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;70.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>432</x>
+      <y>320</y>
+      <w>96</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>100.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>544</y>
+      <w>152</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_sig univ_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>504</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>592</y>
+      <w>152</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_sig Foo_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>560</y>
+      <w>24</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>16</x>
+      <y>376</y>
+      <w>152</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>Atom
+--
+sigid: String
+atomname: String
+--
+atom_num(): Int
+simple_atomname(): String
+setParent(p)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>688</y>
+      <w>152</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_sig Bar_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>656</y>
+      <w>24</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>608</y>
+      <w>24</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>640</y>
+      <w>152</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=.
+...</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>16</x>
+      <y>728</y>
+      <w>152</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_atom Bar$1_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>704</y>
+      <w>144</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>160.0;10.0;160.0;50.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>88</x>
+      <y>504</y>
+      <w>24</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;280.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>16</x>
+      <y>192</y>
+      <w>296</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>Note:
+========================================
+I have used the prototype chain to implement this multiple inheritance scheme. Actually, it turned out that using protoype chain wasn't really necessary (since all objects in this model should be considered immutable). Thus, another (and probably cleaner approach) would be to use mixin composition instead.
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>624</x>
+      <y>376</y>
+      <w>152</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>Tuple
+--
+fieldid: String
+atoms: AtomName[]
+src: AtomName
+dst: AtomName
+--
+setParent(p)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>96</x>
+      <y>320</y>
+      <w>264</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;70.0;310.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>464</x>
+      <y>320</y>
+      <w>248</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>290.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>144</x>
+      <y>592</y>
+      <w>56</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_sig Boo_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>168</x>
+      <y>552</y>
+      <w>64</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>60.0;10.0;10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>408</x>
+      <y>544</y>
+      <w>104</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_Field rel:A-&gt;B_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>544</y>
+      <w>104</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_Field other:B-&gt;C_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>464</x>
+      <y>504</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>536</x>
+      <y>504</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>616</x>
+      <y>624</y>
+      <w>160</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_Tuple rel:A$1-&gt;B$1_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>616</x>
+      <y>664</y>
+      <w>160</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>_Tuple rel:A$2-&gt;B$2_
+bg=#E8E8E8</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>464</x>
+      <y>560</y>
+      <w>168</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0;190.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>464</x>
+      <y>560</y>
+      <w>168</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0;190.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>688</x>
+      <y>504</y>
+      <w>24</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>688</x>
+      <y>504</y>
+      <w>128</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0;140.0;130.0;140.0;210.0;110.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>16</x>
+      <y>16</y>
+      <w>296</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>Note:
+========================================
+This diagram is not exhaustive. But the details that have been left out can be understood easily from the in-code documentation.
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
