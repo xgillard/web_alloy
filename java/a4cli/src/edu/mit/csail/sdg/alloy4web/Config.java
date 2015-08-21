@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Xavier Gillard
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package edu.mit.csail.sdg.alloy4web;
 
 import edu.mit.csail.sdg.alloy4compiler.translator.A4Options;
@@ -9,10 +32,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Nothing but an easy way to access the configuration that was parsed from the
+ * This class provides nothing but an easy way to access the configuration that was parsed from the
  * command line arguments.
+ *
+ * The authorized command line options are the following one: 
+ * -i <filename>    The filename to use as starting point to solve the model. (You MUST give at least one such flag)
+ *
+ * -s <solvername>  The name of the sat solver you want to use to perform the model checking. Authorized values are: 
+ *                  berkmin, spear, minisat, minisatprover, zchaff, sat4j, cnf, kodkod.
+ *                  If not specified, this option has a default value of 'sat4j'.
+ *
+ * -d               !! DEPRECATED !!
+ *                  Should the input file be deleted after it has been solved.
+ *
+ * -o               !! NOT IMPLEMENTED !! 
+ *                  This option was initially foreseen as a way to provide multiple output formats.
+ *                  So far, only JSON format has been implemented and this option has no effect.
  */
 public final class Config {
+    /**
+     * This map contains the String -> Solver mapping that permits us to retrieve the proper solver instance
+     * from its name identifier.
+     */
     private static final Map<String, A4Options.SatSolver> SOLVER_MAP;
 
     static {
@@ -29,7 +70,15 @@ public final class Config {
         SOLVER_MAP = Collections.unmodifiableMap(solvers);
     }
 
-    /** an enum representing the possible values for the configuration tweaks */
+    /** 
+     * An enum representing the possible values for the configuration tweaks.
+     *
+     * INPUT            --> Name of the input module to use
+     * DELETE           --> (DEPRECATED) Should I delete the input file after the instance has been solved
+     * SOLVER           --> A4Solver instance to use to perform the model checking
+     * OUTPUT_FORMAT    --> (NOT IMPLEMENTED) associate behavior with this one if you want to provide an alternative
+     *                      to the JSON format
+     */
     public enum Key {
         INPUT,
         DELETE,
