@@ -1,3 +1,32 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Xavier Gillard
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+
+/**
+ * This view defines the content that is shown when user decides to update the visual 
+ * settings (general settings) used to render the graph.
+ */
 define(
  [
  'jquery', 
@@ -8,7 +37,7 @@ define(
  'model/config/Fonts'
  ],
  function($, _, layout, orientation, palette, font){
- 
+    /** constructs a new instance using the shared application context */
     function GeneralThemeSettingsView(app){
         this.app               = app;
         this.layout            = mkLayout();
@@ -30,7 +59,11 @@ define(
         
         set_values(this);
     };
-    
+    /** 
+     * Returns the configuration as the user has chosen to edit it. 
+     * NOTE: this has - per se - no impact on the real configuration that is stored in the application context.
+     * @returns the configuration as the user has chosen to edit it. 
+     */
     GeneralThemeSettingsView.prototype.val = function(){
         return {
             layout              : this.layout.val(),
@@ -45,7 +78,10 @@ define(
             show_skolem_const   : this.show_skolem_const.prop("checked")
         };
     };
-    
+    /**
+     * Updates the values that are displayed on screen
+     * @param {GeneralThemeSettingsView} self - this instance (used to make this method private)
+     */
     function set_values(self){
         self.layout.val(self.app.theme.layout);
         self.orientation.val(self.app.theme.orientation_name);
@@ -59,11 +95,15 @@ define(
         self.show_skolem_const.prop("checked", self.app.theme.show_skolem_const);
         self.group_atoms_by_sig.prop("checked", self.app.theme.group_atoms_by_sig);
     };
-    
+    /**
+     * Tells to whoever listens to it that the user has decided to apply some changes.
+     * @param {GeneralThemeSettingsView} self - this instance (used to make this method private)
+     */
     function fireChanged(self){
         $(self).trigger("changed", self.val());
     };
     
+    /** makes a dropdown box initialized with all the possible layout options */
     function mkLayout(){
         var select = $("<select></select>");
         _.each(layout, function(l){
@@ -71,7 +111,7 @@ define(
         });
         return select;
     };
-    
+    /** makes a dropdown box initialized with all the possible orientation options */
     function mkOrientation(){
         var select = $("<select></select>");
         _.each(_.keys(orientation), function(k){
@@ -79,7 +119,7 @@ define(
         });
         return select;
     };
-    
+    /** makes a dropdown box intialized with all possible color palette options */
     function mkColorPalette(){
         var select = $("<select></select>");
         _.each(_.keys(palette), function(k){
@@ -87,7 +127,7 @@ define(
         });
         return select;
     };
-    
+    /** creates a dropdown box initialized with all the accepted fonts */
     function mkFont(){
         var select = $("<select></select>");
         _.each(_.keys(font), function(k){
@@ -95,15 +135,17 @@ define(
         });
         return select;
     };
-    
+    /** creates a new checkbox that is checked or not according to the value of 'initial' */
     function mkCheckbox(initial){
         return $("<input type='checkbox' />").prop('checked', initial);
     };
-    
+    /** creates the apply button whose text is given as parameter */
     function mkApplyButton(text){
         return $("<button type='button' class='fill btn btn-sm btn-primary'>"+text+"</button>");
     };
-    
+    /**
+     * This function creates the HTML structure used to display this widget on screen
+     */
     function mkTag(self){
         var $html = $('<table class="small" width="310px">'+
         '<tr><td width="65%">Layout     </td><td data-name="layout"       class="fill"></td></tr>' +
