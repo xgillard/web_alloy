@@ -2,3 +2,4 @@
 web_alloy/*
 /nbproject/private/
 nbproject
+frontend/js/_libs/dependencies_to_build/bin/**
