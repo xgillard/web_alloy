@@ -96,7 +96,7 @@ var AlloyHighlightRules = function() {
         "block_comment" : [
             {
                 token : "comment.block",
-                regex : "\\*/",
+                regex : ".*\\*/",
                 next  : "start"
             }, {
                 token : "comment.block",
