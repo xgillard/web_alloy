@@ -66,7 +66,7 @@ define(
        * @returns {DOMElement} the tag associated with the main content of this sub-application.
        */
       EditorSubApp.prototype.actions = function(){
-          return [mkAddModuleAction(this), mkToggleEditorNavAction(this), mkExecuteAction(this)];
+          return [mkAddModuleAction(this), mkRemoveModuleAction(this), mkToggleEditorNavAction(this), mkExecuteAction(this)];
       };
       
       /**
@@ -77,6 +77,17 @@ define(
       function mkAddModuleAction(self){
         var $markup = $("<a><span class='glyphicon glyphicon-plus' title='Add module'></span></a>");
         $markup[0].onclick = _.partial(addNewModule, self);
+        return $markup;
+      };
+      
+      /**
+       * Creates the action used to remove a module from the editor (X icon).
+       * @param {EditorSubApp} self - a reference to this (is used to make this method private)
+       * @returns {Action} the action used by the user to remove a module from the editor.
+       */
+      function mkRemoveModuleAction(self){
+        var $markup = $("<a><span class='glyphicon glyphicon-remove' title='Remove current module'></span></a>");
+        $markup[0].onclick = _.partial(removeModule, self);
         return $markup;
       };
       
@@ -110,11 +121,26 @@ define(
     
     /**
      * This method effectively adds a new module to the current application state. 
-     * @param {EditorSubApp} a reference to this (is used to make this method private)
+     * @param {EditorSubApp} self - a reference to this (is used to make this method private)
      */
     function addNewModule(self){
         self.app.modules.push("module Untitled"); 
         self.app.current_module = self.app.modules.length-1;
+        $(self.app).trigger("changed:modules");
+    };
+    /**
+     * This method effectively removes a module from the current application state. 
+     * @param {EditorSubApp} self - a reference to this (is used to make this method private)
+     */
+    function removeModule(self){
+        self.app.modules.splice(self.app.current_module, 1);
+        // In case there is no remaining module, add one.
+        if(self.app.modules.length===0){
+          self.app.modules.push("module Untitled");
+          self.app.current_module = 0;
+        }
+        // Since we deleted the current module, we must chose an other one
+        self.app.current_module = self.app.current_module % self.app.modules.length;
         $(self.app).trigger("changed:modules");
     };
     /**
